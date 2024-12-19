@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+ES+Deco+Guides&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
+
 
 @tailwind base;
 @tailwind components;
@@ -91,6 +94,10 @@
 
   .btn-secondary  { 
     @apply  medium-14 bg-secondary text-white px-7 py-3 rounded-lg transition-all  
+  }
+
+  .btn-wood  { 
+    @apply  medium-14 bg-wood text-white px-7 py-3 rounded-lg transition-all  
   }
 
   .max-padd-container {
@@ -191,7 +198,7 @@
   }
 
   .medium-28 {
-    @apply text-[28px] font-[500];
+    @apply text-[28px] font-[700];
   }
 
   .medium-24 {

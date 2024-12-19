@@ -6,11 +6,15 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        dancing: ['"Dancing Script"', 'cursive'], // Certifique-se de usar o nome exato da fonte
+      },
       colors: {
         // primary: "#f5f6f2",
         primary: "#f9f9f9",
         primaryLight: "#e3f7fa",
         secondary: "#00801A",
+        wood: "#52301A",
         tertiary: "#404040",
         gray: {
           10: "#EEEEEE",
@@ -24,6 +28,7 @@ export default {
         xs: "400px",
         "3xl": "1680px",
         "4xl": "2200px",
+        sm500: "500px",
       },
       backgroundImage: {
         hero: "url(/src/assets/bg.png)",
