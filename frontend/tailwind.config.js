@@ -33,6 +33,9 @@ export default {
       backgroundImage: {
         hero: "url(/src/assets/bg.png)",
         banner: "url(/src/assets/banner.png)",
+        aboutImage: "url(/src/assets/imgAbout/floresta.webp)",
+        aboutImage2: "url(/src/assets/imgAbout/madeira1.jpg)",
+        aboutImage3: "url(/src/assets/imgAbout/madeira2.jpg)",
       },
     },
   },
