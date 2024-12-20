@@ -11,8 +11,10 @@ const ShopContextProvider = (props) => {
     const value = { products, currency, delivery_charges };
     
     return (
-        <ShopContext.Provider>
+        <ShopContext.Provider value={value}>
             {props.children}
         </ShopContext.Provider>
     )
 }
+
+export default ShopContextProvider;
