@@ -1,9 +1,13 @@
 import React from "react";
-import aboutImg from "../assets/about.png";
+
 import { motion } from "framer-motion";
 import { animationVariants } from "../constants/animationVariants";
 import { Link } from "react-router-dom";
-import { FaWhatsapp } from "react-icons/fa6";
+
+import madeira3 from "../assets/imgAbout/madeira3.jpg";
+import aboutImg from "../assets/about.png";
+import dof from "../assets/imgAbout/dof.jpg";
+import FSC from "../assets/imgAbout/FSC.jpg";
 const About = () => {
   {
     /*const statistics = [
@@ -42,8 +46,10 @@ const About = () => {
               </div>
               {/* lado direito */}
               <div className="flex-1 flex justify-center flex-col ">
-                <h2 className="h1 max-w-[472px] max-sm500:text-center">Grupo Madenobre</h2>
-                <p className="text-xl py-5 max-sm500:text-center">
+                <h2 className="h1 max-w-[472px] max-sm600:text-center">
+                  Grupo Madenobre
+                </h2>
+                <p className="text-xl py-5 max-sm600:text-center">
                   Há mais de 25 anos, o Grupo Madenobre se consolidou como
                   referência no mercado de madeiras em Maceió. Somos mais do que
                   uma empresa de materiais de construção, somos parceiros dos
@@ -68,22 +74,32 @@ const About = () => {
         </div>
       </section>
       {/* MISSÃO E VISÃO*/}
-      <div className="max-padd-container">
+      <div className="max-padd-container mt-20">
         <div className="max-padd-container">
           <div className="flex flex-col xl:flex-row gap-10">
+            <div className="flex-1 flex justify-center flex-col max-sm600:text-center">
+              <h4 className="text-xl py-5">
+                Aqui, sabemos muito bem o que fazemos e onde queremos chegar.
+                Colocamos sempre você em primeiro lugar, pois nossa missão e
+                visão como empresa são guiadas por esse compromisso.
+              </h4>
+            </div>
             <div className="flex-1 flex justify-center flex-col ">
-              <h2 className="h1 max-w-[472px]">Missão</h2>
-              <p className="text-xl py-5">
-                Oferecer soluções em madeira com qualidade e excelência, com
-                atendimento personalizado e comprometimento com a satisfação do
-                cliente.
+              <h2 className="h2 text-secondary max-w-[472px] max-sm600:text-center">
+                Nossa Missão
+              </h2>
+              <p className="text-xl py-5 max-sm600:text-center">
+                Oferecer o melhor aos nossos clientes para que alcancem a casa
+                dos seus sonhos.
               </p>
             </div>
             <div className="flex-1 flex justify-center flex-col ">
-              <h2 className="h1 max-w-[472px]">Visão</h2>
-              <p className="text-xl py-5">
-                Ser referência no mercado de madeiras, reconhecida pela
-                excelência no atendimento e qualidade dos produtos.
+              <h2 className="h2 text-secondary max-w-[472px] max-sm600:text-center">
+                Nossa Visão
+              </h2>
+              <p className="text-xl py-5 max-sm600:text-center">
+                Inovar em soluções, buscando a melhoria contínua e prezando pela
+                responsabilidade socioambiental.
               </p>
             </div>
           </div>
@@ -105,7 +121,6 @@ const About = () => {
                 >
                   Faça um orçamento
                 </Link>
-              
               </div>
             </div>
             <div className="h-[230px] bg-aboutImage2 w-full bg-cover bg-center"></div>
@@ -140,16 +155,14 @@ const About = () => {
           </div>
         </div>
       </div>
-      
+
       {/**Informações 2 */}
 
       <div className="max-padd-container  ">
-        <div
-          className=" bg-white  mx-auto  p-10 py-28  max-sm:px-5 max-md:py-16  "
-        >
+        <div className=" bg-white  mx-auto  p-10 py-28  max-sm:px-5 max-md:py-16  ">
           <div className=" flex max-md:flex-wrap-reverse justify-center items-end max-md:text-center gap-10 max-md:gap-12  -mt-44 max-md:mt-0 ">
             <div className=" w-1/2 max-md:w-full flex flex-col text-white items-start justify-between max-md:items-center">
-            <div className="h-[230px] bg-cover bg-center bg-aboutImage3 w-full"></div>
+              <div className="h-[230px] bg-cover bg-center bg-aboutImage3 w-full"></div>
             </div>
 
             <div className=" w-1/2 text-5xl max-lg:text-4xl max-md:w-full ">
@@ -162,10 +175,7 @@ const About = () => {
           <div className="grid grid-cols-3 max-md:grid-cols-1 grid-rows-1 max-md:grid-rows-3 gap-6 mt-10">
             <div className="border-t-2 text-xl border-black/20 pt-4">
               <h2 className="font-semibold">-01</h2>
-              <h2
-                className="mt-7  font-medium"
-                style={{ color: "#00801A" }}
-              >
+              <h2 className="mt-7  font-medium" style={{ color: "#00801A" }}>
                 Atendimento
               </h2>
               <p className="mt-2">
@@ -175,10 +185,7 @@ const About = () => {
             </div>
             <div className="border-t-2 text-xl border-black/20 pt-4">
               <h2 className="font-semibold">-02</h2>
-              <h2
-                className="mt-7  font-medium"
-                style={{ color: "#00801A" }}
-              >
+              <h2 className="mt-7  font-medium" style={{ color: "#00801A" }}>
                 Qualidade
               </h2>
               <p className="mt-2">
@@ -187,10 +194,7 @@ const About = () => {
             </div>
             <div className="border-t-2 text-xl border-black/20 pt-4">
               <h2 className="font-semibold">-03</h2>
-              <h2
-                className="mt-7  font-medium"
-                style={{ color: "#00801A" }}
-              >
+              <h2 className="mt-7  font-medium" style={{ color: "#00801A" }}>
                 Entrega
               </h2>
               <p className="mt-2">
@@ -221,6 +225,93 @@ const About = () => {
                 </span>
               </h1>
             </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Preservação imagem1*/}
+      <div className="max-padd-container">
+        <div className="max-padd-container">
+          <div className="flex flex-col xl:flex-row gap-10">
+            <div className="flex-2 max-w-[500px]">
+              <h2 className="text-5xl text-secondary">
+                Promovemos a sustentabilidade e preservação do meio ambiente.
+              </h2>
+            </div>
+            <div className="">
+              <img src={madeira3} alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+      {/** IMAGEM 2 */}
+      <div className="max-padd-container">
+        <div className="max-padd-container">
+          <div className="mt-10 flex flex-col xl:flex-row gap-10">
+            <div className="w-[850px]">
+              <img src={FSC} alt="" className="w-[350px] h-[500px]" />
+            </div>
+            <div className="flex-2 w-full">
+              <h2 className="text-center ml-10 text-5xl text-secondary max-w-[500px]">
+                FSC
+              </h2>
+              <p className="text-2xl text-tertiary">
+                Certificação Forest Stewardship Council. Atribuída por
+                certificadores independentes que estabelecem princípios e
+                critérios para assegurar a origem da madeira.
+              </p>
+              <br />
+              <p className="text-2xl text-tertiary">
+                Permitindo ao consumidor consciente a opção de um produto que
+                não degrada o meio ambiente e contribui para o desenvolvimento
+                social e econômico das comunidades florestais.
+              </p>
+              <br />
+              <p className="text-2xl text-tertiary">
+                A prática predatória é eliminada, a biodiversidade é preservada,
+                assim como os recursos hídricos e do solo. Além do benefício
+                ambiental, o selo garante que os direitos dos trabalhadores
+                sejam respeitados e que as comunidades locais se beneficiem da
+                exploração florestal.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Preservação imagem3 */}
+      <div className="max-padd-container mt-32">
+        <div className="max-padd-container">
+          <div className="flex flex-col xl:flex-row gap-10">
+            <div className="flex-1 ">
+              <h2 className="text-5xl text-secondary">DOF</h2>
+              <p className="text-2xl py-5 text-tertiary">
+                Documento de origem florestal, garantindo procedência, manejo
+                responsável e qualidade do produto.
+              </p>
+            </div>
+            <div className="w-[640px] flex justify-center ">
+              <img src={dof} alt="" className="" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+       {/* Preservação imagem3 */}
+       <div className="max-padd-container mt-32">
+        <div className="max-padd-container">
+          <div className="flex flex-col xl:flex-row gap-10">
+            <div className="flex-1 border border-tertiary">
+              <h2 className="h1 text-secondary border border-secondary">DOF</h2>
+              <p className="text-2xl py-5 text-tertiary border border-collapse">
+                Documento de origem florestal, garantindo procedência, manejo
+                responsável e qualidade do produto.
+              </p>
+            </div>
+            <div className="w-[540px] ">
+              <img src={dof} alt="" className="" />
+            </div>
           </div>
         </div>
       </div>

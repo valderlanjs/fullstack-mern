@@ -29,6 +29,7 @@ export default {
         "3xl": "1680px",
         "4xl": "2200px",
         sm500: "500px",
+        sm600: "600px",
       },
       backgroundImage: {
         hero: "url(/src/assets/bg.png)",
@@ -36,6 +37,7 @@ export default {
         aboutImage: "url(/src/assets/imgAbout/floresta.webp)",
         aboutImage2: "url(/src/assets/imgAbout/madeira1.jpg)",
         aboutImage3: "url(/src/assets/imgAbout/madeira2.jpg)",
+        aboutImage4: "url(/src/assets/imgAbout/madeira3.jpg)",
       },
     },
   },
