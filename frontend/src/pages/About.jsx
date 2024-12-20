@@ -67,8 +67,30 @@ const About = () => {
           </div>
         </div>
       </section>
+      {/* MISSÃO E VISÃO*/}
+      <div className="max-padd-container">
+        <div className="max-padd-container">
+          <div className="flex flex-col xl:flex-row gap-10">
+            <div className="flex-1 flex justify-center flex-col ">
+              <h2 className="h1 max-w-[472px]">Missão</h2>
+              <p className="text-xl py-5">
+                Oferecer soluções em madeira com qualidade e excelência, com
+                atendimento personalizado e comprometimento com a satisfação do
+                cliente.
+              </p>
+            </div>
+            <div className="flex-1 flex justify-center flex-col ">
+              <h2 className="h1 max-w-[472px]">Visão</h2>
+              <p className="text-xl py-5">
+                Ser referência no mercado de madeiras, reconhecida pela
+                excelência no atendimento e qualidade dos produtos.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      {/** Informações */}
+      {/** Informações 1 */}
       <div className="max-padd-container ">
         <div className="mx-auto bg-white rounded-t-xl p-10 py-28  max-sm:px-5 max-md:py-16 ">
           <div className="flex w-full gap-10 max-md:flex-col max-md:justify-center max-md:items-center max-md:text-center">
@@ -119,7 +141,7 @@ const About = () => {
         </div>
       </div>
       
-      {/**FIM */}
+      {/**Informações 2 */}
 
       <div className="max-padd-container  ">
         <div
@@ -137,11 +159,11 @@ const About = () => {
               </h1>
             </div>
           </div>
-          <div className="we-focus-cards grid grid-cols-3 max-md:grid-cols-1 grid-rows-1 max-md:grid-rows-3 gap-6 mt-10">
+          <div className="grid grid-cols-3 max-md:grid-cols-1 grid-rows-1 max-md:grid-rows-3 gap-6 mt-10">
             <div className="border-t-2 text-xl border-black/20 pt-4">
-              <h2 className="title-font font-semibold quality-2">-01</h2>
+              <h2 className="font-semibold">-01</h2>
               <h2
-                className="title-font mt-7  font-medium"
+                className="mt-7  font-medium"
                 style={{ color: "#00801A" }}
               >
                 Atendimento
@@ -152,9 +174,9 @@ const About = () => {
               </p>
             </div>
             <div className="border-t-2 text-xl border-black/20 pt-4">
-              <h2 className="title-font font-semibold quality-2">-02</h2>
+              <h2 className="font-semibold">-02</h2>
               <h2
-                className="title-font mt-7  font-medium"
+                className="mt-7  font-medium"
                 style={{ color: "#00801A" }}
               >
                 Qualidade
@@ -164,9 +186,9 @@ const About = () => {
               </p>
             </div>
             <div className="border-t-2 text-xl border-black/20 pt-4">
-              <h2 className="title-font font-semibold  quality-2">-03</h2>
+              <h2 className="font-semibold">-03</h2>
               <h2
-                className="title-font mt-7  font-medium"
+                className="mt-7  font-medium"
                 style={{ color: "#00801A" }}
               >
                 Entrega
@@ -179,7 +201,8 @@ const About = () => {
           </div>
         </div>
       </div>
-      {/** Seção 3 */}
+
+      {/** Banner*/}
       <div className="max-padd-container">
         <div className="max-padd-container w-full max-xl:mt-8 mb-16 bg-[50%] bg-aboutImage bg-cover bg-no-repeat bg-fixed rounded-xl">
           <div className="py-28 flex justify-end">
