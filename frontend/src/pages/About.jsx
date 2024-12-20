@@ -36,14 +36,14 @@ const About = () => {
                   <img
                     src={aboutImg}
                     alt=""
-                    className="w-full rounded-3xl rounded-tr-[155px] bg-cover bg-center bg-no-repeat h-96 max-w-[540px]"
+                    className="w-full rounded-3xl rounded-tr-[155px] bg-cover bg-center bg-no-repeat h-96 max-w-[540px] max-sm500:w-[300px] max-sm500:h-[300px]"
                   />
                 </div>
               </div>
               {/* lado direito */}
               <div className="flex-1 flex justify-center flex-col ">
-                <h2 className="h1 max-w-[472px]">Grupo Madenobre</h2>
-                <p className="text-xl py-5">
+                <h2 className="h1 max-w-[472px] max-sm500:text-center">Grupo Madenobre</h2>
+                <p className="text-xl py-5 max-sm500:text-center">
                   Há mais de 25 anos, o Grupo Madenobre se consolidou como
                   referência no mercado de madeiras em Maceió. Somos mais do que
                   uma empresa de materiais de construção, somos parceiros dos
@@ -73,7 +73,7 @@ const About = () => {
         <div className="mx-auto bg-white rounded-t-xl p-10 py-28  max-sm:px-5 max-md:py-16 ">
           <div className="flex w-full gap-10 max-md:flex-col max-md:justify-center max-md:items-center max-md:text-center">
             <div className="flex flex-col items-start justify-between max-md:items-center">
-              <h1 className="text-5xl font-bold title-font w-max">
+              <h1 className="text-5xl font-bold w-max max-sm500:text-3xl mb-5">
                 O que nós oferecemos
               </h1>
               <div className="flex gap-2 sm:gap-6 mt-14 max-[968px]:mt-2">
@@ -86,7 +86,7 @@ const About = () => {
               
               </div>
             </div>
-            <div className="h-[230px] bg-aboutImage2 w-full"></div>
+            <div className="h-[230px] bg-aboutImage2 w-full bg-cover bg-center"></div>
           </div>
           <div className="mt-14 gap-8 max-md:grid-cols-1 max-md:grid-rows-2 grid grid-cols-2 grid-rows-1">
             <div>
@@ -127,7 +127,7 @@ const About = () => {
         >
           <div className=" flex max-md:flex-wrap-reverse justify-center items-end max-md:text-center gap-10 max-md:gap-12  -mt-44 max-md:mt-0 ">
             <div className=" w-1/2 max-md:w-full flex flex-col text-white items-start justify-between max-md:items-center">
-            <div className="h-[230px] bg-aboutImage3 w-full"></div>
+            <div className="h-[230px] bg-cover bg-center bg-aboutImage3 w-full"></div>
             </div>
 
             <div className=" w-1/2 text-5xl max-lg:text-4xl max-md:w-full ">
