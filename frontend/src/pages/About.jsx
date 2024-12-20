@@ -215,7 +215,7 @@ const About = () => {
               whileInView="animate"
               variants={animationVariants.fadeUp}
               viewport={{ once: true, amount: 0.2 }}
-              className="w-1/2 max-lg:w-2/3 max-md:w-full"
+              className=" w-1/2 max-lg:w-2/3 max-md:w-full"
             >
               <h1 className="text-5xl text-white">
                 Nosso objetivo é agregar valor para lares e construções
@@ -231,75 +231,79 @@ const About = () => {
 
       {/* Preservação imagem1*/}
       <div className="max-padd-container">
-        <div className="max-padd-container">
-          <div className="flex flex-col xl:flex-row gap-10">
-            <div className="flex-2 max-w-[500px]">
-              <h2 className="text-5xl text-secondary">
-                Promovemos a sustentabilidade e preservação do meio ambiente.
-              </h2>
-            </div>
-            <div className="">
-              <img src={madeira3} alt="" />
-            </div>
+        <div className="max-padd-container flex flex-col xl:flex-row gap-10">
+          {/* Texto */}
+          <div className="flex-2 xl:max-w-[500px]">
+            <h2 className="text-3xl sm:text-4xl xl:text-5xl text-secondary">
+              Promovemos a sustentabilidade e preservação do meio ambiente.
+            </h2>
+          </div>
+          {/* Imagem */}
+          <div className="flex justify-center">
+            <img
+              src={madeira3}
+              alt=""
+              className="w-full max-w-[400px] sm:max-w-[700px]"
+            />
           </div>
         </div>
       </div>
+
       {/** IMAGEM 2 */}
-      <div className="max-padd-container">
-        <div className="max-padd-container">
-          <div className="mt-10 flex flex-col xl:flex-row gap-10">
-            <div className="w-[850px]">
-              <img src={FSC} alt="" className="w-[350px] h-[500px]" />
-            </div>
-            <div className="flex-2 w-full">
-              <h2 className="text-center ml-10 text-5xl text-secondary max-w-[500px]">
-                FSC
-              </h2>
-              <p className="text-2xl text-tertiary">
-                Certificação Forest Stewardship Council. Atribuída por
-                certificadores independentes que estabelecem princípios e
-                critérios para assegurar a origem da madeira.
-              </p>
-              <br />
-              <p className="text-2xl text-tertiary">
-                Permitindo ao consumidor consciente a opção de um produto que
-                não degrada o meio ambiente e contribui para o desenvolvimento
-                social e econômico das comunidades florestais.
-              </p>
-              <br />
-              <p className="text-2xl text-tertiary">
-                A prática predatória é eliminada, a biodiversidade é preservada,
-                assim como os recursos hídricos e do solo. Além do benefício
-                ambiental, o selo garante que os direitos dos trabalhadores
-                sejam respeitados e que as comunidades locais se beneficiem da
-                exploração florestal.
-              </p>
-            </div>
+      <div className="max-padd-container mt-10">
+        <div className="max-padd-container flex flex-col xl:flex-row gap-10">
+          {/* Imagem */}
+          <div className="flex justify-start xl:w-1/2">
+            <img src={FSC} alt="" className="w-full max-w-[350px] h-auto" />
+          </div>
+          {/* Texto */}
+          <div className="flex-2 xl:w-1/2">
+            <h2 className="text-center text-3xl sm:text-4xl xl:text-5xl text-secondary max-w-[500px] mx-auto">
+              FSC
+            </h2>
+            <p className="text-lg sm:text-xl xl:text-2xl text-tertiary mt-4">
+              Certificação Forest Stewardship Council. Atribuída por
+              certificadores independentes que estabelecem princípios e
+              critérios para assegurar a origem da madeira.
+            </p>
+            <p className="text-lg sm:text-xl xl:text-2xl text-tertiary mt-4">
+              Permitindo ao consumidor consciente a opção de um produto que não
+              degrada o meio ambiente e contribui para o desenvolvimento social
+              e econômico das comunidades florestais.
+            </p>
+            <p className="text-lg sm:text-xl xl:text-2xl text-tertiary mt-4">
+              A prática predatória é eliminada, a biodiversidade é preservada,
+              assim como os recursos hídricos e do solo. Além do benefício
+              ambiental, o selo garante que os direitos dos trabalhadores sejam
+              respeitados e que as comunidades locais se beneficiem da
+              exploração florestal.
+            </p>
           </div>
         </div>
       </div>
+
+      {/* Preservação imagem3 */}
+      <div className="max-padd-container mt-22 max-sm600:mt-[50px]">
+        <div className="max-padd-container flex flex-col xl:flex-row gap-10">
+          {/* Texto */}
+          <div className="flex-1 flex justify-center flex-col">
+            <h2 className="text-3xl sm:text-4xl xl:text-5xl text-secondary">
+              DOF
+            </h2>
+            <p className="text-lg sm:text-xl xl:text-2xl py-5 text-tertiary">
+              Documento de origem florestal, garantindo procedência, manejo
+              responsável e qualidade do produto.
+            </p>
+          </div>
+          {/* Imagem */}
+          <div className="w-full xl:w-1/2 flex justify-center">
+            <img src={dof} alt="" className="w-full max-w-[500px] h-auto" />
+          </div>
+        </div>
+      </div>
+
       {/* Preservação imagem3 */}
       <div className="max-padd-container mt-32">
-        <div className="max-padd-container">
-          <div className="flex flex-col xl:flex-row gap-10">
-            <div className="flex-1 ">
-              <h2 className="text-5xl text-secondary">DOF</h2>
-              <p className="text-2xl py-5 text-tertiary">
-                Documento de origem florestal, garantindo procedência, manejo
-                responsável e qualidade do produto.
-              </p>
-            </div>
-            <div className="w-[640px] flex justify-center ">
-              <img src={dof} alt="" className="" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
-       {/* Preservação imagem3 */}
-       <div className="max-padd-container mt-32">
         <div className="max-padd-container">
           <div className="flex flex-col xl:flex-row gap-10">
             <div className="flex-1 border border-tertiary">
