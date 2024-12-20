@@ -93,11 +93,11 @@
   }
 
   .btn-secondary  { 
-    @apply  medium-14 bg-secondary text-white px-7 py-3 rounded-lg transition-all  
+    @apply  medium-18 bg-secondary text-white px-7 py-3 rounded-lg transition-all  
   }
 
   .btn-wood  { 
-    @apply  medium-14 bg-wood text-white px-7 py-3 rounded-lg transition-all  
+    @apply  medium-18 bg-wood text-white px-7 py-3 rounded-lg transition-all  
   }
 
   .max-padd-container {
