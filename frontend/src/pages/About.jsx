@@ -8,6 +8,7 @@ import madeira3 from "../assets/imgAbout/madeira3.jpg";
 import aboutImg from "../assets/about.png";
 import dof from "../assets/imgAbout/dof.jpg";
 import FSC from "../assets/imgAbout/FSC.jpg";
+import Footer from "../components/Footer";
 const About = () => {
   {
     /*const statistics = [
@@ -75,7 +76,7 @@ const About = () => {
       </section>
       {/* MISSÃO E VISÃO*/}
       <div className="max-padd-container mt-20">
-        <div className="max-padd-container">
+        <div className="bg-white rounded-t-xl max-padd-container">
           <div className="flex flex-col xl:flex-row gap-10">
             <div className="flex-1 flex justify-center flex-col max-sm600:text-center">
               <h4 className="text-xl py-5">
@@ -108,7 +109,7 @@ const About = () => {
 
       {/** Informações 1 */}
       <div className="max-padd-container ">
-        <div className="mx-auto bg-white rounded-t-xl p-10 py-28  max-sm:px-5 max-md:py-16 ">
+        <div className="mx-auto bg-white p-10 py-28  max-sm:px-5 max-md:py-16 ">
           <div className="flex w-full gap-10 max-md:flex-col max-md:justify-center max-md:items-center max-md:text-center">
             <div className="flex flex-col items-start justify-between max-md:items-center">
               <h1 className="text-5xl font-bold w-max max-sm500:text-3xl mb-5">
@@ -230,8 +231,8 @@ const About = () => {
       </div>
 
       {/* Preservação imagem1*/}
-      <div className="max-padd-container">
-        <div className="max-padd-container flex flex-col xl:flex-row gap-10">
+      <div className="max-padd-container ">
+        <div className="bg-white rounded-2xl max-padd-container flex flex-col xl:flex-row gap-10">
           {/* Texto */}
           <div className="flex-2 xl:max-w-[500px]">
             <h2 className="text-3xl sm:text-4xl xl:text-5xl text-secondary">
@@ -251,7 +252,7 @@ const About = () => {
 
       {/** IMAGEM 2 */}
       <div className="max-padd-container mt-10">
-        <div className="max-padd-container flex flex-col xl:flex-row gap-10">
+        <div className="bg-white rounded-t-xl max-padd-container flex flex-col xl:flex-row gap-10">
           {/* Imagem */}
           <div className="flex justify-start xl:w-1/2">
             <img src={FSC} alt="" className="w-full max-w-[350px] h-auto" />
@@ -284,7 +285,7 @@ const About = () => {
 
       {/* Preservação imagem3 */}
       <div className="max-padd-container mt-22 max-sm600:mt-[50px]">
-        <div className="max-padd-container flex flex-col xl:flex-row gap-10">
+        <div className="bg-white rounded-b-md max-padd-container flex flex-col xl:flex-row gap-10">
           {/* Texto */}
           <div className="flex-1 flex justify-center flex-col">
             <h2 className="text-3xl sm:text-4xl xl:text-5xl text-secondary">
@@ -301,24 +302,7 @@ const About = () => {
           </div>
         </div>
       </div>
-
-      {/* Preservação imagem3 */}
-      <div className="max-padd-container mt-32">
-        <div className="max-padd-container">
-          <div className="flex flex-col xl:flex-row gap-10">
-            <div className="flex-1 border border-tertiary">
-              <h2 className="h1 text-secondary border border-secondary">DOF</h2>
-              <p className="text-2xl py-5 text-tertiary border border-collapse">
-                Documento de origem florestal, garantindo procedência, manejo
-                responsável e qualidade do produto.
-              </p>
-            </div>
-            <div className="w-[540px] ">
-              <img src={dof} alt="" className="" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <Footer />
     </>
   );
 };

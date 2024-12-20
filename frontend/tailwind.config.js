@@ -16,6 +16,8 @@ export default {
         secondary: "#00801A",
         wood: "#52301A",
         tertiary: "#404040",
+        socialFa: "#0861F2",
+        socialIns: "#E31F47",
         gray: {
           10: "#EEEEEE",
           20: "#A2A2A2",
