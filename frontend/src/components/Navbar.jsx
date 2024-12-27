@@ -24,7 +24,7 @@ const Navbar = ({containerStyles, toggleMenu, menuOpened}) => {
             icon: <SiAtlassian />
         },
         {
-            to: "/mailto:valderlanjosr15@gmail.com",
+            to: "/contact",
             label: "Contato",
             icon: <SiMaildotcom />
         }
