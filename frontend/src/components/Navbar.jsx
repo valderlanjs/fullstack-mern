@@ -15,7 +15,7 @@ const Navbar = ({containerStyles, toggleMenu, menuOpened}) => {
         },
         {
             to: "/collection",
-            label: "Coleção",
+            label: "Produtos",
             icon: <BsCollectionFill />
         },
         {
@@ -53,7 +53,7 @@ const Navbar = ({containerStyles, toggleMenu, menuOpened}) => {
                     onClick={menuOpened && toggleMenu}
                 >
                     {icon}
-                    <h5>{label}</h5>
+                    <h5 className='medium-16'>{label}</h5>
 
                 </NavLink>
             </div>
