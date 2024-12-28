@@ -53,7 +53,7 @@ const Navbar = ({containerStyles, toggleMenu, menuOpened}) => {
                     onClick={menuOpened && toggleMenu}
                 >
                     {icon}
-                    <h5 className='medium-16'>{label}</h5>
+                    <h5 className='medium-18'>{label}</h5>
 
                 </NavLink>
             </div>

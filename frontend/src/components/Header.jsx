@@ -69,11 +69,7 @@ const Header = () => {
                     <FaSearch onClick={() => setShowSearch((prev) => !prev)} className="text-xl cursor-pointer" />
                 </div>
                 
-                <Link to={'/cart'} className="flex relative">
-                    {/* Icone do carrinho* */}
-                    <GiBeachBag  className="text-[25px]"/>
-                    <span className="bg-secondary text-white medium-14 absolute right-0.5 -top-3 flexCenter w-5 h-5 rounded-full shadow-inner ">0</span>
-                </Link>
+                
                 
                 <div className="group relative">
                     <div onClick={() => !token && navigate('/login')}>

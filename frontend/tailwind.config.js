@@ -40,6 +40,7 @@ export default {
         aboutImage2: "url(/src/assets/imgAbout/madeira1.jpg)",
         aboutImage3: "url(/src/assets/imgAbout/madeira2.jpg)",
         aboutImage4: "url(/src/assets/imgAbout/madeira3.jpg)",
+        loginImage: "url(/src/assets/marca.png)",
       },
     },
   },

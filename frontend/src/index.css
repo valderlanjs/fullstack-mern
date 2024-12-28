@@ -14,6 +14,7 @@
   font-family: "Inter", system-ui;
 }
 
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -291,4 +292,5 @@
   .bold-14 {
     @apply text-[14px] font-[700];
   }
+  
 }
