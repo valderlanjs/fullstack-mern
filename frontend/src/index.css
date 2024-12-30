@@ -14,6 +14,7 @@
   font-family: "Inter", system-ui;
 }
 
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -83,6 +84,10 @@
   .btn-dark  { 
     @apply  medium-14 bg-tertiary text-white px-7 py-3 rounded-lg
   }
+
+  .btn-whatsapp  { 
+    @apply  medium-14 bg-secondary text-white px-7 py-3 rounded-lg
+  }
   
   .btn-light  { 
     @apply  medium-14 bg-primary border border-slate-900/5 px-7 py-3 rounded-lg hover:bg-white transition-all duration-300
@@ -93,11 +98,11 @@
   }
 
   .btn-secondary  { 
-    @apply  medium-14 bg-secondary text-white px-7 py-3 rounded-lg transition-all  
+    @apply  medium-18 bg-secondary text-white px-7 py-3 rounded-lg transition-all  
   }
 
   .btn-wood  { 
-    @apply  medium-14 bg-wood text-white px-7 py-3 rounded-lg transition-all  
+    @apply  medium-18 bg-wood text-white px-7 py-3 rounded-lg transition-all  
   }
 
   .max-padd-container {
@@ -291,4 +296,5 @@
   .bold-14 {
     @apply text-[14px] font-[700];
   }
+  
 }

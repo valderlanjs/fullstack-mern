@@ -15,7 +15,7 @@ const Navbar = ({containerStyles, toggleMenu, menuOpened}) => {
         },
         {
             to: "/collection",
-            label: "Coleção",
+            label: "Produtos",
             icon: <BsCollectionFill />
         },
         {
@@ -24,7 +24,7 @@ const Navbar = ({containerStyles, toggleMenu, menuOpened}) => {
             icon: <SiAtlassian />
         },
         {
-            to: "/mailto:valderlanjosr15@gmail.com",
+            to: "/contact",
             label: "Contato",
             icon: <SiMaildotcom />
         }
@@ -53,7 +53,7 @@ const Navbar = ({containerStyles, toggleMenu, menuOpened}) => {
                     onClick={menuOpened && toggleMenu}
                 >
                     {icon}
-                    <h5>{label}</h5>
+                    <h5 className='medium-18'>{label}</h5>
 
                 </NavLink>
             </div>
