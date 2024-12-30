@@ -84,6 +84,10 @@
   .btn-dark  { 
     @apply  medium-14 bg-tertiary text-white px-7 py-3 rounded-lg
   }
+
+  .btn-whatsapp  { 
+    @apply  medium-14 bg-secondary text-white px-7 py-3 rounded-lg
+  }
   
   .btn-light  { 
     @apply  medium-14 bg-primary border border-slate-900/5 px-7 py-3 rounded-lg hover:bg-white transition-all duration-300

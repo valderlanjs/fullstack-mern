@@ -12,7 +12,7 @@ const Item = ({ product }) => {
       viewport={{ once: true, amount: 0.2 }}
       className="ring-1 ring-slate-900/5 rounded-xl bg-white overflow-hidden"
     >
-      <Link to={`/product/${product._id}`} className="flexCenter relative ">
+      <Link to={type === "product" ? `/product/${data._id}` : `/contact/${data._id}`} className="flexCenter relative">
         <img
           src={product.image[0]}
           alt="productImg"
