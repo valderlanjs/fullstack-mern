@@ -6,7 +6,7 @@ import { animationVariants } from "../constants/animationVariants";
 
 const BannerContact = () => {
   return (
-    <section className="mt-10 bg-white">
+    <section className=" bg-white">
       <div className="pt-24 pb-20 max-sm:pt-40 max-md:pb-2  flex bg-fixed bg-top bg-no-repeat bg-cover bg-ContactImage">
         <div className="max-padd-container">
           <div className="mx-auto w-full text-white px-10 max-sm:px-5 flex flex-col max-lg:items-center max-lg:text-center gap-16">

@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        dancing: ['"Dancing Script"', 'cursive'], // Certifique-se de usar o nome exato da fonte
+        dancing: ['"Dancing Script"', 'cursive'],
+        OpenSans: ["Open Sans", "sans-serif"],
       },
       colors: {
         // primary: "#f5f6f2",
