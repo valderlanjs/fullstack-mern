@@ -296,5 +296,16 @@
   .bold-14 {
     @apply text-[14px] font-[700];
   }
+
   
+}
+
+
+
+
+
+@screen sm {
+  .email {
+    @apply text-[5px]; /* Tamanho para telas menores que 640px */
+  }
 }

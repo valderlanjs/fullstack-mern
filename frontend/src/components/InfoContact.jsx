@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { animationVariants } from "../constants/animationVariants";
-import CardContact from "./CardContact";
+import TestCard from "./CardContact";
 
 const InfoContact = () => {
   const sellers = [
@@ -72,19 +72,16 @@ const InfoContact = () => {
           id="vendedores"
           className="card-seller"
         >
-          <div className="max-padd-container">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="sm600:max-padd-container">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 sm500:gap-2 gap-4">
               {sellers.map((seller, index) => (
-                <CardContact
+                <TestCard 
                 key={index}
                 image={seller.image}
                 name={seller.name}
                 email={seller.email}
               />
-              ))}
-              
-             
-              
+              ))}   
             </div>
           </div>
         </motion.div>
