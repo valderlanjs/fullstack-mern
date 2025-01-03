@@ -32,7 +32,7 @@ function App() {
             <Sidebar token={token} setToken={setToken}/>
             <Routes>
               <Route path="/" element={<Add token={token}/>} />
-              <Route path="/add" element={<List token={token}/>} />
+              <Route path="/list" element={<List token={token}/>} />
               <Route path="/orders" element={<Orders token={token}/>} />
             </Routes>
           </div>
