@@ -32,7 +32,7 @@ const Header = () => {
   }
 
   return (
-    <header className="py-5 w-full bg-white">
+    <header className="py-12 w-full bg-white">
         <div className="max-padd-container flexBetween">
             {/* LOGO */}
             <Link to={"/"} className="flex-1 xl:hidden">

@@ -64,7 +64,7 @@ const Login = () => {
         </div>
         {/** Lado da imagem */}
         <div className="w-1/2 hidden sm:block bg-black">
-            <img src={loginImg} alt="" className="object-cover h-full w-full"/>
+            <img src={'/logo.png'} alt="" className="object-contain h-full w-full"/>
         </div>
       </div>
     </section>
