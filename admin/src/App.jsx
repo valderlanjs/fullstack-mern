@@ -10,7 +10,6 @@ import Login from "./components/Login";
 
 import Add from "./pages/Add";
 import List from "./pages/List";
-import Orders from "./pages/Orders";
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -33,7 +32,6 @@ function App() {
             <Routes>
               <Route path="/" element={<Add token={token}/>} />
               <Route path="/list" element={<List token={token}/>} />
-              <Route path="/orders" element={<Orders token={token}/>} />
             </Routes>
           </div>
         </div>

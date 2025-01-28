@@ -1,97 +1,90 @@
-import userModel from "../models/userModel.js";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import User from "../models/userModel.js";
 
 const createToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET)
-}
-
-// user login route
-const loginUser = async (req, res) => {
-    try {
-        const {email, password} = req.body;
-
-        const user = await userModel.findOne({email});
-
-        if (!user) {
-            return res.json({success: false, message: "Usuário não encontrado"})
-        }
-        const isMatch = await bcrypt.compare(password, user.password)
-        if (isMatch) {
-            const token = createToken(user._id)
-            res.json({success: true, token})
-        } else {
-            res.json({success: false, message: "Senha incorreta!"})
-        }
-    } catch (error) {
-        console.log(error)
-        res.json({success: false, message: error.message})
-    }
-
+    return jwt.sign({ id }, process.env.JWT_SECRET);
 };
 
-// user registre route
+// User login route
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            return res.json({ success: false, message: "Usuário não encontrado" });
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+            const token = createToken(user.id);  // Alterado para user.id
+            res.json({ success: true, token });
+        } else {
+            res.json({ success: false, message: "Senha incorreta!" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// User register route
 const registerUser = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-    // checagem se o email ja existe ou não
-    const exists = await userModel.findOne({ email });
+    try {
+        const { name, email, password } = req.body;
 
-    if (exists) {
-      return res.json({
-        succes: false,
-        message: "Já existe usuário com esse email",
-      });
+        // Verificar se o e-mail já existe
+        const exists = await User.findOne({ where: { email } });
+
+        if (exists) {
+            return res.json({
+                success: false,
+                message: "Já existe usuário com esse email",
+            });
+        }
+
+        if (!validator.isEmail(email)) {
+            return res.json({ success: false, message: "Insira um email válido" });
+        }
+
+        // Validação de senha
+        if (password.length < 8) {
+            return res.json({
+                success: false,
+                message: "Por favor, insira pelo menos 8 caracteres!",
+            });
+        }
+
+        // Hash da senha
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const userData = { name, email, password: hashedPassword };
+
+        const user = await User.create(userData);  // Sem o .save() aqui
+        const token = createToken(user.id);  // Alterado para user.id
+
+        res.json({ success: true, token });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
     }
-
-    if (!validator.isEmail(email)) {
-      return res.json({ succes: false, message: "Insira um email válido" });
-    }
-    // validação da senha e checagem se a senha é forte
-    if (password.length < 8) {
-      return res.json({
-        sucess: false,
-        message: "Por favor, insira pelo menos 8 caracteres!",
-      });
-    }
-
-    // hash para a senha de usuário
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newUser = new userModel({
-      name,
-      email,
-      password: hashedPassword,
-    });
-
-    const user = await newUser.save();
-    const token = createToken(user._id)
-
-    res.json({sucess: true, token})
-
-  } catch (error) {
-    console.log(error)
-    res.json({success: false, message: error.message})
-  }
 };
 
 // Admin login route
 const adminLogin = async (req, res) => {
     try {
-        const {email, password} = req.body;
-        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS){
-          const token = jwt.sign(email+password, process.env.JWT_SECRET);
-
-          return res.json({success: true, token})
+        const { email, password } = req.body;
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
+            const token = jwt.sign(email + password, process.env.JWT_SECRET);
+            return res.json({ success: true, token });
         } else {
-          res.json({success: false, message: "Email ou senha incorretos"})
+            res.json({ success: false, message: "Email ou senha incorretos" });
         }
-
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 };
 

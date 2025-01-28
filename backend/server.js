@@ -1,31 +1,48 @@
 import express from "express";
 import cors from "cors";
 import 'dotenv/config';
-import connectDB from "./config/mongodb.js";
+import{ connectDB,  sequelize } from "./config/mysql.js";
 import connectCloudinary from "./config/cloudinary.js";
 import userRoute from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
 
-// app config
-
-const app = express();
-const port = process.env.PORT || 4000;
 
 
-connectDB()
-connectCloudinary()
+// Função para conectar ao banco de dados e iniciar o servidor
+const startServer = async () => {
+    try {
+        // Estabelecendo conexão com o banco de dados
+        await connectDB();
+        await sequelize.sync({ alter: true });
 
-//Middlewar  
-app.use(express.json());
-app.use(cors());
+        // Conectando ao Cloudinary
+        connectCloudinary();
 
-//api endpoints
-app.use('/api/user', userRoute);
-app.use('/api/product', productRouter);
+        // Criando a aplicação
+        const app = express();
+        const port = process.env.PORT || 4000;
 
+        // Middlewares
+        app.use(express.json());
+        app.use(cors());
 
-app.get("/", (req, res) => {
-    res.send("API trabalhando");
-})
+        // Endpoints da API
+        app.use('/api/user', userRoute);
+        app.use('/api/product', productRouter);
 
-app.listen(port, () => console.log(`Server is running on PORT ${port}`))
+        app.get("/", (req, res) => {
+            res.send("API funcionando");
+        });
+
+        // Iniciando o servidor
+        app.listen(port, () => {
+            console.log(`Server is running on PORT ${port}`);
+        });
+
+    } catch (error) {
+        console.error("Erro ao iniciar o servidor:", error);
+    }
+};
+
+// Iniciando o servidor
+startServer();

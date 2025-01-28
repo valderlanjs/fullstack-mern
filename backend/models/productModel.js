@@ -1,5 +1,27 @@
-import mongoose from "mongoose";
+//import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/mysql.js";
 
+
+const Product = sequelize.define('Product', {
+    name: { type: DataTypes.STRING, allowNull: false },
+    category: { type: DataTypes.STRING, allowNull: false },
+    subCategory: { type: DataTypes.STRING, allowNull: false },
+    image: { type: DataTypes.JSON, allowNull: false },
+    popular: { type: DataTypes.BOOLEAN },
+}, {
+    tableName: 'products',
+});
+
+export default Product;
+
+
+
+
+
+
+
+/*
 const productSchema = new mongoose.Schema({
     name: {type: String, required: true},
     category: {type: String, required: true},
@@ -12,4 +34,4 @@ const productSchema = new mongoose.Schema({
 
 const productModel = mongoose.models.product || mongoose.model("product", productSchema)
 
-export default productModel;
+export default productModel;*/
