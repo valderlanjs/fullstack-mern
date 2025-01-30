@@ -31,6 +31,7 @@ export default {
         xs: "400px",
         "3xl": "1680px",
         "4xl": "2200px",
+        sm400: "490px",
         sm500: "500px",
         sm600: "600px",
       },

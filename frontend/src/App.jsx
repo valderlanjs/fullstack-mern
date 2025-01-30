@@ -18,7 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   return (
-    <main className="overflow-hidden text-[#404040] bg-primary">
+    <main className="overflow-hidden text-[#404040] bg-tertiary/15">
       <ToastContainer />
       <Header />
       <Routes>

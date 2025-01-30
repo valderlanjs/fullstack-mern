@@ -20,6 +20,7 @@ const List = ({ token }) => {
       console.log(error);
       toast.error(error.message);
     }
+    
   };
 
   const removeProduct = async (id) => {

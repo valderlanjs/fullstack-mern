@@ -8,22 +8,25 @@ const Login = ({setToken}) => {
   const [password, setPassword] = useState("");
 
   const onSubmitHandler = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
       const response = await axios.post(`${backend_url}/api/user/admin`, {
         email,
         password,
       });
 
+      console.log("Resposta do backend no login:", response.data); 
+      
       if (response.data.success) {
         setToken(response.data.token)
       } else {
         toast.error(response.data.message);
       }
+      console.log("Token recebido no login:", response.data.token);
 
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || "Erro ao fazer login");
     }
   };
 
@@ -55,7 +58,7 @@ const Login = ({setToken}) => {
               />
             </div>
             <div className="w-full">
-              <label htmlFor="password" className="midium-15">
+              <label htmlFor="password" className="medium-15">
                 Senha
               </label>
               <input

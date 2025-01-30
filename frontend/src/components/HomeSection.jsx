@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 
 const HomeSection = () => {
   return (
-    <div>
+    <div className="max-padd-container">
       <div
-        className="max-padd-container flex justify-between items-start p-10 py-28 max-md:py-16 gap-5 max-md:px-5 max-md:flex-col max-md:items-center max-md:text-center"
+        className="bg-white  rounded-xl max-padd-container flex justify-between items-start p-10 py-28 max-md:py-16 gap-5 max-md:px-5 max-md:flex-col max-md:items-center max-md:text-center"
       >
         <div className="w-2/4 max-md:w-full ">
           <motion.div

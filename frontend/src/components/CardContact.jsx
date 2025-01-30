@@ -3,18 +3,18 @@ import { FaWhatsapp } from "react-icons/fa";
 
 const TestCard = ({ image, email, name }) => {
   return (
-    <div className="bg-white h-[340px] w-[200px] border border-gray-200 rounded-lg p-1 overflow-hidden hover:border-[#00801A] duration-200 cursor-pointer">
+    <div className="flex-col flex items-center  bg-white  lg:h-[340px] lg:w-[210px] h-[280px] w-[160px] border border-gray-200 rounded-lg p-1 overflow-hidden hover:border-[#00801A] duration-200 cursor-pointer">
       <div className="w-full h-[70%] relative p-2 group">
         <img
           src={image}
           alt="Seller"
           className="w-full h-full rounded-md group-hover:scale-110 duration-300"
         />
-        {/*navegação lateral */}
+       
       </div>
-      <div className="flexCenter flex flex-col gap-2 px-2 pb-2">
-        <h3 className="text-[14px] mt-1 sm500:text-xl font-semibold">{name}</h3>
-        <h4 className="text-[10px] sm500:text-[10px] font-bold">{email}</h4>
+      
+        <h3 className="text-lg text-black font-semibold">{name}</h3>
+        <p className="font-bold text-black lg:text-[10px] text-[9px] w-full flex mb-2 justify-center">{email}</p>
         <div>
           <a
             href="https://wa.me/558233204720"
@@ -25,7 +25,7 @@ const TestCard = ({ image, email, name }) => {
             WhatsApp <FaWhatsapp />
           </a>
         </div>
-      </div>
+      
     </div>
   );
 };

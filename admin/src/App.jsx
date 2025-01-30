@@ -10,6 +10,7 @@ import Login from "./components/Login";
 
 import Add from "./pages/Add";
 import List from "./pages/List";
+import ChangeCredentials from "./pages/ChangeCredentials";
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -17,7 +18,10 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : "");
 
   useEffect(() => {
-    localStorage.setItem('token', token)
+    if (token) {
+      console.log("🔄 Atualizando token no localStorage:", token);
+      localStorage.setItem("token", token);
+    }
   }, [token])
   return (
     <main>
@@ -32,6 +36,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Add token={token}/>} />
               <Route path="/list" element={<List token={token}/>} />
+              <Route path="/change-credentials" element={<ChangeCredentials token={token} setToken={setToken}/>} />
             </Routes>
           </div>
         </div>

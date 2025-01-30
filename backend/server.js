@@ -29,6 +29,7 @@ const startServer = async () => {
         // Endpoints da API
         app.use('/api/user', userRoute);
         app.use('/api/product', productRouter);
+    
 
         app.get("/", (req, res) => {
             res.send("API funcionando");
