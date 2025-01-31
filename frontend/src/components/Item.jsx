@@ -10,7 +10,7 @@ const Item = ({ product }) => {
       whileInView="animate"
       variants={animationVariants.zoomIn}
       viewport={{ once: true, amount: 0.2 }}
-      className="ring-1 ring-slate-900/5 rounded-xl bg-white overflow-hidden"
+      className="ring-1 ring-slate-900/5 rounded-xl bg-white overflow-hidden shadow-md"
     >
       <Link to={`/product/${product._id}`} className="flexCenter relative">
         <img

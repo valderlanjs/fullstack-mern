@@ -11,7 +11,6 @@ const Product = () => {
 
   const [product, setProduct] = useState(null);
   const [image, setImage] = useState("");
-  const [size, setSize] = useState("");
 
   const fetchProductData = () => {
     const item = products.find((item) => item._id === productId);
