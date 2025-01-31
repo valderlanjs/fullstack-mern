@@ -14,7 +14,7 @@ const startServer = async () => {
     try {
         // Estabelecendo conexão com o banco de dados
         await connectDB();
-        await sequelize.sync({ alter: true });
+        await sequelize.sync();
 
         // Conectando ao Cloudinary
         connectCloudinary();
