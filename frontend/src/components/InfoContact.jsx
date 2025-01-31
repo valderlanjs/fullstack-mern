@@ -1,36 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { animationVariants } from "../constants/animationVariants";
-import TestCard from "./CardContact";
+import VendorList from "./vendorList";
 
 const InfoContact = () => {
-  const sellers = [
-    {
-      image: "/public/img/Vendedores/carlos.webp",
-      name: "Carlos Tavares",
-      email: "carlos@grupomadenobre.com.br",
-    },
-    {
-      image: "/public/img/Vendedores/jaelson.png",
-      name: "Jaelson Silva",
-      email: "jaelson@grupomadenobre.com.br",
-    },
-    {
-      image: "/public/img/Vendedores/jailson.webp",
-      name: "Jailson Ferro",
-      email: "jailson@grupomadenobre.com.br",
-    },
-    {
-      image: "/public/img/Vendedores/jean.webp",
-      name: "Jean Carlos",
-      email: "jean@grupomadenobre.com.br",
-    },
-    {
-      image: "/public/img/Vendedores/Luciana.png",
-      name: "Luciana Freitas",
-      email: "luciana@grupomadenobre.com.br",
-    },
-  ];
 
   return (
     <section>
@@ -89,15 +62,8 @@ const InfoContact = () => {
           className="card-seller"
         >
           <div className="sm600:max-padd-container">
-            <div className="grid grid-cols-2 sm500:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm500:gap-1 gap-2">
-              {sellers.map((seller, index) => (
-                <TestCard
-                  key={index}
-                  image={seller.image}
-                  name={seller.name}
-                  email={seller.email}
-                />
-              ))}
+            <div className="">
+              <VendorList />
             </div>
           </div>
         </motion.div>

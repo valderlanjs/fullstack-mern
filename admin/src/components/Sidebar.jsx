@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { FaSquarePlus } from "react-icons/fa6";
-import { FaListAlt, FaUserCog } from "react-icons/fa";
+import { FaListAlt, FaUserCog, FaUserPlus, FaUsers } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
 
 const Sidebar = ({ token, setToken }) => {
@@ -31,6 +31,22 @@ const Sidebar = ({ token, setToken }) => {
           >
             <FaListAlt />
             <div className="hidden lg:flex">Lista de Produtos</div>
+          </NavLink>
+
+          <NavLink
+            to={"/add-vendor"}
+            className={({ isActive }) => isActive ? "active-link" : "flexStart gap-x-2 p-5 bold-15 text-secondary cursor-pointer max-w-60 h-10 rounded-xl"}>
+            <FaUserPlus />
+            <div className="hidden lg:flex">Adicionar Vendedor</div>
+
+          </NavLink>
+
+          <NavLink
+            to={"/list-vendor"}
+            className={({ isActive }) => isActive ? "active-link" : "flexStart gap-x-2 p-5 bold-15 text-secondary cursor-pointer max-w-60 h-10 rounded-xl"}>
+            <FaUsers />
+            <div className="hidden lg:flex">Lista de Vendedores</div>
+
           </NavLink>
 
           <NavLink

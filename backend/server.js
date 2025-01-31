@@ -5,6 +5,7 @@ import{ connectDB,  sequelize } from "./config/mysql.js";
 import connectCloudinary from "./config/cloudinary.js";
 import userRoute from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
+import vendorRoute from "./routes/vendorRoute.js"; 
 
 
 
@@ -29,6 +30,7 @@ const startServer = async () => {
         // Endpoints da API
         app.use('/api/user', userRoute);
         app.use('/api/product', productRouter);
+        app.use('/api/vendor', vendorRoute);
     
 
         app.get("/", (req, res) => {

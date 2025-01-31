@@ -12,6 +12,7 @@ const ShopContextProvider = (props) => {
   const navigate = useNavigate()
 
   const [products, setProducts] = useState([]);
+  const [vendors, setVendors] = useState([]);
 
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -30,12 +31,28 @@ const ShopContextProvider = (props) => {
     }
   }
 
+  const getVendorsData = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/vendor/list`);
+      if (response.data.success) {
+        setVendors(response.data.vendors);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  }
+
   useEffect(() => {
     getProductsData();
+    getVendorsData();
   },[])
 
   const contextValue = {
     products,
+    vendors,
     currency,
     delivery_charges,
     search,
