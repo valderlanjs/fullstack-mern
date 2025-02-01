@@ -3,6 +3,7 @@ import upload_icon from "../assets/upload_icon.png";
 import axios from "axios";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
+import { FaCircleExclamation } from "react-icons/fa6";
 
 const AddVendor = ({ token }) => {
   const [name, setName] = useState("");
@@ -12,10 +13,10 @@ const AddVendor = ({ token }) => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    
+
     if (!name || !email || !image) {
       toast.error("Por favor, preencha todos os campos obrigatórios.");
-      return; 
+      return;
     }
 
     try {
@@ -55,7 +56,7 @@ const AddVendor = ({ token }) => {
             <img
               src={image ? URL.createObjectURL(image) : upload_icon}
               alt=""
-              className="w-16 h-16 aspect-square object-cover ring-1  ring-slate-900/5 rounded-lg"
+              className="w-56 h-64 aspect-square object-cover ring-1  ring-slate-900/5 rounded-lg"
             />
             <input
               onChange={(e) => setImage(e.target.files[0])}
@@ -65,6 +66,10 @@ const AddVendor = ({ token }) => {
               hidden
             />
           </label>
+          <div className="tooltip">
+            <FaCircleExclamation className="w-10 h-6 text-yellow-600" />
+            <span className="tooltiptext">Adicione fotos com tamanho máximo de 9MB, largura adequada entre 1300px e 1450px e altura entre 1800px e 1900px.</span>
+          </div>
         </div>
         <div className="">
           <h5 className="h5">Nome do Vendedor</h5>

@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = ({setToken}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -28,6 +30,10 @@ const Login = ({setToken}) => {
       console.log(error);
       toast.error(error.response?.data?.message || "Erro ao fazer login");
     }
+  };
+
+  const togglePaswordVisibility = () => {
+    setShowPassword(prev => !prev);
   };
 
   return (
@@ -57,7 +63,7 @@ const Login = ({setToken}) => {
                 className="w-full px-3 py-1.5 ring-slate-900/5 rounded bg-primary mt-1"
               />
             </div>
-            <div className="w-full">
+            <div className="w-full relative">
               <label htmlFor="password" className="medium-15">
                 Senha
               </label>
@@ -65,10 +71,13 @@ const Login = ({setToken}) => {
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 required
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Senha"
                 className="w-full px-3 py-1.5 ring-slate-900/5 rounded bg-primary mt-1"
               />
+              <div className="absolute inset-y-0 right-0 pr-3 mt-7 flex items-center cursor-pointer" onClick={togglePaswordVisibility}>
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </div>
             </div>
             <button
               type="submit"

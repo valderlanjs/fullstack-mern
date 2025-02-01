@@ -1,13 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaCoins, FaMobileAlt } from "react-icons/fa";
 import { animationVariants } from "../constants/animationVariants";
-
+import axios from "axios";
+import { backend_url } from "../../../admin/src/App";
+import { toast } from "react-toastify";
 
 const BannerContact = () => {
+  const [bannerImage, setBannerImage] = useState('');
+
+  const fetchBannerImage = async () => {
+    try {
+      const response = await axios.get(`${backend_url}/api/banner/image`);
+      if (response.data.success && response.data.banner) {
+        setBannerImage(response.data.banner.imageUrl);
+      }
+    } catch (error) {
+      console.log("Erro ao obter a imagem do banner", error);
+      toast.error("Erro ao obter a imagem do banner");
+    }
+  };
+
+  useEffect(() => {
+    fetchBannerImage();
+  }, []);
   return (
     <section className=" bg-white">
-      <div className="pt-24 pb-20 max-sm:pt-40 max-md:pb-2 lg:h-[100vh] md:h-[110vh]  max-h-[180vh] 3xl:h-[80vh] flex bg-fixed bg-top bg-no-repeat bg-cover bg-ContactImage">
+      <div className="pt-24 pb-20 max-sm:pt-40 max-md:pb-2 lg:h-[100vh] md:h-[110vh]  max-h-[180vh] 3xl:h-[80vh] flex bg-fixed bg-top bg-no-repeat bg-cover"
+        style={{ backgroundImage: `url(${bannerImage})`}}
+      >
         <div className="max-padd-container">
           <div className="mx-auto w-full text-white px-10 max-sm:px-5 flex flex-col max-lg:items-center max-lg:text-center gap-16">
             <motion.h1

@@ -6,7 +6,8 @@ import connectCloudinary from "./config/cloudinary.js";
 import userRoute from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
 import vendorRoute from "./routes/vendorRoute.js"; 
-
+import bannerRoute from "./routes/bannerRoute.js";
+import heroRoute from "./routes/heroRoute.js";
 
 
 // Função para conectar ao banco de dados e iniciar o servidor
@@ -31,6 +32,8 @@ const startServer = async () => {
         app.use('/api/user', userRoute);
         app.use('/api/product', productRouter);
         app.use('/api/vendor', vendorRoute);
+        app.use('/api/banner', bannerRoute);
+        app.use('/api/hero', heroRoute);
     
 
         app.get("/", (req, res) => {

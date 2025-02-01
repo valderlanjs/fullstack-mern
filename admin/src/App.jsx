@@ -13,6 +13,9 @@ import List from "./pages/List";
 import ListVendor from "./pages/ListVendor";
 import AddVendor from "./pages/AddVendor";
 import ChangeCredentials from "./pages/ChangeCredentials";
+import UpdateBanner from "./pages/UpdateBanner";
+import UpdateHero from "./pages/UpdateHero";
+
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -40,6 +43,8 @@ function App() {
               <Route path="/list" element={<List token={token}/>} />
               <Route path='/list-vendor' element={<ListVendor token={token}/>}/>
               <Route path='/add-vendor' element={<AddVendor token={token}/>}/>
+              <Route path='/update-banner' element={<UpdateBanner token={token}/>} />
+              <Route path='/update-hero' element={<UpdateHero token={token}/>} />
               <Route path="/change-credentials" element={<ChangeCredentials token={token} setToken={setToken}/>} />
             </Routes>
           </div>

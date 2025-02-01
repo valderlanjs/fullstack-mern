@@ -293,3 +293,64 @@ select,input,textarea{
     @apply text-[14px] font-[700];
   }
 }
+
+/*MENSAGEM DE INSTRUÇÃO PARA ADICIONAR AS IMAGENS DE VENDEDORES*/
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 160px;
+  font-size: 12px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 55%; /* Ajustar a posição conforme necessário */
+  left: 50%;
+  margin-left: -20px; /* Ajustar a margem conforme necessário */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/*MENSAGEM DE INSTRUÇÃO PARA ADICIONAR A IMAGEM DA PAGINA INICIAL*/
+
+.tooltiph {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltiph .tooltiptexth {
+  font-size: 12px;
+  visibility: hidden;
+  width: 160px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 15%; /* Ajustar a posição conforme necessário */
+  left: 50%;
+  margin-left: -10px; /* Ajustar a margem conforme necessário */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltiph:hover .tooltiptexth {
+  visibility: visible;
+  opacity: 1;
+}
