@@ -1,5 +1,5 @@
 //import mongoose from "mongoose";
-import { DataTypes, Sequelize } from "sequelize";
+/*import { DataTypes, Sequelize } from "sequelize";
 import { sequelize } from "../config/mysql.js";
 
 const User = sequelize.define('User', {
@@ -12,5 +12,16 @@ const User = sequelize.define('User', {
     tableName: 'users',
 });
 
-export default User;
+export default User;*/
 
+import mongoose from 'mongoose';
+
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, unique: true, required: true },
+  password: { type: String, required: true },
+  isAdmin: { type: Boolean, default: false }
+});
+
+const User = mongoose.model('User', userSchema);
+export default User;

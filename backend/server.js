@@ -1,7 +1,8 @@
+
 import express from "express";
 import cors from "cors";
 import 'dotenv/config';
-import{ connectDB,  sequelize } from "./config/mysql.js";
+import connectDB  from "./config/mongodb.js";
 import connectCloudinary from "./config/cloudinary.js";
 import userRoute from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
@@ -15,7 +16,7 @@ const startServer = async () => {
     try {
         // Estabelecendo conexão com o banco de dados
         await connectDB();
-        await sequelize.sync();
+       // await sequelize.sync();
 
         // Conectando ao Cloudinary
         connectCloudinary();

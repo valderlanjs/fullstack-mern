@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
 const createToken = (id) => {
+  // Para Mongoose/MongoDB, o ID é _id
   return jwt.sign({ id }, process.env.JWT_SECRET);
 };
 
@@ -12,14 +13,18 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    // CORREÇÃO: Remova o 'where' para Mongoose/MongoDB
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.json({ success: false, message: "Usuário não encontrado" });
     }
+
+    // CORRETO: Comparação de hash com bcrypt
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (isMatch) {
-      const token = createToken(user.id); // Alterado para user.id
+      const token = createToken(user._id); // CORREÇÃO: use user._id
       res.json({ success: true, token });
     } else {
       res.json({ success: false, message: "Senha incorreta!" });
@@ -35,8 +40,8 @@ const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Verificar se o e-mail já existe
-    const exists = await User.findOne({ where: { email } });
+    // CORREÇÃO: Remova o 'where' para Mongoose/MongoDB
+    const exists = await User.findOne({ email });
 
     if (exists) {
       return res.json({
@@ -57,14 +62,14 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Hash da senha
+    // Hash da senha (já estava correto aqui)
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const userData = { name, email, password: hashedPassword };
 
-    const user = await User.create(userData); // Sem o .save() aqui
-    const token = createToken(user.id); // Alterado para user.id
+    const user = await User.create(userData);
+    const token = createToken(user._id); // CORREÇÃO: use user._id
 
     res.json({ success: true, token });
   } catch (error) {
@@ -78,8 +83,9 @@ const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log("Tentativa de login: ", email, password);
-    // Procurar o usuário administrador no banco de dados
-    const user = await User.findOne({ where: { email, isAdmin: true } });
+
+    // CORRETO: Removido o 'where'
+    const user = await User.findOne({ email, isAdmin: true });
 
     if (!user) {
       return res.json({
@@ -88,13 +94,15 @@ const adminLogin = async (req, res) => {
       });
     }
 
-    console.log("Usuário encontrato: ", user.email);
-    console.log("Senha encontrato: ", user.password);
+    console.log("Usuário encontrado: ", user.email);
+    console.log("Senha armazenada (do DB): ", user.password); // Será um hash
 
-    // Verificar se a senha está correta
-    if (password === user.password) {
+    // CORREÇÃO CRÍTICA: Use bcrypt.compare() aqui!
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (isMatch) {
       const token = jwt.sign(
-        { id: user.id, isAdmin: true },
+        { _id: user._id, isAdmin: true }, // CORREÇÃO: use user._id
         process.env.JWT_SECRET
       );
       res.json({ success: true, token });
@@ -112,8 +120,8 @@ const changeAdminCredentials = async (req, res) => {
   try {
     const { currentPassword, newPassword, newUsername } = req.body;
 
-    // Encontrar o usuário administrador no banco de dados
-    const user = await User.findOne({ where: { isAdmin: true } });
+    // CORREÇÃO: Remova o 'where' para Mongoose/MongoDB
+    const user = await User.findOne({ isAdmin: true });
 
     if (!user) {
       return res.json({
@@ -122,24 +130,33 @@ const changeAdminCredentials = async (req, res) => {
       });
     }
 
-    // Verifica se a senha atual está correta
-    if (currentPassword !== user.password) {
-        return res.json({ success: false, message: "Senha atual incorreta" });
-    }  
-    // Atualizar a senha se fornecida
+    // CORREÇÃO CRÍTICA: Verifica a senha atual usando bcrypt.compare
+    const isCurrentPasswordCorrect = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!isCurrentPasswordCorrect) {
+      return res.json({ success: false, message: "Senha atual incorreta" });
+    }
+
+    // Atualizar a senha se fornecida (fazer hash da nova senha)
     if (newPassword) {
-        user.password = newPassword;
-    }  
+      const salt = await bcrypt.genSalt(10); // Gere um novo salt para a nova senha
+      const hashedNewPassword = await bcrypt.hash(newPassword, salt); // Faça o hash da nova senha
+      user.password = hashedNewPassword;
+    }
     // Atualizar o nome de usuário fornecido
     if (newUsername) {
-        user.email = newUsername;
+      user.email = newUsername;
     }
 
     await user.save();
     console.log("Credenciais atualizadas: ", user.email, user.password);
 
-    // Gerar um novo token
-    const newToken = jwt.sign({ id: user.id, isAdmin: true }, process.env.JWT_SECRET);
+    const newToken = jwt.sign(
+      { _id: user._id, isAdmin: true }, // CORREÇÃO: use user._id
+      process.env.JWT_SECRET
+    );
 
     res.json({
       success: true,

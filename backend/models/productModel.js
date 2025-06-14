@@ -1,5 +1,5 @@
 //import mongoose from "mongoose";
-import { DataTypes } from "sequelize";
+/*import { DataTypes } from "sequelize";
 import { sequelize } from "../config/mysql.js";
 
 
@@ -13,10 +13,21 @@ const Product = sequelize.define('Product', {
     tableName: 'products',
 });
 
+export default Product;*/
+
+
+import mongoose from 'mongoose';
+
+const productSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  category: { type: String, required: true },
+  subCategory: { type: String, required: true },
+  image: { type: [mongoose.Schema.Types.Mixed], required: true }, // ou [String] se forem URLs
+  popular: { type: Boolean, default: false }
+});
+
+const Product = mongoose.model('Product', productSchema);
 export default Product;
-
-
-
 
 
 

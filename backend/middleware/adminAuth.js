@@ -12,12 +12,12 @@ const adminAuth = async (req, res, next) => {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
         // Verifica se o token contém a informação do administrador
-        if (!decodedToken.id || !decodedToken.isAdmin) {
-            return res.json({success: false, message: "Login não autorizado, Tente novamente"});
+        if (!decodedToken._id || !decodedToken.isAdmin) {
+            return res.json({success: false, message: "Login não autorizado, Tente novamente2"});
         }
 
         // Verifica se o usuário ainda é administrador no banco de dados
-        const adminUser = await User.findOne({where: {id: decodedToken.id, isAdmin: true}})
+        const adminUser = await User.findOne( {_id: decodedToken._id, isAdmin: true})
 
         if (!adminUser) {
             return res.json({success: false, message: "Usuário não autorizado ou não encontrado!"});

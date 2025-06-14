@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+/*import { DataTypes } from "sequelize";
 import { sequelize } from "../config/mysql.js";
 
 const Banner = sequelize.define('Banner', {
@@ -8,4 +8,15 @@ const Banner = sequelize.define('Banner', {
   timestamps: false,
 });
 
+export default Banner;*/
+
+import mongoose from 'mongoose';
+
+const bannerSchema = new mongoose.Schema({
+  imageUrl: { type: String, required: true }
+});
+
+const Banner = mongoose.model('Banner', bannerSchema);
+
 export default Banner;
+
