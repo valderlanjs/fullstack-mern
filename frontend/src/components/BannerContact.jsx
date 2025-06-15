@@ -25,8 +25,8 @@ const BannerContact = () => {
     fetchBannerImage();
   }, []);
   return (
-    <section className=" bg-white">
-      <div className="pt-24 pb-20 max-sm:pt-40 max-md:pb-2 lg:h-[100vh] md:h-[110vh]  max-h-[180vh] 3xl:h-[80vh] flex bg-fixed bg-top bg-no-repeat bg-cover"
+    <section className="max-padd-container mt-10">
+      <div className="max-padd-container pt-24 pb-20 max-sm:pt-40 max-md:pb-2 lg:h-[100vh] md:h-[110vh] rounded-tl-3xl rounded-tr-3xl  max-h-[180vh] 3xl:h-[80vh] flex bg-fixed bg-top bg-no-repeat bg-cover"
         style={{ backgroundImage: `url(${bannerImage})`}}
       >
         <div className="max-padd-container">

@@ -8,6 +8,7 @@ import { FaCircleExclamation } from "react-icons/fa6";
 const UpdateHero = ({ token }) => {
   const [image, setImage] = useState(false);
 
+  // Esta função serve para buscar a imagem inicial quando o componente carrega
   const fetchHeroImage = async () => {
     try {
       const response = await axios.get(`${backend_url}/api/hero/image`);
@@ -27,8 +28,8 @@ const UpdateHero = ({ token }) => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    if (!image) {
-      toast.error("Por favor, selecione uma imagem.");
+    if (!image || typeof image === 'string') {
+      toast.error("Por favor, selecione uma nova imagem para atualizar.");
       return;
     }
 
@@ -44,7 +45,12 @@ const UpdateHero = ({ token }) => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-        fetchHeroImage();
+        
+        // Resetar o estado da imagem para 'false'
+        setImage(false);
+        
+        // Limpar o input de arquivo
+        document.getElementById("image").value = "";
       } else {
         toast.error(response.data.message);
       }
@@ -69,7 +75,7 @@ const UpdateHero = ({ token }) => {
                   : upload_icon
               }
               alt=""
-              className="w-64 h-40 aspect-square object-cover ring-1  ring-slate-900/5 rounded-lg"
+              className="w-64 h-40 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
             />
             <input
               onChange={(e) => setImage(e.target.files[0])}
@@ -83,7 +89,7 @@ const UpdateHero = ({ token }) => {
             <FaCircleExclamation className="w-10 h-6 text-yellow-600" />
             <span className="tooltiptexth">
               Adicione fotos com tamanho máximo de 9MB, largura adequada entre
-              3150px e 3350px e altura entre 3000px e 3100px.
+              3150px e 3350px e altura entre 2000px e 2100px.
             </span>
           </div>
         </div>

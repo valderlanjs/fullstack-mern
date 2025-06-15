@@ -75,7 +75,7 @@ const List = ({ token }) => {
             </p>
             <div>
               <TbTrash
-                onClick={() => removeProduct(item.id)}
+                onClick={() => removeProduct(item._id)}
                 className="text-right md:text-center cursor-pointer text-lg"
               />
             </div>

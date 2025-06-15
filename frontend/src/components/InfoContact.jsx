@@ -6,8 +6,8 @@ import VendorList from "./vendorList";
 const InfoContact = () => {
 
   return (
-    <section>
-      <div className="max-padd-container ">
+    <section className="max-padd-container">
+      <div className="max-padd-container bg-white">
         <div className="max-padd-container flex justify-between items-start p-10 py-28 max-md:py-16 gap-5 max-md:px-5 max-md:flex-col max-md:items-center max-md:text-center">
           <div className="w-2/4 max-md:w-full ">
             <motion.div
@@ -45,7 +45,7 @@ const InfoContact = () => {
           whileInView="animate"
           variants={animationVariants.zoomOut}
           viewport={{ once: true, amount: 0.2 }}
-          className="max-padd-container mt-10 mb-10 flexCenter"
+          className="max-padd-container mt-10 mb-20 flexCenter"
           id="vendedores"
         >
           <h2 className="h1 absolute mt-5 mb-14 font-extralight text-center">

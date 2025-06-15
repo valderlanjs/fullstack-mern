@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import { FaWhatsapp } from "react-icons/fa";
 
 const Vendor = ({ vendor }) => {
@@ -25,6 +25,47 @@ const Vendor = ({ vendor }) => {
           WhatsApp <FaWhatsapp />
         </a>
       )}
+    </div>
+  );
+};
+
+export default Vendor;
+*/
+import React from "react";
+import { FaWhatsapp } from "react-icons/fa";
+
+const Vendor = ({ vendor }) => {
+  return (
+    // 1. ALTURA DO CARD: Adicionada a classe 'min-h-[380px]' para forçar uma altura maior.
+    <div className="relative flex flex-col justify-end bg-[#71BC45] text-white rounded-3xl w-full p-6 h-full min-h-[380px]">
+      
+      {/* 2. IMAGEM MAIOR: As dimensões foram aumentadas de 'w-24 h-36' para 'w-32 h-48'. */}
+      <img
+        src={vendor.image}
+        alt={`Foto de ${vendor.name}`}
+        className="absolute left-1/2 bottom-1/2 w-50 h-56 -translate-x-1/2 transform rounded-2xl object-cover border-4 border-[#70BC44] shadow-lg"
+      />
+
+      {/* --- Bloco de Conteúdo (sem alterações) --- */}
+      <div className="flex flex-col items-center text-center w-full">
+        <h2 className="text-2xl font-normal">{vendor.name}</h2>
+        
+        <h3 className="text-sm font-normal text-white/75 mt-1">{vendor.email}</h3>
+        
+        {vendor.whatsapp && (
+          <div className="mt-6">
+            <a
+              href={`https://wa.me/${vendor.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Contatar ${vendor.name} via WhatsApp`}
+              className="grid place-items-center w-12 h-12 rounded-full bg-[#3f3b39] hover:bg-opacity-85 transition-transform duration-300 hover:scale-105"
+            >
+              <FaWhatsapp className="text-2xl" />
+            </a>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

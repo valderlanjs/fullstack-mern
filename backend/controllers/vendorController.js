@@ -1,10 +1,15 @@
 import { v2 as cloudinary } from "cloudinary";
 import Vendor from "../models/vendorModel.js";
 
+// Função para adicionar um novo vendedor (já estava correta)
 const addVendor = async (req, res) => {
   try {
     const { name, email, whatsapp } = req.body;
     const image = req.files.image && req.files.image[0];
+
+    if (!image) {
+        return res.json({ success: false, message: "A imagem é obrigatória." });
+    }
 
     const imageUrl = await cloudinary.uploader.upload(image.path, {
       resource_type: "image",
@@ -19,34 +24,39 @@ const addVendor = async (req, res) => {
 
     const vendor = await Vendor.create(vendorData);
 
-    res.json({
+    res.status(201).json({
       success: true,
       message: "Vendedor adicionado com sucesso!",
       vendor,
     });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Erro ao adicionar vendedor." });
+    res.status(500).json({ success: false, message: "Erro ao adicionar vendedor." });
   }
 };
 
+// Função para listar todos os vendedores (corrigida)
 const listVendors = async (req, res) => {
   try {
-    const vendors = await Vendor.findAll();
+    // CORREÇÃO: Usado o método find() do Mongoose
+    const vendors = await Vendor.find();
     res.json({ success: true, vendors });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Erro ao listar vendedores." });
+    res.status(500).json({ success: false, message: "Erro ao listar vendedores." });
   }
 };
 
+// Função para atualizar um vendedor (corrigida)
 const updateVendor = async (req, res) => {
   try {
     const { id, name, email, whatsapp } = req.body;
-    const vendor = await Vendor.findByPk(id);
+
+    // CORREÇÃO: Usado o método findById() do Mongoose
+    const vendor = await Vendor.findById(id);
 
     if (!vendor) {
-      return res.json({ success: false, message: "Vendedor não encontrado." });
+      return res.status(404).json({ success: false, message: "Vendedor não encontrado." });
     }
 
     const updatedData = {
@@ -63,37 +73,42 @@ const updateVendor = async (req, res) => {
       updatedData.image = imageUrl.secure_url;
     }
 
-    await vendor.update(updatedData);
+    // CORREÇÃO: Usado findByIdAndUpdate() para uma atualização atômica
+    const updatedVendor = await Vendor.findByIdAndUpdate(id, updatedData, {
+      new: true, // Opção para retornar o documento já atualizado
+    });
 
     res.json({
       success: true,
       message: "Vendedor atualizado com sucesso!",
-      vendor,
+      vendor: updatedVendor,
     });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Erro ao atualizar vendedor." });
+    res.status(500).json({ success: false, message: "Erro ao atualizar vendedor." });
   }
 };
 
+// Função para remover um vendedor (corrigida)
 const removeVendor = async (req, res) => {
   try {
     const { id } = req.body;
 
     if (!id) {
-      return res.json({ success: false, message: "ID do vendedor não fornecido." });
+      return res.status(400).json({ success: false, message: "ID do vendedor não fornecido." });
     }
 
-    const result = await Vendor.destroy({ where: { id } });
+    // CORREÇÃO: Usado findByIdAndDelete() do Mongoose
+    const deletedVendor = await Vendor.findByIdAndDelete(id);
 
-    if (result === 0) {
-      return res.json({ success: false, message: "Vendedor não encontrado ou não foi possível removê-lo." });
+    if (!deletedVendor) {
+      return res.status(404).json({ success: false, message: "Vendedor não encontrado." });
     }
 
     res.json({ success: true, message: "Vendedor removido com sucesso!" });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Erro ao remover vendedor." });
+    res.status(500).json({ success: false, message: "Erro ao remover vendedor." });
   }
 };
 
