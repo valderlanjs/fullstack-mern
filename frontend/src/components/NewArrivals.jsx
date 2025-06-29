@@ -20,7 +20,7 @@ const NewArrivals = () => {
             {/*container*/}
             <div className="grid grid-cols-2 xs:grid-cold-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
                 {newArrivals.map((product)=> (
-                    <div key={product._id}>
+                    <div key={product.id}>
                         <Item product={product}/>
                     </div>
                 ))}

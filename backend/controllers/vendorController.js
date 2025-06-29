@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from "cloudinary";
+/*import { v2 as cloudinary } from "cloudinary";
 import Vendor from "../models/vendorModel.js";
 
 // Função para adicionar um novo vendedor (já estava correta)
@@ -110,6 +110,119 @@ const removeVendor = async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: "Erro ao remover vendedor." });
   }
+};
+
+export { addVendor, listVendors, updateVendor, removeVendor };*/
+
+
+import { v2 as cloudinary } from "cloudinary";
+import Vendor from "../models/vendorModel.js";
+
+
+const addVendor = async (req, res) => {
+    try {
+        const { name, email, whatsapp } = req.body;
+        const image = req.files.image && req.files.image[0];
+
+        if (!image) {
+            return res.status(400).json({ success: false, message: "A imagem é obrigatória." });
+        }
+
+        const imageUrl = await cloudinary.uploader.upload(image.path, {
+            resource_type: "image",
+        });
+
+        const vendor = await Vendor.create({
+            name,
+            email,
+            image: imageUrl.secure_url,
+            whatsapp,
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Vendedor adicionado com sucesso!",
+            vendor,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Erro ao adicionar vendedor." });
+    }
+};
+
+const listVendors = async (req, res) => {
+    try {
+      
+        const vendors = await Vendor.findAll();
+        res.json({ success: true, vendors });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Erro ao listar vendedores." });
+    }
+};
+
+const updateVendor = async (req, res) => {
+    try {
+        const { id, name, email, whatsapp } = req.body;
+
+        const updatedData = {};
+        if (name) updatedData.name = name;
+        if (email) updatedData.email = email;
+        if (whatsapp) updatedData.whatsapp = whatsapp;
+
+        if (req.files && req.files.image) {
+            const image = req.files.image[0];
+            const imageUrl = await cloudinary.uploader.upload(image.path, {
+                resource_type: "image",
+            });
+            updatedData.image = imageUrl.secure_url;
+        }
+
+        
+        const [affectedRows] = await Vendor.update(updatedData, {
+            where: { id: id },
+        });
+
+        if (affectedRows === 0) {
+            return res.status(404).json({ success: false, message: "Vendedor não encontrado." });
+        }
+        
+        
+        const updatedVendor = await Vendor.findByPk(id);
+
+        res.json({
+            success: true,
+            message: "Vendedor atualizado com sucesso!",
+            vendor: updatedVendor,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Erro ao atualizar vendedor." });
+    }
+};
+
+const removeVendor = async (req, res) => {
+    try {
+        const { id } = req.body;
+
+        if (!id) {
+            return res.status(400).json({ success: false, message: "ID do vendedor não fornecido." });
+        }
+
+      
+        const result = await Vendor.destroy({
+            where: { id: id },
+        });
+
+        if (result === 0) {
+            return res.status(404).json({ success: false, message: "Vendedor não encontrado." });
+        }
+
+        res.json({ success: true, message: "Vendedor removido com sucesso!" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Erro ao remover vendedor." });
+    }
 };
 
 export { addVendor, listVendors, updateVendor, removeVendor };

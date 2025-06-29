@@ -3,33 +3,36 @@ import User from "../models/userModel.js";
 
 const adminAuth = async (req, res, next) => {
     try {
-        const {token} = req.headers;
+        const { token } = req.headers;
 
         if (!token) {
-            return res.json({success: false, message: "Login não autorizado, Tente novamente"});
+            return res.status(401).json({success: false, message: "Não autorizado. Token não fornecido."});
         }
 
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Verifica se o token contém a informação do administrador
-        if (!decodedToken._id || !decodedToken.isAdmin) {
-            return res.json({success: false, message: "Login não autorizado, Tente novamente2"});
+        if (!decodedToken.id || !decodedToken.isAdmin) {
+            return res.status(401).json({success: false, message: "Não autorizado. Token inválido."});
         }
 
-        // Verifica se o usuário ainda é administrador no banco de dados
-        const adminUser = await User.findOne( {_id: decodedToken._id, isAdmin: true})
+        const adminUser = await User.findOne({ 
+            where: { 
+                id: decodedToken.id, 
+                isAdmin: true 
+            }
+        });
 
         if (!adminUser) {
-            return res.json({success: false, message: "Usuário não autorizado ou não encontrado!"});
+            return res.status(403).json({success: false, message: "Acesso negado. O usuário não é um administrador."});
         }
 
+        // Anexa o usuário à requisição para uso posterior nas rotas
         req.user = adminUser;
         next();
     } catch (error) {
-        console.log(error)
-         res.json({success: false, message: error.message})
+        console.log(error);
+        res.status(401).json({success: false, message: "Token inválido ou expirado."})
     }
 }
-
 
 export default adminAuth;

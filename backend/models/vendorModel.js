@@ -1,4 +1,4 @@
-/*import { DataTypes } from "sequelize";
+import { DataTypes } from "sequelize";
 import { sequelize } from "../config/mysql.js";
 
 const Vendor = sequelize.define('Vendor', {
@@ -10,8 +10,8 @@ const Vendor = sequelize.define('Vendor', {
   tableName: 'vendors',
 });
 
-export default Vendor;*/
-
+export default Vendor;
+/*
 import mongoose from 'mongoose';
 
 const vendorSchema = new mongoose.Schema({
@@ -22,4 +22,4 @@ const vendorSchema = new mongoose.Schema({
 });
 
 const Vendor = mongoose.model('Vendor', vendorSchema);
-export default Vendor;
+export default Vendor;*/

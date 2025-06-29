@@ -12,9 +12,13 @@ productRouter.post('/add', adminAuth, upload.fields([
     { name: 'image3', maxCount: 1 },
     { name: 'image4', maxCount: 1 }
 ]), addProduct);
+
+//Rota para remover um produto (protegida)
 productRouter.post('/remove', adminAuth, removeProduct);
+//Rota para listar os produtos
 productRouter.get('/list', listProduct);
-productRouter.post('/single', singleProduct);
+// 
+productRouter.get('/:productId', singleProduct);
 
 
 export default productRouter;

@@ -3,6 +3,7 @@ import Title from "../components/Title";
 import { ShopContext } from "../context/ShopContext";
 import Item from "../components/Item";
 import ShowSearch from "../components/ShowSearch";
+import Footer from "../components/Footer"; 
 
 const Collection = () => {
   const { products, search, showSearch } = useContext(ShopContext);
@@ -152,7 +153,7 @@ const Collection = () => {
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 gap-y-6 ">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
-                <Item product={product} key={product._id} />
+                <Item product={product} key={product.id} />
               ))
             ) : (
               <p className="capitalize ">
@@ -162,6 +163,7 @@ const Collection = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </section>
   );
 };

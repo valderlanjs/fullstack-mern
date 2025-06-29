@@ -63,7 +63,7 @@ const List = ({ token }) => {
         {/*Lista de Produtos*/}
         {list.map((item) => (
           <div
-            key={item._id}
+            key={item.id}
             className="grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center gap-2 p-1 bg-white rounded-xl hover:shadow-md"
           >
             <img src={item.image[0]} alt="" className="w-24 rounded-lg" />
@@ -75,7 +75,7 @@ const List = ({ token }) => {
             </p>
             <div>
               <TbTrash
-                onClick={() => removeProduct(item._id)}
+                onClick={() => removeProduct(item.id)}
                 className="text-right md:text-center cursor-pointer text-lg"
               />
             </div>
