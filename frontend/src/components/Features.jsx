@@ -1,4 +1,3 @@
-import React from "react";
 import Title from "./Title";
 import { MdForest } from "react-icons/md";
 

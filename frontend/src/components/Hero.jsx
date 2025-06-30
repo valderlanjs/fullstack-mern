@@ -1,9 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { backend_url } from "../../../admin/src/App";
 import { toast } from "react-toastify";
+
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 const Hero = () => {
 

@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import { FaCoins, FaMobileAlt } from "react-icons/fa";
 import { animationVariants } from "../constants/animationVariants";
 import axios from "axios";
-import { backend_url } from "../../../admin/src/App";
 import { toast } from "react-toastify";
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 const BannerContact = () => {
   const [bannerImage, setBannerImage] = useState('');

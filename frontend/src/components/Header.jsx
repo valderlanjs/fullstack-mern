@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
 import { FaBarsStaggered, FaRegCircleUser } from "react-icons/fa6";
-import { GiBeachBag } from "react-icons/gi";
 import { TbArrowNarrowRight } from "react-icons/tb";
 import { FaSearch } from "react-icons/fa";
 import { ShopContext } from "../context/ShopContext";
