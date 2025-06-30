@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import loginImg from "../assets/login.jpg"; 
+
 const Login = () => {
   const [currState, setCurrState] = useState("Sign Up");
   return (
