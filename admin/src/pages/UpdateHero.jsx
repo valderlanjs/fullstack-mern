@@ -17,7 +17,7 @@ const UpdateHero = ({ token }) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao obter a imagem do home.");
+      
     }
   };
 

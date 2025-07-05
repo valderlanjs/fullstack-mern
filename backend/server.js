@@ -58,7 +58,7 @@ startServer();
 import express from "express";
 import cors from "cors";
 import 'dotenv/config';
-import { connectAndSyncDB } from "./config/mysql.js"; 
+import { connectAndSyncDB } from "./config/postgres.js"; 
 import connectCloudinary from "./config/cloudinary.js";
 import userRoute from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";

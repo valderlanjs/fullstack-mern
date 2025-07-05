@@ -322,7 +322,48 @@ const changeAdminCredentials = async (req, res) => {
         console.log(error);
         res.status(500).json({ success: false, message: "Erro no servidor" });
     }
+
+    
+};
+
+const registerAdmin = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+
+        const exists = await User.findOne({ where: { email } });
+        if (exists) {
+            return res.status(400).json({
+                success: false,
+                message: "Já existe um usuário com esse email.",
+            });
+        }
+
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ success: false, message: "Insira um email válido." });
+        }
+
+        if (password.length < 8) {
+            return res.status(400).json({
+                success: false,
+                message: "A senha precisa ter pelo menos 8 caracteres.",
+            });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // A MUDANÇA PRINCIPAL ESTÁ AQUI: isAdmin: true
+        const userData = { name, email, password: hashedPassword, isAdmin: true };
+
+        const user = await User.create(userData);
+
+        res.status(201).json({ success: true, message: "Administrador cadastrado com sucesso!" });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Erro no servidor ao cadastrar administrador." });
+    }
 };
 
 
-export { loginUser, registerUser, adminLogin, changeAdminCredentials };
+export { loginUser, registerUser, adminLogin, changeAdminCredentials, registerAdmin };

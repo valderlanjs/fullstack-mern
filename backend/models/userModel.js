@@ -1,5 +1,5 @@
-import { DataTypes, Sequelize } from "sequelize";
-import { sequelize } from "../config/mysql.js";
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/postgres.js";
 
 const User = sequelize.define('User', {
     name: { type: DataTypes.STRING, allowNull: false },
