@@ -2,7 +2,7 @@
 
 import { sequelize } from './config/mysql.js'; // Ajuste o caminho se necessário
 import User from './models/userModel.js'; // Ajuste o caminho se necessário
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
