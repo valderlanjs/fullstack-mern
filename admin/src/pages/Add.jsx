@@ -34,19 +34,20 @@ const Add = ({ token }) => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    console.log("Botão clicado — tentativa de envio iniciada")
 
     if (!name || !image1) {
       toast.error("Por favor, preencha o nome e adicione a imagem principal.");
       return;
     }
-    
+
     try {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("category", category);
       formData.append("subCategory", subCategory);
       formData.append("popular", popular);
-      
+
       image1 && formData.append("image1", image1);
       image2 && formData.append("image2", image2);
       image3 && formData.append("image3", image3);
@@ -55,7 +56,7 @@ const Add = ({ token }) => {
       const response = await axios.post(
         `${backend_url}/api/product/add`,
         formData,
-        { headers: { token } }
+        { headers: { token } } // sem "Content-Type"
       );
 
       // A resposta do backend provavelmente tem a propriedade 'success'
@@ -76,42 +77,62 @@ const Add = ({ token }) => {
       <div className="flex flex-col gap-y-2 medium-15">
         <h3 className="h3">Upload da Imagem</h3>
         <div className="flex gap-2 pt-2">
-            {/* Input para Imagem 1 */}
-            <label htmlFor="image1" className="cursor-pointer">
-              <img
-                src={image1 ? URL.createObjectURL(image1) : upload_icon}
-                alt=""
-                className="w-16 h-16 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
-              />
-              <input onChange={(e) => setImage1(e.target.files[0])} type="file" id="image1" hidden />
-            </label>
-            {/* Input para Imagem 2 */}
-            <label htmlFor="image2" className="cursor-pointer">
-              <img
-                src={image2 ? URL.createObjectURL(image2) : upload_icon}
-                alt=""
-                className="w-16 h-16 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
-              />
-              <input onChange={(e) => setImage2(e.target.files[0])} type="file" id="image2" hidden />
-            </label>
-            {/* Input para Imagem 3 */}
-            <label htmlFor="image3" className="cursor-pointer">
-              <img
-                src={image3 ? URL.createObjectURL(image3) : upload_icon}
-                alt=""
-                className="w-16 h-16 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
-              />
-              <input onChange={(e) => setImage3(e.target.files[0])} type="file" id="image3" hidden />
-            </label>
-            {/* Input para Imagem 4 */}
-            <label htmlFor="image4" className="cursor-pointer">
-              <img
-                src={image4 ? URL.createObjectURL(image4) : upload_icon}
-                alt=""
-                className="w-16 h-16 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
-              />
-              <input onChange={(e) => setImage4(e.target.files[0])} type="file" id="image4" hidden />
-            </label>
+          {/* Input para Imagem 1 */}
+          <label htmlFor="image1" className="cursor-pointer">
+            <img
+              src={image1 ? URL.createObjectURL(image1) : upload_icon}
+              alt=""
+              className="w-16 h-16 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
+            />
+            <input
+              onChange={(e) => setImage1(e.target.files[0])}
+              type="file"
+              id="image1"
+              hidden
+            />
+          </label>
+          {/* Input para Imagem 2 */}
+          <label htmlFor="image2" className="cursor-pointer">
+            <img
+              src={image2 ? URL.createObjectURL(image2) : upload_icon}
+              alt=""
+              className="w-16 h-16 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
+            />
+            <input
+              onChange={(e) => setImage2(e.target.files[0])}
+              type="file"
+              id="image2"
+              hidden
+            />
+          </label>
+          {/* Input para Imagem 3 */}
+          <label htmlFor="image3" className="cursor-pointer">
+            <img
+              src={image3 ? URL.createObjectURL(image3) : upload_icon}
+              alt=""
+              className="w-16 h-16 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
+            />
+            <input
+              onChange={(e) => setImage3(e.target.files[0])}
+              type="file"
+              id="image3"
+              hidden
+            />
+          </label>
+          {/* Input para Imagem 4 */}
+          <label htmlFor="image4" className="cursor-pointer">
+            <img
+              src={image4 ? URL.createObjectURL(image4) : upload_icon}
+              alt=""
+              className="w-16 h-16 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
+            />
+            <input
+              onChange={(e) => setImage4(e.target.files[0])}
+              type="file"
+              id="image4"
+              hidden
+            />
+          </label>
         </div>
         <div>
           <h5 className="h4">Nome do Produto</h5>
@@ -124,45 +145,45 @@ const Add = ({ token }) => {
           />
         </div>
         <div className="flex felx-col sm:flex-row gap-4">
-            <div>
-              <h5 className="h5">Categoria</h5>
-              <select
-                value={category} // Adicione o 'value' para controlar o select
-                onChange={(e) => setCategory(e.target.value)}
-                className="max-w-30 px-3 py-2 text-gray-30ring-1 ring-slate-900/5 bg-white rounded"
-              >
-                <option value="Madeira Bruta">Madeira Bruta</option>
-                <option value="Pergolados">Pergolados</option>
-                <option value="Decks">Decks</option>
-                <option value="Cobertas">Cobertas</option>
-                <option value="Ripados">Ripados</option>
-                <option value="Esquadrias">Esquadrias</option>
-                <option value="Telhas">Telhas</option>
-                <option value="Outros">Outros</option>
-              </select>
-            </div>
-            <div>
-              <h5 className="h5">Tipos de Madeira</h5>
-              <select
-                value={subCategory} // Adicione o 'value' para controlar o select
-                onChange={(e) => setSubCategory(e.target.value)}
-                className="max-w-30 px-3 py-2 text-gray-30ring-1 ring-slate-900/5 bg-white rounded"
-              >
-                <option value="Jatobá">Jatobá</option>
-                <option value="Cumaru">Cumaru</option>
-                <option value="Ipê">Ipê</option>
-                <option value="Eucalípto">Eucalípto</option>
-                <option value="Eucalípto Tratado">Eucalípto Tratado</option>
-                <option value="Mista">Mista</option>
-                <option value="Pinus">Pinus</option>
-                <option value="Madeirite">Madeirite</option>
-                <option value="Maçaranduba">Maçaranduba</option>
-                <option value="Angelim Pedra">Angelim Pedra</option>
-                <option value="Brasilit">Brasilit</option>
-                <option value="PVC">PVC</option>
-                <option value="Pequí">Pequí</option>
-              </select>
-            </div>
+          <div>
+            <h5 className="h5">Categoria</h5>
+            <select
+              value={category} // Adicione o 'value' para controlar o select
+              onChange={(e) => setCategory(e.target.value)}
+              className="max-w-30 px-3 py-2 text-gray-30ring-1 ring-slate-900/5 bg-white rounded"
+            >
+              <option value="Madeira Bruta">Madeira Bruta</option>
+              <option value="Pergolados">Pergolados</option>
+              <option value="Decks">Decks</option>
+              <option value="Cobertas">Cobertas</option>
+              <option value="Ripados">Ripados</option>
+              <option value="Esquadrias">Esquadrias</option>
+              <option value="Telhas">Telhas</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+          <div>
+            <h5 className="h5">Tipos de Madeira</h5>
+            <select
+              value={subCategory} // Adicione o 'value' para controlar o select
+              onChange={(e) => setSubCategory(e.target.value)}
+              className="max-w-30 px-3 py-2 text-gray-30ring-1 ring-slate-900/5 bg-white rounded"
+            >
+              <option value="Jatobá">Jatobá</option>
+              <option value="Cumaru">Cumaru</option>
+              <option value="Ipê">Ipê</option>
+              <option value="Eucalípto">Eucalípto</option>
+              <option value="Eucalípto Tratado">Eucalípto Tratado</option>
+              <option value="Mista">Mista</option>
+              <option value="Pinus">Pinus</option>
+              <option value="Madeirite">Madeirite</option>
+              <option value="Maçaranduba">Maçaranduba</option>
+              <option value="Angelim Pedra">Angelim Pedra</option>
+              <option value="Brasilit">Brasilit</option>
+              <option value="PVC">PVC</option>
+              <option value="Pequí">Pequí</option>
+            </select>
+          </div>
         </div>
         <div className="flexStart gap-2 my-2">
           <input

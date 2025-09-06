@@ -1,4 +1,3 @@
-
 /*import express from "express";
 import cors from "cors";
 import 'dotenv/config';
@@ -54,62 +53,74 @@ const startServer = async () => {
 // Iniciando o servidor
 startServer();
 */
-
 import express from "express";
 import cors from "cors";
-import 'dotenv/config';
-import { connectAndSyncDB } from "./config/postgres.js"; 
+import "dotenv/config";
+import { connectAndSyncDB } from "./config/postgres.js";
 import connectCloudinary from "./config/cloudinary.js";
+
 import userRoute from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
-import vendorRoute from "./routes/vendorRoute.js"; 
+import vendorRoute from "./routes/vendorRoute.js";
 import bannerRoute from "./routes/bannerRoute.js";
 import heroRoute from "./routes/heroRoute.js";
 
+// Origens permitidas
+const allowedOrigins = [
+  "http://localhost:5173",       // frontend local (site)
+  "http://localhost:5174",       // frontend local (admin)
+  "https://dev-valderlan.com.br" // produção
+];
 
 // Função para conectar ao banco de dados e iniciar o servidor
 const startServer = async () => {
-    try {
-        // Chamando a nova função para conectar ao MySQL e sincronizar os models
-        await connectAndSyncDB();
+  try {
+    await connectAndSyncDB(); // conecta banco
+    connectCloudinary();      // conecta Cloudinary
 
-        // Conectando ao Cloudinary
-        connectCloudinary();
+    const app = express();
+    const port = process.env.PORT || 4000;
 
-        // Criando a aplicação
-        const app = express();
-        const port = process.env.PORT || 4000;
+    // ---------------------- MIDDLEWARES ---------------------- //
+    app.use(express.json()); // JSON
 
-        // Middlewares
-        app.use(express.json());
-        app.use(express.json());
-        app.use(cors({
-            origin: [
-                "https://dev-valderlan.com.br/"
-            ],
-            methods: ["GET","POST", "PUT", "DELETE"],
-            credentials: true
-        }));
+    // CORS
+    app.use(cors({
+      origin: function(origin, callback) {
+        if (!origin) return callback(null, true); // Postman, curl etc
+        if (allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization", "token"], // inclui token
+      credentials: true
+    }));
 
-        // Endpoints da API
-        app.use('/api/user', userRoute);
-        app.use('/api/product', productRouter);
-        app.use('/api/vendor', vendorRoute);
-        app.use('/api/banner', bannerRoute);
-        app.use('/api/hero', heroRoute);
-    
-        app.get("/", (req, res) => {
-            res.send("API funcionando com MySQL e Sequelize!");
-        });
+    // Garante resposta para preflight
+    app.options("*", cors());
 
-        // Iniciando o servidor
-        app.listen(port,"0.0.0.0", () => {
-            console.log(`🚀 Servidor rodando na porta ${port}`);
-        });
+    // ---------------------- ROTAS ---------------------- //
+    app.use("/api/user", userRoute);
+    app.use("/api/product", productRouter);
+    app.use("/api/vendor", vendorRoute);
+    app.use("/api/banner", bannerRoute);
+    app.use("/api/hero", heroRoute);
 
-    } catch (error) {
-        console.error("❌ Erro fatal ao iniciar o servidor:", error);
-    }
+    app.get("/", (req, res) => {
+      res.send("API funcionando com MySQL e Sequelize!");
+    });
+
+    // ---------------------- START SERVER ---------------------- //
+    app.listen(port, "0.0.0.0", () => {
+      console.log(`🚀 Servidor rodando na porta ${port}`);
+    });
+
+  } catch (error) {
+    console.error("❌ Erro fatal ao iniciar o servidor:", error);
+  }
 };
 
 // Iniciando o servidor

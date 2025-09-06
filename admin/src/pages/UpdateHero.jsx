@@ -6,18 +6,17 @@ import { toast } from "react-toastify";
 import { FaCircleExclamation } from "react-icons/fa6";
 
 const UpdateHero = ({ token }) => {
-  const [image, setImage] = useState(false);
+  const [image, setImage] = useState(null); // usar null em vez de false
+  const [currentImage, setCurrentImage] = useState(""); // para exibir imagem atual
 
-  // Esta função serve para buscar a imagem inicial quando o componente carrega
   const fetchHeroImage = async () => {
     try {
       const response = await axios.get(`${backend_url}/api/hero/image`);
       if (response.data.success && response.data.hero) {
-        setImage(response.data.hero.imageUrl);
+        setCurrentImage(response.data.hero.imageUrl);
       }
     } catch (error) {
       console.error(error);
-      
     }
   };
 
@@ -28,7 +27,7 @@ const UpdateHero = ({ token }) => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    if (!image || typeof image === 'string') {
+    if (!image) {
       toast.error("Por favor, selecione uma nova imagem para atualizar.");
       return;
     }
@@ -45,12 +44,9 @@ const UpdateHero = ({ token }) => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-        
-        // Resetar o estado da imagem para 'false'
-        setImage(false);
-        
-        // Limpar o input de arquivo
+        setImage(null);
         document.getElementById("image").value = "";
+        fetchHeroImage(); // atualizar a imagem exibida
       } else {
         toast.error(response.data.message);
       }
@@ -67,13 +63,7 @@ const UpdateHero = ({ token }) => {
         <div className="flex gap-2 pt-2">
           <label htmlFor="image" className="cursor-pointer">
             <img
-              src={
-                image
-                  ? typeof image === "string"
-                    ? image
-                    : URL.createObjectURL(image)
-                  : upload_icon
-              }
+              src={image ? URL.createObjectURL(image) : currentImage || upload_icon}
               alt=""
               className="w-64 h-40 aspect-square object-cover ring-1 ring-slate-900/5 rounded-lg"
             />

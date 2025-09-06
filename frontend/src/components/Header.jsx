@@ -31,7 +31,7 @@ const Header = () => {
   }
 
   return (
-    <header className="py-12 w-full bg-white">
+    <header className="w-full bg-white">
         <div className="max-padd-container flexBetween">
             {/* LOGO */}
             <Link to={"/"} className="flex-1 xl:hidden">
@@ -48,8 +48,8 @@ const Header = () => {
             </div>
 
             {/* LOGO */}
-            <Link to={"/"} className="flex-1 hidden xl:flex">
-              <img src="/logo.png" alt="" className="w-24 h-28 object-contain flexCenter px-1 absolute -top-2 rounded-full" />
+            <Link to={"/"} className="flex hidden xl:flex">
+              <img src="/logo.png" alt="" className="w-[130px] h-[130px] object-contain flexCenter px-1 -top-2" />
             </Link>
 
             {/* lado direito onde vai ficar o icone de pesquisa no qual posso retirar o de carrinho e user */}
@@ -62,15 +62,15 @@ const Header = () => {
                         className="xl:hidden cursor-pointer text-2xl" 
                     />
                 )}
-                
+                {/*}
                 <div>
-                    {/* Icone de busca* */}
+                    Icone de busca
                     <FaSearch onClick={() => setShowSearch((prev) => !prev)} className="text-xl cursor-pointer" />
-                </div>
+                </div> */}
                 
                 
                 
-                <div className="group relative">
+                {/*<div className="group relative">
                     <div onClick={() => !token && navigate('/login')}>
                         <FaRegCircleUser className="text-2xl cursor-pointer" />
                     </div>
@@ -96,7 +96,7 @@ const Header = () => {
                                 </ul>
                             </>
                     }
-                </div>
+                </div>*/}
             </div>
         </div>
     </header>
