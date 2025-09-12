@@ -10,10 +10,10 @@ const Home = () => {
   return (
     <>
       <Hero />
-      {/** NewArrivals 2:21*/}
       <HomeSection />
       <PopularProducts />
       <Features />
+      <NewArrivals />
       <Footer />
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+{/*import React, { useState, useEffect } from "react";
 import upload_icon from "../assets/upload_icon.png";
 import axios from "axios";
 import { backend_url } from "../App";
@@ -88,6 +88,143 @@ const UpdateHero = ({ token }) => {
         </button>
       </div>
     </form>
+  );
+};
+
+export default UpdateHero;
+*/}
+
+import React, { useEffect, useState } from "react";
+import upload_icon from "../assets/upload_icon.png";
+import axios from "axios";
+import { backend_url } from "../App";
+import { toast } from "react-toastify";
+import { FaCircleExclamation, FaTrash } from "react-icons/fa6";
+
+const UpdateHero = ({ token }) => {
+  const [banners, setBanners] = useState([]); // banners existentes
+  const [newImage, setNewImage] = useState(null); // imagem nova para upload
+
+  // buscar banners do backend
+  const fetchBanners = async () => {
+    try {
+      const response = await axios.get(`${backend_url}/api/hero/image`);
+      if (response.data.success && response.data.images) {
+        setBanners(response.data.images);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao obter banners.");
+    }
+  };
+
+  useEffect(() => {
+    fetchBanners();
+  }, []);
+
+  // adicionar novo banner
+  const handleAddBanner = async (e) => {
+    e.preventDefault();
+    if (!newImage) {
+      toast.error("Selecione uma imagem para adicionar.");
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("image", newImage);
+
+      const response = await axios.post(`${backend_url}/api/hero/add`, formData, {
+        headers: { token },
+      });
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setNewImage(null);
+        document.getElementById("image").value = "";
+        fetchBanners(); // atualizar lista
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao adicionar o banner.");
+    }
+  };
+
+  // excluir banner
+  const handleDeleteBanner = async (id) => {
+    try {
+      const response = await axios.delete(`${backend_url}/api/hero/${id}`, {
+        headers: { token },
+      });
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        fetchBanners();
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao remover banner.");
+    }
+  };
+
+  return (
+    <div className="pl-8">
+      <h3 className="h3 mb-4">Gerenciar Banners do Home</h3>
+
+      {/* Lista de banners */}
+      <div className="flex flex-wrap gap-4 mb-6">
+        {banners.map((banner) => (
+          <div key={banner.id} className="relative">
+            <img
+              src={banner.imageUrl}
+              alt=""
+              className="w-64 h-40 object-cover rounded-lg ring-1 ring-slate-900/5"
+            />
+            <button
+              onClick={() => handleDeleteBanner(banner.id)}
+              className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full hover:bg-red-700"
+            >
+              <FaTrash />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Adicionar novo banner */}
+      <form onSubmit={handleAddBanner} className="flex flex-col gap-y-2 medium-15">
+        <div className="flex gap-2 pt-2 items-center">
+          <label htmlFor="image" className="cursor-pointer">
+            <img
+              src={newImage ? URL.createObjectURL(newImage) : upload_icon}
+              alt=""
+              className="w-64 h-40 object-cover ring-1 ring-slate-900/5 rounded-lg"
+            />
+            <input
+              onChange={(e) => setNewImage(e.target.files[0])}
+              type="file"
+              name="image"
+              id="image"
+              hidden
+            />
+          </label>
+
+          <div className="tooltiph">
+            <FaCircleExclamation className="w-10 h-6 text-yellow-600" />
+            <span className="tooltiptexth">
+              Adicione fotos com tamanho máximo de 9MB, largura adequada entre 3150px e 3350px
+              e altura entre 2000px e 2100px.
+            </span>
+          </div>
+        </div>
+
+        <button type="submit" className="btn-secondary mt-3 w-40">
+          Adicionar Banner
+        </button>
+      </form>
+    </div>
   );
 };
 
