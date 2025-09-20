@@ -92,7 +92,7 @@ const Vendor = ({ vendor }) => {
         <h2 className="text-lg font-semibold text-gray-800">{vendor.name}</h2>
 
         {/* Email */}
-        <p className="text-sm text-gray-500 mt-1">{vendor.email}</p>
+        <p className="text-sm text-gray-500 mt-1 break-words text-center w-full truncatetext-sm text-gray-500 mt-1 whitespace-nowrap overflow-auto w-full text-centermt-1 text-center text-gray-500 text-[clamp(10px,2vw,14px)] max-w-full overflow-hidden whitespace-nowrap">{vendor.email}</p>
 
         {/* Botão WhatsApp */}
         {vendor.whatsapp && (
