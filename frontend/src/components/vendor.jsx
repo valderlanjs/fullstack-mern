@@ -30,7 +30,7 @@ const Vendor = ({ vendor }) => {
 };
 
 export default Vendor;
-*/
+
 import React from "react";
 import { FaWhatsapp } from "react-icons/fa";
 
@@ -39,14 +39,14 @@ const Vendor = ({ vendor }) => {
     // 1. ALTURA DO CARD: Adicionada a classe 'min-h-[380px]' para forçar uma altura maior.
     <div className="relative flex flex-col justify-end bg-[#71BC45] text-white rounded-3xl w-full p-6 h-full min-h-[380px]">
       
-      {/* 2. IMAGEM MAIOR: As dimensões foram aumentadas de 'w-24 h-36' para 'w-32 h-48'. */}
+       2. IMAGEM MAIOR: As dimensões foram aumentadas de 'w-24 h-36' para 'w-32 h-48'. 
       <img
         src={vendor.image}
         alt={`Foto de ${vendor.name}`}
         className="absolute left-1/2 bottom-1/2 w-50 h-56 -translate-x-1/2 transform rounded-2xl object-cover border-4 border-[#70BC44] shadow-lg"
       />
 
-      {/* --- Bloco de Conteúdo (sem alterações) --- */}
+      /* --- Bloco de Conteúdo (sem alterações) --- 
       <div className="flex flex-col items-center text-center w-full">
         <h2 className="text-2xl font-normal">{vendor.name}</h2>
         
@@ -64,6 +64,47 @@ const Vendor = ({ vendor }) => {
               <FaWhatsapp className="text-2xl" />
             </a>
           </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Vendor;*/
+
+
+import React from "react";
+import { FaWhatsapp } from "react-icons/fa";
+
+const Vendor = ({ vendor }) => {
+  return (
+    <div className="bg-[#299D45] rounded-xl p-4 w-full max-w-xs mx-auto shadow-md">
+      <div className="bg-white rounded-xl overflow-hidden flex flex-col items-center p-4 relative">
+        
+        {/* Imagem centralizada */}
+        <img
+          src={vendor.image}
+          alt={`Foto de ${vendor.name}`}
+          className="w-40 h-48 object-cover rounded-lg shadow-md mb-4"
+        />
+
+        {/* Nome do vendedor */}
+        <h2 className="text-lg font-semibold text-gray-800">{vendor.name}</h2>
+
+        {/* Email */}
+        <p className="text-sm text-gray-500 mt-1">{vendor.email}</p>
+
+        {/* Botão WhatsApp */}
+        {vendor.whatsapp && (
+          <a
+            href={`https://wa.me/${vendor.whatsapp}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 bg-[#71BC45] text-white px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium hover:bg-[#299D45] transition duration-300"
+          >
+            <FaWhatsapp className="text-lg" />
+            WhatsApp
+          </a>
         )}
       </div>
     </div>

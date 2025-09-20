@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 
-const TreeCard = ({ image, title, subtitle, link }) => {
+const TreeCard = ({ image, title, subtitle }) => {
   return (
     <Link
-      to={link || "#"}
+      to={'/collection'}
       className="relative flex items-end justify-center h-96 w-full rounded-xl overflow-hidden shadow-md group"
     >
       <img

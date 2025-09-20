@@ -33,10 +33,7 @@ const Header = () => {
   return (
     <header className="w-full bg-white">
         <div className="max-padd-container flexBetween">
-            {/* LOGO */}
-            <Link to={"/"} className="flex-1 xl:hidden">
-              <img src="/logo.png" alt="" className="w-24 h-28 object-contain flexCenter px-1 absolute -top-2 rounded-full" />
-            </Link>
+          
 
             {/* NAVIGATION */}
             <div className="flex-1">
@@ -48,13 +45,13 @@ const Header = () => {
             </div>
 
             {/* LOGO */}
-            <Link to={"/"} className="flex hidden xl:flex">
+            <Link to={"/"} className="hidden xl:flex">
               <img src="/logo.png" alt="" className="w-[130px] h-[130px] object-contain flexCenter px-1 -top-2" />
             </Link>
 
-            {/* lado direito onde vai ficar o icone de pesquisa no qual posso retirar o de carrinho e user */}
-            {/** ALTERAR ESSE LADO DIREITO PARA DEIXAR SÓ O DE PESQUISAR POREM COM UM INPUT  */}
-            <div className="flexBetween gap-x-2 xs:gap-x-8">
+           
+         
+            <div className="flexBetween gap-x-2 xs:gap-x-8 h-12">
                 {/* Icone de barra de menu* */}
                 {!menuOpened && (
                     <FaBarsStaggered 

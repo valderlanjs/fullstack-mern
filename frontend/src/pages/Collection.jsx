@@ -147,10 +147,10 @@ const Collection = () => {
         </div>
 
         {/* barra direita */}
-        <div className="bg-white p-4 rounded-2xl">
+        <div className="bg-white p-10 rounded-2xl">
           <Title title={"Nossos Produtos"} />
           {/* Product container */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 gap-y-6 ">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-6 ">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <Item product={product} key={product.id} />

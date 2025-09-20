@@ -172,7 +172,7 @@ const ManageCards = ({ token }) => {
       <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
         {newCards.map((card, index) => (
           <div key={index} className="border p-4 rounded-lg bg-white shadow-sm">
-            <h4 className="h4 mb-2">Novo Card {index + 1}</h4>
+            <h4 className="h4 mb-2">Imagem {index + 1}</h4>
             <div className="flex gap-4 items-center">
               <label htmlFor={`image${index}`} className="cursor-pointer">
                 <img
@@ -202,13 +202,7 @@ const ManageCards = ({ token }) => {
                   onChange={(e) => handleChange(index, "subtitle", e.target.value)}
                   className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white w-[300px]"
                 />
-                <input
-                  type="text"
-                  placeholder="Link"
-                  value={card.link}
-                  onChange={(e) => handleChange(index, "link", e.target.value)}
-                  className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white w-[300px]"
-                />
+            
               </div>
             </div>
           </div>
