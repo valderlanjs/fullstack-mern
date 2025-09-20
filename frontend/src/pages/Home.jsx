@@ -5,6 +5,7 @@ import NewArrivals from "../components/NewArrivals";
 import PopularProducts from "../components/PopularProducts";
 import Features from "../components/Features";
 import HomeSection from "../components/HomeSection";
+import CardsSection from "../components/CardsSection";
 
 const Home = () => {
   return (
@@ -13,7 +14,8 @@ const Home = () => {
       <HomeSection />
       <PopularProducts />
       <Features />
-      <NewArrivals />
+     {/**  <NewArrivals /> Card no final da pagina */}
+      <CardsSection />
       <Footer />
     </>
   );

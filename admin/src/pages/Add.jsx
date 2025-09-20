@@ -56,10 +56,10 @@ const Add = ({ token }) => {
       const response = await axios.post(
         `${backend_url}/api/product/add`,
         formData,
-        { headers: { token } } // sem "Content-Type"
+        { headers: { token } }
       );
 
-      // A resposta do backend provavelmente tem a propriedade 'success'
+     
       if (response.data.success) {
         toast.success(response.data.message);
         clearForm(); // Chama a função para limpar o formulário
@@ -148,7 +148,7 @@ const Add = ({ token }) => {
           <div>
             <h5 className="h5">Categoria</h5>
             <select
-              value={category} // Adicione o 'value' para controlar o select
+              value={category} 
               onChange={(e) => setCategory(e.target.value)}
               className="max-w-30 px-3 py-2 text-gray-30ring-1 ring-slate-900/5 bg-white rounded"
             >
@@ -165,7 +165,7 @@ const Add = ({ token }) => {
           <div>
             <h5 className="h5">Tipos de Madeira</h5>
             <select
-              value={subCategory} // Adicione o 'value' para controlar o select
+              value={subCategory} 
               onChange={(e) => setSubCategory(e.target.value)}
               className="max-w-30 px-3 py-2 text-gray-30ring-1 ring-slate-900/5 bg-white rounded"
             >

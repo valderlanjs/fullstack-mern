@@ -97,6 +97,8 @@ import AddVendor from "./pages/AddVendor";
 import ChangeCredentials from "./pages/ChangeCredentials";
 import UpdateBanner from "./pages/UpdateBanner";
 import UpdateHero from "./pages/UpdateHero";
+{/*import CreateCard from "./pages/createCard"*/}
+import ManageCards from "./pages/manageCards"
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -128,6 +130,8 @@ function App() {
               <Route path='/add-vendor' element={<AddVendor token={token} />} />
               <Route path='/update-banner' element={<UpdateBanner token={token} />} />
               <Route path='/update-hero' element={<UpdateHero token={token} />} />
+              {/*<Route path='/create-card' element={<CreateCard token={token} />} />*/}
+              <Route path='/manage-cards' element={<ManageCards token={token} />} />
               <Route path="/change-credentials" element={<ChangeCredentials token={token} setToken={setToken} />} />
               {/* Redireciona qualquer outra rota para a home se o usuário estiver logado */}
               <Route path='*' element={<Navigate to='/' />} />

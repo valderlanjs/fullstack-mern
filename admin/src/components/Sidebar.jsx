@@ -149,6 +149,7 @@ const Sidebar = ({ token, setToken }) => {
                 }`}
               />
             </button>
+            
             <div
               className={`overflow-hidden transition-all duration-300 ease-in-out ${
                 isHomeOpen ? "max-h-40" : "max-h-0"
@@ -164,11 +165,37 @@ const Sidebar = ({ token, setToken }) => {
                   }
                 >
                   <FaImage />
-                  <div className="hidden lg:flex">Atualizar Imagem</div>
+                  <div className="hidden lg:flex">Atualizar Banner Principal</div>
+                </NavLink>
+
+               {/* <NavLink
+                  to={"/create-card"}
+                  className={({ isActive }) =>
+                    `flexStart gap-x-2 bold-15 cursor-pointer ${
+                      isActive ? "active-link" : "text-wood"
+                    }`
+                  }
+                >
+                  <FaImage />
+                  <div className="hidden lg:flex">Atualizar Card</div>
+                </NavLink>*/}
+                <NavLink
+                  to={"/manage-cards"}
+                  className={({ isActive }) =>
+                    `flexStart gap-x-2 bold-15 cursor-pointer ${
+                      isActive ? "active-link" : "text-wood"
+                    }`
+                  }
+                >
+                  <FaImage />
+                  <div className="hidden lg:flex">Atualizar Card</div>
                 </NavLink>
               </div>
             </div>
           </div>
+
+
+          {/** Card Grande */}
           
           {/** Link solitário que restou */}
           <NavLink
