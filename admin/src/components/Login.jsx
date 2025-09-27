@@ -87,7 +87,7 @@ const Login = ({setToken}) => {
             >
               Login
             </button>
-             <p className="text-sm mt-2">Não tem uma conta? <Link to="/register" className="text-secondary underline font-semibold">Cadastre-se</Link></p>
+          
           </form>
         </div>
         {/** Lado da imagem */}
