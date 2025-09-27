@@ -100,6 +100,7 @@ import UpdateHero from "./pages/UpdateHero";
 {/*import CreateCard from "./pages/createCard"*/}
 import ManageCards from "./pages/manageCards"
 import LogoManager from "./pages/LogoManager";
+import UserManagement from "./pages/UserManagement"
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -134,7 +135,8 @@ function App() {
               {/*<Route path='/create-card' element={<CreateCard token={token} />} />*/}
               <Route path='/manage-cards' element={<ManageCards token={token} />} />
               <Route path='/manage-logo' element={<LogoManager token={token} />} />
-              <Route path="/change-credentials" element={<ChangeCredentials token={token} setToken={setToken} />} />
+              <Route path='/users' element={<UserManagement token={token} />} />
+            {/*  <Route path="/change-credentials" element={<ChangeCredentials token={token} setToken={setToken} />} />{*/}
               {/* Redireciona qualquer outra rota para a home se o usuário estiver logado */}
               <Route path='*' element={<Navigate to='/' />} />
             </Routes>

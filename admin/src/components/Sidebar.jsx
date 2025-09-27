@@ -210,7 +210,7 @@ const Sidebar = ({ token, setToken }) => {
           {/** Card Grande */}
           
           {/** Link solitário que restou */}
-          <NavLink
+         {/* <NavLink
             to={"/change-credentials"}
             className={({ isActive }) =>
               isActive
@@ -220,6 +220,19 @@ const Sidebar = ({ token, setToken }) => {
           >
             <FaUserCog />
             <div className="hidden lg:flex">Alterar Credenciais</div>
+          </NavLink>*/}
+
+
+          <NavLink
+            to={"/users"}
+            className={({ isActive }) =>
+              isActive
+                ? "active-link"
+                : "flexStart gap-x-2 p-5 bold-15 text-secondary cursor-pointer max-w-60 h-10 rounded-xl"
+            }
+          >
+            <FaUserCog />
+            <div className="hidden lg:flex">Usuários Cadastrados</div>
           </NavLink>
         </div>
 
