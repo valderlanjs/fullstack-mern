@@ -18,7 +18,7 @@ const PopularProducts = () => {
       <div className="max-padd-container bg-white">
         <Title title={"Produtos Populares"} titleStyles={"text-center "} />
         {/* container */}
-        <div className="grid grid-cols-2 xs:grid-cold-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 xs:grid-cold-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
           {popularProducts.map((product) => (
             <div key={product._id} className="">
               <Item product={product} className="" />

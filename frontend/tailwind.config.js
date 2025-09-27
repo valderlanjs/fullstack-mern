@@ -45,6 +45,18 @@ export default {
         loginImage: "url(/src/assets/marca.png)",
         ContactImage: "url(/src/assets/ImgContact/imgPrincipal.jpg)",
       },
+      transitionProperty: {
+        'transform': 'transform',
+        'opacity': 'opacity',
+        'all': 'all',
+      },
+      transitionDuration: {
+        '300': '300ms',
+        '500': '500ms',
+      },
+      transitionTimingFunction: {
+        'in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
+      }
     },
   },
   plugins: [

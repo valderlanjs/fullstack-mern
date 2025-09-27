@@ -190,6 +190,18 @@ const Sidebar = ({ token, setToken }) => {
                   <FaImage />
                   <div className="hidden lg:flex">Atualizar Card</div>
                 </NavLink>
+
+                <NavLink
+                  to={"/manage-logo"}
+                  className={({ isActive }) =>
+                    `flexStart gap-x-2 bold-15 cursor-pointer ${
+                      isActive ? "active-link" : "text-wood"
+                    }`
+                  }
+                >
+                  <FaImage />
+                  <div className="hidden lg:flex">Atualizar Logo</div>
+                </NavLink>
               </div>
             </div>
           </div>
