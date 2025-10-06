@@ -1,50 +1,78 @@
-// components/admin/UserManagement.jsx - Versão com edição de senha
+// components/admin/UserManagement.jsx - Versão com cadastro integrado
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
-import { FaEdit, FaTrash, FaSearch, FaUser, FaUserShield, FaExclamationTriangle, FaKey, FaEye, FaEyeSlash } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrash,
+  FaSearch,
+  FaUser,
+  FaUserShield,
+  FaExclamationTriangle,
+  FaKey,
+  FaEye,
+  FaEyeSlash,
+  FaPlus,
+  FaUserPlus,
+} from "react-icons/fa";
 
 const UserManagement = ({ token }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Estados para modais
   const [editingUser, setEditingUser] = useState(null);
   const [editingPassword, setEditingPassword] = useState(null);
+  const [showAddUser, setShowAddUser] = useState(false);
+
+  // Estados para formulários
   const [editForm, setEditForm] = useState({
     name: "",
     email: "",
-    isAdmin: false
+    isAdmin: false,
   });
+
   const [passwordForm, setPasswordForm] = useState({
     newPassword: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
+
+  const [addUserForm, setAddUserForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    isAdmin: false,
+  });
+
+  const [showPassword, setShowPassword] = useState({
+    add: false,
+    edit: false,
+  });
 
   // Fetch users
   const fetchUsers = async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await axios.get(`${backend_url}/api/user/admin/users`, {
-        headers: { token }
+        headers: { token },
       });
 
       if (response.data.success) {
         setUsers(response.data.users);
       } else {
         setError(response.data.message || "Erro ao carregar usuários");
-        toast.error(response.data.message || "Erro ao carregar usuários");
       }
     } catch (error) {
       console.error("Erro ao buscar usuários:", error);
-      const errorMessage = error.response?.data?.message || 
-                          "Erro de conexão com o servidor";
+      const errorMessage =
+        error.response?.data?.message || "Erro de conexão com o servidor";
       setError(errorMessage);
-      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -54,40 +82,58 @@ const UserManagement = ({ token }) => {
     fetchUsers();
   }, [token]);
 
-  // Delete user
-  const handleDeleteUser = async (userId, userName) => {
-    if (!window.confirm(`Tem certeza que deseja excluir o usuário "${userName}"?`)) {
+  // Add new user
+  // UserManagement.jsx - handleAddUser CORRIGIDO
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+
+    if (addUserForm.password !== addUserForm.confirmPassword) {
+      toast.error("As senhas não coincidem!");
       return;
     }
 
     try {
-      const response = await axios.delete(`${backend_url}/api/user/admin/users/${userId}`, {
-        headers: { token }
-      });
+      // USE ROTA PÚBLICA - SEM TOKEN
+      const response = await axios.post(
+        `${backend_url}/api/user/register`,
+        {
+          name: addUserForm.name,
+          email: addUserForm.email,
+          password: addUserForm.password,
+        }
+        // REMOVA: { headers: { token } }
+      );
 
       if (response.data.success) {
-        toast.success(response.data.message);
+        // Se for para criar admin, atualize via API administrativa
+        if (addUserForm.isAdmin) {
+          await axios.put(
+            `${backend_url}/api/user/admin/users/${response.data.user.id}`,
+            { isAdmin: true },
+            { headers: { token } } // ← SÓ AQUI PRECISA DE TOKEN
+          );
+        }
+
+        toast.success("Usuário cadastrado com sucesso!");
+        setShowAddUser(false);
+        setAddUserForm({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          isAdmin: false,
+        });
         fetchUsers();
       }
     } catch (error) {
-      console.error("Erro ao excluir usuário:", error);
-      toast.error(error.response?.data?.message || "Erro ao excluir usuário");
+      console.error("Erro ao cadastrar usuário:", error);
+      toast.error(error.response?.data?.message || "Erro ao cadastrar usuário");
     }
-  };
-
-  // Edit user info
-  const handleEditUser = (user) => {
-    setEditingUser(user);
-    setEditForm({
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin
-    });
   };
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
-    
+
     try {
       const response = await axios.put(
         `${backend_url}/api/user/admin/users/${editingUser.id}`,
@@ -111,14 +157,13 @@ const UserManagement = ({ token }) => {
     setEditingPassword(user);
     setPasswordForm({
       newPassword: "",
-      confirmPassword: ""
+      confirmPassword: "",
     });
-    setShowPassword(false);
   };
 
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
-    
+
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       toast.error("As senhas não coincidem!");
       return;
@@ -148,9 +193,10 @@ const UserManagement = ({ token }) => {
   };
 
   // Filter users based on search term
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -173,7 +219,9 @@ const UserManagement = ({ token }) => {
       <div className="p-6">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <FaExclamationTriangle className="text-red-500 text-4xl mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-red-800 mb-2">Erro ao carregar usuários</h3>
+          <h3 className="text-lg font-semibold text-red-800 mb-2">
+            Erro ao carregar usuários
+          </h3>
           <p className="text-red-600 mb-4">{error}</p>
           <button
             onClick={fetchUsers}
@@ -195,19 +243,160 @@ const UserManagement = ({ token }) => {
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="mb-6">
-        <div className="relative">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Buscar por nome ou email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
-          />
+      {/* Action Bar */}
+      <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
+        {/* Search Bar */}
+        <div className="flex-1">
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar por nome ou email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+            />
+          </div>
         </div>
+
+        {/* Add User Button */}
+        <button
+          onClick={() => setShowAddUser(true)}
+          className="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
+        >
+          <FaUserPlus />
+          Novo Usuário
+        </button>
       </div>
+
+      {/* Add User Modal */}
+      {showAddUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <FaUserPlus className="text-secondary" />
+              Cadastrar Novo Usuário
+            </h3>
+            <form onSubmit={handleAddUser}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Nome *
+                  </label>
+                  <input
+                    type="text"
+                    value={addUserForm.name}
+                    onChange={(e) =>
+                      setAddUserForm({ ...addUserForm, name: e.target.value })
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    value={addUserForm.email}
+                    onChange={(e) =>
+                      setAddUserForm({ ...addUserForm, email: e.target.value })
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Senha *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword.add ? "text" : "password"}
+                      value={addUserForm.password}
+                      onChange={(e) =>
+                        setAddUserForm({
+                          ...addUserForm,
+                          password: e.target.value,
+                        })
+                      }
+                      className="w-full p-2 border border-gray-300 rounded pr-10"
+                      placeholder="Mínimo 8 caracteres"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowPassword({
+                          ...showPassword,
+                          add: !showPassword.add,
+                        })
+                      }
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    >
+                      {showPassword.add ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Confirmar Senha *
+                  </label>
+                  <input
+                    type={showPassword.add ? "text" : "password"}
+                    value={addUserForm.confirmPassword}
+                    onChange={(e) =>
+                      setAddUserForm({
+                        ...addUserForm,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder="Digite a senha novamente"
+                    required
+                  />
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={addUserForm.isAdmin}
+                    onChange={(e) =>
+                      setAddUserForm({
+                        ...addUserForm,
+                        isAdmin: e.target.checked,
+                      })
+                    }
+                    className="mr-2"
+                    id="isAdminNew"
+                  />
+                  <label htmlFor="isAdminNew" className="text-sm font-medium">
+                    Usuário Administrador
+                  </label>
+                </div>
+                <div className="text-xs text-gray-600">
+                  * Campos obrigatórios
+                </div>
+              </div>
+              <div className="flex gap-2 mt-6">
+                <button
+                  type="submit"
+                  className="bg-secondary text-white px-4 py-2 rounded hover:bg-green-700 flex-1"
+                >
+                  Cadastrar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAddUser(false)}
+                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Edit User Modal */}
       {editingUser && (
@@ -221,17 +410,23 @@ const UserManagement = ({ token }) => {
                   <input
                     type="text"
                     value={editForm.name}
-                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, name: e.target.value })
+                    }
                     className="w-full p-2 border border-gray-300 rounded"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Email</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     value={editForm.email}
-                    onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, email: e.target.value })
+                    }
                     className="w-full p-2 border border-gray-300 rounded"
                     required
                   />
@@ -240,7 +435,9 @@ const UserManagement = ({ token }) => {
                   <input
                     type="checkbox"
                     checked={editForm.isAdmin}
-                    onChange={(e) => setEditForm({ ...editForm, isAdmin: e.target.checked })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, isAdmin: e.target.checked })
+                    }
                     className="mr-2"
                     id="isAdmin"
                   />
@@ -279,31 +476,50 @@ const UserManagement = ({ token }) => {
             <form onSubmit={handleUpdatePassword}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Nova Senha</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Nova Senha
+                  </label>
                   <div className="relative">
                     <input
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword.edit ? "text" : "password"}
                       value={passwordForm.newPassword}
-                      onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                      onChange={(e) =>
+                        setPasswordForm({
+                          ...passwordForm,
+                          newPassword: e.target.value,
+                        })
+                      }
                       className="w-full p-2 border border-gray-300 rounded pr-10"
                       placeholder="Digite a nova senha"
                       required
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() =>
+                        setShowPassword({
+                          ...showPassword,
+                          edit: !showPassword.edit,
+                        })
+                      }
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                     >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      {showPassword.edit ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Confirmar Senha</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Confirmar Senha
+                  </label>
                   <input
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword.edit ? "text" : "password"}
                     value={passwordForm.confirmPassword}
-                    onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                    onChange={(e) =>
+                      setPasswordForm({
+                        ...passwordForm,
+                        confirmPassword: e.target.value,
+                      })
+                    }
                     className="w-full p-2 border border-gray-300 rounded"
                     placeholder="Confirme a nova senha"
                     required
@@ -337,7 +553,17 @@ const UserManagement = ({ token }) => {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {filteredUsers.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            {searchTerm ? "Nenhum usuário encontrado." : "Nenhum usuário cadastrado."}
+            {searchTerm
+              ? "Nenhum usuário encontrado."
+              : "Nenhum usuário cadastrado."}
+            {!searchTerm && (
+              <button
+                onClick={() => setShowAddUser(true)}
+                className="mt-2 text-secondary hover:underline"
+              >
+                Clique aqui para cadastrar o primeiro usuário
+              </button>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -384,11 +610,13 @@ const UserManagement = ({ token }) => {
                       <div className="text-sm text-gray-900">{user.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        user.isAdmin 
-                          ? "bg-purple-100 text-purple-800" 
-                          : "bg-blue-100 text-blue-800"
-                      }`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          user.isAdmin
+                            ? "bg-purple-100 text-purple-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}
+                      >
                         {user.isAdmin ? "Administrador" : "Usuário"}
                       </span>
                     </td>
@@ -439,13 +667,13 @@ const UserManagement = ({ token }) => {
         </div>
         <div className="bg-purple-50 p-4 rounded-lg">
           <div className="text-2xl font-bold text-purple-600">
-            {users.filter(user => user.isAdmin).length}
+            {users.filter((user) => user.isAdmin).length}
           </div>
           <div className="text-sm text-purple-800">Administradores</div>
         </div>
         <div className="bg-green-50 p-4 rounded-lg">
           <div className="text-2xl font-bold text-green-600">
-            {users.filter(user => !user.isAdmin).length}
+            {users.filter((user) => !user.isAdmin).length}
           </div>
           <div className="text-sm text-green-800">Usuários Comuns</div>
         </div>

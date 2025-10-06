@@ -76,19 +76,16 @@ function App() {
 
 export default App;*/
 
-
 import React, { useEffect, useState } from "react";
-// Adicionado Navigate para redirecionamentos
-import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
-
+import axios from "axios";
+import { Route, Routes, Navigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Login from "./components/Login";
-// Adicionado o novo componente de Registro
-import Register from "./components/Register"; 
+import Register from "./components/Register";
 
 import Add from "./pages/Add";
 import List from "./pages/List";
@@ -97,22 +94,22 @@ import AddVendor from "./pages/AddVendor";
 import ChangeCredentials from "./pages/ChangeCredentials";
 import UpdateBanner from "./pages/UpdateBanner";
 import UpdateHero from "./pages/UpdateHero";
-{/*import CreateCard from "./pages/createCard"*/}
-import ManageCards from "./pages/manageCards"
+import ManageCards from "./pages/manageCards";
 import LogoManager from "./pages/LogoManager";
-import UserManagement from "./pages/UserManagement"
+import UserManagement from "./pages/UserManagement";
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 function App() {
-  const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : "");
-  const navigate = useNavigate();
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
 
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {
       localStorage.removeItem("token");
+      delete axios.defaults.headers.common["Authorization"];
     }
   }, [token]);
 
@@ -120,7 +117,6 @@ function App() {
     <main>
       <ToastContainer />
       {token ? (
-        // LÓGICA PARA USUÁRIO LOGADO (NÃO MUDA)
         <div className="bg-tertiary/15 text-[#404040]">
           <Header />
           <div className="max-auto max-w-[1440px] flex flex-col sm:flex-row mt-8 sm:mt-4">
@@ -128,27 +124,22 @@ function App() {
             <Routes>
               <Route path="/" element={<Add token={token} />} />
               <Route path="/list" element={<List token={token} />} />
-              <Route path='/list-vendor' element={<ListVendor token={token} />} />
-              <Route path='/add-vendor' element={<AddVendor token={token} />} />
-              <Route path='/update-banner' element={<UpdateBanner token={token} />} />
-              <Route path='/update-hero' element={<UpdateHero token={token} />} />
-              {/*<Route path='/create-card' element={<CreateCard token={token} />} />*/}
-              <Route path='/manage-cards' element={<ManageCards token={token} />} />
-              <Route path='/manage-logo' element={<LogoManager token={token} />} />
-              <Route path='/users' element={<UserManagement token={token} />} />
-            {/*  <Route path="/change-credentials" element={<ChangeCredentials token={token} setToken={setToken} />} />{*/}
-              {/* Redireciona qualquer outra rota para a home se o usuário estiver logado */}
-              <Route path='*' element={<Navigate to='/' />} />
+              <Route path="/list-vendor" element={<ListVendor token={token} />} />
+              <Route path="/add-vendor" element={<AddVendor token={token} />} />
+              <Route path="/update-banner" element={<UpdateBanner token={token} />} />
+              <Route path="/update-hero" element={<UpdateHero token={token} />} />
+              <Route path="/manage-cards" element={<ManageCards token={token} />} />
+              <Route path="/manage-logo" element={<LogoManager token={token} />} />
+              <Route path="/users" element={<UserManagement token={token} />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>
         </div>
       ) : (
-        // NOVA LÓGICA PARA USUÁRIO NÃO LOGADO
         <Routes>
-          <Route path='/login' element={<Login setToken={setToken} />} />
-          <Route path='/register' element={<Register />} />
-          {/* Redireciona qualquer outra rota para /login se não houver token */}
-          <Route path='*' element={<Navigate to='/login' />} />
+          <Route path="/login" element={<Login setToken={setToken} />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       )}
     </main>
