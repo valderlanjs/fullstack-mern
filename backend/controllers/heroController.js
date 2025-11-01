@@ -38,6 +38,11 @@ const updateHeroImage = async (req, res) => {
 
 export { getHeroImage, updateHeroImage };*/
 
+
+
+
+
+/*
 import { v2 as cloudinary } from "cloudinary";
 import Hero from "../models/heroModel.js";
 
@@ -92,3 +97,69 @@ const updateHeroImage = async (req, res) => {
 };
 
 export { getHeroImage, updateHeroImage };
+*/
+
+
+
+
+import HeroBanner from "../models/heroModel.js";
+import { v2 as cloudinary } from "cloudinary";
+
+const streamUpload = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { resource_type: "image", folder: "hero" },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result.secure_url);
+      }
+    );
+    stream.end(fileBuffer);
+  });
+};
+
+const getHeroImages = async (req, res) => {
+  try {
+    const banners = await HeroBanner.findAll({ order: [["id", "DESC"]] });
+    res.json({ success: true, images: banners });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Erro ao obter banners." });
+  }
+};
+
+const addHero = async (req, res) => {
+  try {
+    const image = req.files?.image && req.files.image[0];
+    if (!image) return res.status(400).json({ success: false, message: "Nenhuma imagem enviada." });
+
+    const imageUrl = await streamUpload(image.buffer);
+
+    const newHero = await HeroBanner.create({ imageUrl });
+
+    res.json({ success: true, message: "Banner adicionado com sucesso!", hero: newHero });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Erro ao adicionar o banner." });
+  }
+};
+
+const deleteHero = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const hero = await HeroBanner.findByPk(id);
+
+    if (!hero) {
+      return res.json({ success: false, message: "Banner não encontrado" });
+    }
+
+    await hero.destroy();
+    res.json({ success: true, message: "Banner removido com sucesso" });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: "Erro ao remover o banner" });
+  }
+};
+
+export { getHeroImages, addHero, deleteHero };
+

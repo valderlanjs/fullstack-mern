@@ -64,19 +64,23 @@ import productRouter from "./routes/productRoute.js";
 import vendorRoute from "./routes/vendorRoute.js";
 import bannerRoute from "./routes/bannerRoute.js";
 import heroRoute from "./routes/heroRoute.js";
+import cardRoute from "./routes/CardRoute.js";
+import logoRoute from "./routes/logoRoute.js";
 
 // Origens permitidas
 const allowedOrigins = [
-  "http://localhost:5173",       // frontend local (site)
-  "http://localhost:5174",       // frontend local (admin)
-  "https://dev-valderlan.com.br" // produção
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
+  "https://dev-valderlan.com.br",
 ];
 
 // Função para conectar ao banco de dados e iniciar o servidor
 const startServer = async () => {
   try {
     await connectAndSyncDB(); // conecta banco
-    connectCloudinary();      // conecta Cloudinary
+    connectCloudinary(); // conecta Cloudinary
 
     const app = express();
     const port = process.env.PORT || 4000;
@@ -85,19 +89,21 @@ const startServer = async () => {
     app.use(express.json()); // JSON
 
     // CORS
-    app.use(cors({
-      origin: function(origin, callback) {
-        if (!origin) return callback(null, true); // Postman, curl etc
-        if (allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
-        }
-      },
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization", "token"], // inclui token
-      credentials: true
-    }));
+    app.use(
+      cors({
+        origin: (origin, callback) => {
+          if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            console.warn("🚫 Origin bloqueada pelo CORS:", origin);
+            callback(new Error("Not allowed by CORS"));
+          }
+        },
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "token"],
+        credentials: true,
+      })
+    );
 
     // Garante resposta para preflight
     app.options("*", cors());
@@ -108,6 +114,8 @@ const startServer = async () => {
     app.use("/api/vendor", vendorRoute);
     app.use("/api/banner", bannerRoute);
     app.use("/api/hero", heroRoute);
+    app.use("/api/cards", cardRoute);
+    app.use("/api/logo", logoRoute);
 
     app.get("/", (req, res) => {
       res.send("API funcionando com MySQL e Sequelize!");
@@ -117,7 +125,6 @@ const startServer = async () => {
     app.listen(port, "0.0.0.0", () => {
       console.log(`🚀 Servidor rodando na porta ${port}`);
     });
-
   } catch (error) {
     console.error("❌ Erro fatal ao iniciar o servidor:", error);
   }
