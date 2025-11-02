@@ -17,7 +17,8 @@ import {
   FaExclamationTriangle,
   FaEdit,
   FaColumns,
-  FaInfoCircle
+  FaInfoCircle,
+  FaCertificate 
 } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
 
@@ -87,6 +88,11 @@ const Sidebar = ({ token, setToken }) => {
           to: "/edit-home-section",
           label: "Informações",
           icon: FaInfoCircle,
+        },
+        {
+          to: "/edit-features",
+          label: "Certificações",
+          icon: FaCertificate,
         },
       ],
     },

@@ -20,6 +20,7 @@ import LogoManager from "./pages/LogoManager";
 import UserManagement from "./pages/UserManagement";
 import AdminFooter from "./pages/adminFooter";
 import AdminHomeSection from "./pages/AdminHomeSection";
+import AdminFeatures from "./pages/AdminFeature"
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -100,6 +101,7 @@ function App() {
                   <Route path="/manage-cards" element={<ManageCards token={token} />} />
                   <Route path="/manage-logo" element={<LogoManager token={token} />} />
                   <Route path="/edit-home-section" element={<AdminHomeSection token={token} />} />
+                  <Route path="/edit-features" element={<AdminFeatures token={token} />} />
                   <Route path="/edit-footer" element={<AdminFooter token={token} />} />
                   <Route path="/users" element={<UserManagement token={token} />} />
                   <Route path="*" element={<Navigate to="/" />} />
