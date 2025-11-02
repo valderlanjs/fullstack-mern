@@ -66,7 +66,7 @@ import bannerRoute from "./routes/bannerRoute.js";
 import heroRoute from "./routes/heroRoute.js";
 import cardRoute from "./routes/CardRoute.js";
 import logoRoute from "./routes/logoRoute.js";
-
+import footerRoute from "./routes/footerRoute.js"
 // Origens permitidas
 const allowedOrigins = [
   "http://localhost:5173",
@@ -116,6 +116,7 @@ const startServer = async () => {
     app.use("/api/hero", heroRoute);
     app.use("/api/cards", cardRoute);
     app.use("/api/logo", logoRoute);
+    app.use('/api/footer', footerRoute);
 
     app.get("/", (req, res) => {
       res.send("API funcionando com MySQL e Sequelize!");

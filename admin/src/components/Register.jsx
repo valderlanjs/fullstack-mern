@@ -15,7 +15,7 @@ const Register = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      // ATENÇÃO: A rota será /api/user/register-admin, que criaremos no backend
+      
       const response = await axios.post(`${backend_url}/api/user/register-admin`, {
         name,
         email,

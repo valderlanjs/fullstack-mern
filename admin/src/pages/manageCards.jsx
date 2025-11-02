@@ -3,7 +3,17 @@ import upload_icon from "../assets/upload_icon.png";
 import axios from "axios";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
-import { FaTrash, FaCircleExclamation } from "react-icons/fa6";
+import { 
+  FaTrash, 
+  FaCircleExclamation, 
+  FaPlus,
+  FaIdCard,
+  FaUpload,
+  FaSpinner
+  
+} from "react-icons/fa6";
+import { FaExclamationTriangle, FaTimes, FaEdit } from "react-icons/fa";
+import "../index.css";
 
 const ManageCards = ({ token }) => {
   const [cards, setCards] = useState([]);
@@ -13,6 +23,12 @@ const ManageCards = ({ token }) => {
     { title: "", subtitle: "", link: "", image: null },
     { title: "", subtitle: "", link: "", image: null },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    card: null
+  });
 
   // Buscar cards e título da seção
   const fetchCards = async () => {
@@ -31,20 +47,41 @@ const ManageCards = ({ token }) => {
     fetchCards();
   }, []);
 
+  // Modal de exclusão
+  const openDeleteModal = (card) => {
+    setDeleteModal({
+      isOpen: true,
+      card: card
+    });
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({
+      isOpen: false,
+      card: null
+    });
+  };
+
   // Excluir card individual
-  const handleDeleteCard = async (id) => {
+  const handleDeleteCard = async () => {
+    if (!deleteModal.card) return;
+
+    setIsDeleting(deleteModal.card.id);
     try {
-      const response = await axios.delete(`${backend_url}/api/cards/${id}`, {
+      const response = await axios.delete(`${backend_url}/api/cards/${deleteModal.card.id}`, {
         headers: { token },
       });
       if (response.data.success) {
-        toast.success("Card excluído!");
+        toast.success("Card excluído com sucesso!");
         fetchCards();
+        closeDeleteModal();
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
       toast.error("Erro ao excluir card.");
+    } finally {
+      setIsDeleting(null);
     }
   };
 
@@ -63,10 +100,11 @@ const ManageCards = ({ token }) => {
       (card) => !card.title || !card.subtitle || !card.image
     );
     if (!sectionTitle || incomplete) {
-      toast.error("Preencha todos os campos.");
+      toast.error("Preencha todos os campos obrigatórios.");
       return;
     }
 
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("sectionTitle", sectionTitle);
     newCards.forEach((card, i) => {
@@ -81,7 +119,7 @@ const ManageCards = ({ token }) => {
         headers: { token },
       });
       if (response.data.success) {
-        toast.success("Cards adicionados!");
+        toast.success("Cards adicionados com sucesso! 🎉");
         setNewCards([
           { title: "", subtitle: "", link: "", image: null },
           { title: "", subtitle: "", link: "", image: null },
@@ -93,6 +131,8 @@ const ManageCards = ({ token }) => {
       }
     } catch (error) {
       toast.error("Erro ao adicionar cards.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -122,104 +162,338 @@ const ManageCards = ({ token }) => {
   };
 
   return (
-    <div className="pl-8">
-      <h3 className="h3 mb-4">Gerenciar Cards</h3>
-
-      {/* Título da seção com botão de atualização */}
-      <div className="flex items-end gap-4 mb-6">
-        <div>
-          <h4 className="h4 mb-2">Título da Seção</h4>
-          <input
-            type="text"
-            placeholder="Ex: Nossos Serviços"
-            value={sectionTitle}
-            onChange={(e) => setSectionTitle(e.target.value)}
-            className="px-3 py-2 ring-1 ring-slate-900/10 rounded bg-white w-[400px]"
-          />
+    <>
+      <div className="p-6 max-w-6xl mx-auto fade-in">
+        {/* Header */}
+        <div className="mb-8 slide-in-left">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+            <FaIdCard className="text-secondary" />
+            Gerenciar Cards da Seção
+          </h1>
+          <p className="text-gray-600">
+            Adicione e gerencie os cards exibidos na seção de serviços ou produtos
+          </p>
         </div>
-        <button
-          type="button"
-          onClick={handleUpdateTitle}
-          className="btn-secondary h-[42px]"
-        >
-          Atualizar Título
-        </button>
-      </div>
 
-      {/* Lista de cards existentes */}
-      <div className="flex flex-wrap gap-4 mb-6">
-        {cards.map((card) => (
-          <div key={card.id} className="relative">
-            <img
-              src={card.image}
-              alt={card.title}
-              className="w-64 h-40 object-cover rounded-lg ring-1 ring-slate-900/5"
-            />
-            <button
-              onClick={() => handleDeleteCard(card.id)}
-              className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full hover:bg-red-700"
-            >
-              <FaTrash />
-            </button>
-            <div className="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-2 py-1 rounded">
-              {card.title}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Formulário para adicionar 3 novos cards */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
-        {newCards.map((card, index) => (
-          <div key={index} className="border p-4 rounded-lg bg-white shadow-sm">
-            <h4 className="h4 mb-2">Imagem {index + 1}</h4>
-            <div className="flex gap-4 items-center">
-              <label htmlFor={`image${index}`} className="cursor-pointer">
-                <img
-                  src={card.image ? URL.createObjectURL(card.image) : upload_icon}
-                  alt=""
-                  className="w-32 h-32 object-cover ring-1 ring-slate-900/5 rounded-lg"
-                />
-                <input
-                  type="file"
-                  id={`image${index}`}
-                  hidden
-                  onChange={(e) => handleChange(index, "image", e.target.files[0])}
-                />
+        {/* Título da Seção */}
+        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-8 scale-in">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <FaEdit className="text-blue-600" />
+            Título da Seção
+          </h2>
+          <div className="flex flex-col lg:flex-row gap-4 items-end">
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Título Principal
               </label>
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  placeholder="Título"
-                  value={card.title}
-                  onChange={(e) => handleChange(index, "title", e.target.value)}
-                  className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white w-[300px]"
-                />
-                <input
-                  type="text"
-                  placeholder="Subtítulo"
-                  value={card.subtitle}
-                  onChange={(e) => handleChange(index, "subtitle", e.target.value)}
-                  className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white w-[300px]"
-                />
-            
+              <input
+                type="text"
+                placeholder="Ex: Nossos Serviços, Conheça Nossos Produtos..."
+                value={sectionTitle}
+                onChange={(e) => setSectionTitle(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleUpdateTitle}
+              className="btn-hover-lift bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 font-medium whitespace-nowrap"
+            >
+              <FaEdit className="inline mr-2" />
+              Atualizar Título
+            </button>
+          </div>
+        </div>
+
+        {/* Cards Existentes */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 slide-in-right">
+            Cards Existentes ({cards.length})
+          </h2>
+          
+          {cards.length === 0 ? (
+            <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 gentle-pulse">
+              <FaIdCard className="text-gray-400 text-4xl mx-auto mb-4" />
+              <p className="text-gray-500 text-lg">Nenhum card cadastrado</p>
+              <p className="text-gray-400 text-sm mt-1">
+                Adicione os primeiros cards usando o formulário abaixo
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {cards.map((card, index) => (
+                <div 
+                  key={card.id} 
+                  className="card-hover relative group bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
+                >
+                  {/* Imagem do Card */}
+                  <div className="aspect-video bg-gray-100">
+                    <img
+                      src={card.image}
+                      alt={card.title}
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                  
+                  {/* Overlay com ações */}
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <button
+                      onClick={() => openDeleteModal(card)}
+                      className="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition-colors transform scale-90 group-hover:scale-100 gentle-bounce"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+
+                  {/* Informações do Card */}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-gray-800 text-sm mb-1 truncate">
+                      {card.title}
+                    </h3>
+                    <p className="text-gray-600 text-xs line-clamp-2">
+                      {card.subtitle}
+                    </p>
+                  </div>
+
+                  {/* Badge de número */}
+                  <div className="absolute top-3 left-3 bg-secondary text-white text-xs font-bold px-2 py-1 rounded-full">
+                    #{index + 1}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Adicionar Novos Cards */}
+        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 scale-in">
+          <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+            <FaPlus className="text-green-600" />
+            Adicionar Novos Cards
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {newCards.map((card, index) => (
+              <div key={index} className="border border-gray-200 rounded-xl p-6 card-hover">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <FaIdCard className="text-purple-600" />
+                  Card {index + 1}
+                </h3>
+                
+                <div className="flex flex-col lg:flex-row gap-6 items-start">
+                  {/* Área de Upload da Imagem */}
+                  <div className="flex-shrink-0">
+                    <label htmlFor={`image${index}`} className="cursor-pointer block">
+                      <div className="w-64 h-48 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-secondary transition-colors duration-300 bg-gray-50 flex items-center justify-center card-hover">
+                        {card.image ? (
+                          <img
+                            src={URL.createObjectURL(card.image)}
+                            alt={`Preview Card ${index + 1}`}
+                            className="w-full h-full object-cover fade-in"
+                          />
+                        ) : (
+                          <div className="text-center p-6 gentle-pulse">
+                            <FaUpload className="text-gray-400 text-3xl mx-auto mb-3" />
+                            <p className="text-gray-600 font-medium">Imagem {index + 1}</p>
+                            <p className="text-gray-400 text-sm mt-1">Clique para selecionar</p>
+                          </div>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        id={`image${index}`}
+                        hidden
+                        onChange={(e) => handleChange(index, "image", e.target.files[0])}
+                        accept="image/*"
+                      />
+                    </label>
+                  </div>
+
+                  {/* Campos do Card */}
+                  <div className="flex-1 space-y-4 slide-in-right">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Título do Card *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ex: Design Moderno, Suporte 24h..."
+                        value={card.title}
+                        onChange={(e) => handleChange(index, "title", e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Subtítulo *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ex: Soluções criativas e inovadoras..."
+                        value={card.subtitle}
+                        onChange={(e) => handleChange(index, "subtitle", e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Link (Opcional)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="https://exemplo.com"
+                        value={card.link}
+                        onChange={(e) => handleChange(index, "link", e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Informações e Dicas */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 card-hover">
+              <div className="flex items-start gap-3">
+                <FaCircleExclamation className="text-blue-600 text-lg mt-0.5 flex-shrink-0 gentle-bounce" />
+                <div>
+                  <h4 className="font-semibold text-blue-800 mb-2">Recomendações Importantes</h4>
+                  <ul className="text-blue-700 text-sm space-y-1">
+                    <li>• É necessário adicionar exatamente 3 cards</li>
+                    <li>• Todos os campos com * são obrigatórios</li>
+                    <li>• Tamanho máximo por imagem: 9MB</li>
+                    <li>• Formatos suportados: JPG, PNG, WebP</li>
+                    <li>• Dimensões recomendadas: 400x300px</li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
 
-        <div className="flex items-center gap-2 mt-4">
-          <FaCircleExclamation className="w-6 h-6 text-yellow-600" />
-          <span className="text-sm text-gray-600">
-            Adicione exatamente 3 cards com imagens de até 9MB.
-          </span>
+            {/* Botão de Submit */}
+            <div className="flex gap-3 pt-4">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn-hover-lift bg-secondary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <FaSpinner className="animate-spin" />
+                    Processando...
+                  </>
+                ) : (
+                  <>
+                    <FaUpload />
+                    Adicionar Cards
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
 
-        <button type="submit" className="btn-secondary mt-4 w-40">
-          Adicionar Cards
-        </button>
-      </form>
-    </div>
+        {/* Estatísticas */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 fade-in">
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 card-hover">
+            <div className="text-2xl font-bold text-blue-600">{cards.length}</div>
+            <div className="text-sm text-blue-800">Total de Cards</div>
+          </div>
+          <div className="bg-green-50 p-4 rounded-lg border border-green-200 card-hover">
+            <div className="text-2xl font-bold text-green-600">
+              {cards.length >= 3 ? "Completo" : "Incompleto"}
+            </div>
+            <div className="text-sm text-green-800">Status</div>
+          </div>
+          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 card-hover">
+            <div className="text-2xl font-bold text-purple-600">3</div>
+            <div className="text-sm text-purple-800">Cards Necessários</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal de Confirmação de Exclusão */}
+      {deleteModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 modal-enter-active">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">
+            {/* Header do Modal */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <FaExclamationTriangle className="text-red-600 text-xl" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Excluir Card
+                </h3>
+              </div>
+              <button
+                onClick={closeDeleteModal}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={isDeleting}
+              >
+                <FaTimes className="text-gray-400 hover:text-gray-600" />
+              </button>
+            </div>
+
+            {/* Conteúdo do Modal */}
+            <div className="p-6">
+              <p className="text-gray-700 mb-4">
+                Tem certeza que deseja excluir este card?
+              </p>
+              <p className="text-sm text-gray-500">
+                Esta ação não pode ser desfeita. O card será removido permanentemente do sistema.
+              </p>
+              
+              {/* Preview do card que será excluído */}
+              {deleteModal.card && (
+                <div className="mt-4 p-3 bg-gray-200 rounded-lg border border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={deleteModal.card.image}
+                      alt="Card a ser excluído"
+                      className="w-16 h-12 object-cover rounded"
+                    />
+                    <div className="text-sm text-gray-600">
+                      <p className="font-medium">{deleteModal.card.title}</p>
+                      <p className="text-xs text-gray-500 truncate">{deleteModal.card.subtitle}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Ações do Modal */}
+            <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+              <button
+                onClick={closeDeleteModal}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-3 text-white bg-green-700 border border-green-700 rounded-lg hover:bg-green-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDeleteCard}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isDeleting ? (
+                  <>
+                    <FaSpinner className="animate-spin" />
+                    Excluindo...
+                  </>
+                ) : (
+                  <>
+                    <FaTrash />
+                    Excluir Card
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
