@@ -16,7 +16,8 @@ import {
   FaTimes,
   FaExclamationTriangle,
   FaEdit,
-  FaColumns
+  FaColumns,
+  FaInfoCircle
 } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
 
@@ -81,6 +82,11 @@ const Sidebar = ({ token, setToken }) => {
           to: "/manage-logo",
           label: "Gerenciar Logo",
           icon: FaStore,
+        },
+        {
+          to: "/edit-home-section",
+          label: "Informações",
+          icon: FaInfoCircle,
         },
       ],
     },
