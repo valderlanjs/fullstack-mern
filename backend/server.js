@@ -70,7 +70,7 @@ import footerRoute from "./routes/footerRoute.js"
 import homeSectionRoute from "./routes/homeSectionRoute.js"
 import featuresRoute from "./routes/featureRoute.js"
 import dashboardRoute from "./routes/dashboardRoute.js";
-
+import sectionRoute from "./routes/sectionRoute.js";
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -124,6 +124,7 @@ const startServer = async () => {
     app.use("/api/home-section", homeSectionRoute);
     app.use("/api/features", featuresRoute)
     app.use("/api/dashboard", dashboardRoute)
+    app.use("/api/sections", sectionRoute);
     
     app.get("/", (req, res) => {
       res.send("API funcionando com MySQL e Sequelize!");

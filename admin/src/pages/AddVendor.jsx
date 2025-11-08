@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-import upload_icon from "../assets/upload_icon.png";
 import axios from "axios";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";

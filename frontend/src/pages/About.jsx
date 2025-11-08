@@ -9,6 +9,7 @@ import aboutImg from "../assets/about.png";
 import dof from "../assets/imgAbout/dof.jpg";
 import FSC from "../assets/imgAbout/FSC.jpg";
 import Footer from "../components/Footer";
+import ImageTextSectionsPage from "../components/sectionAboutOnePage"
 const About = () => {
   {
     /*const statistics = [
@@ -74,7 +75,7 @@ const About = () => {
           </div>
         </div>
       </section>
-      {/* MISSÃO E VISÃO*/}
+      {/* MISSÃO E VISÃO
       <div className="max-padd-container mt-20">
         <div className="bg-white rounded-t-xl max-padd-container">
           <div className="flex flex-col xl:flex-row gap-10">
@@ -105,7 +106,8 @@ const About = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>*/}
+      <ImageTextSectionsPage />
 
       {/** Informações 1 */}
       <div className="max-padd-container ">

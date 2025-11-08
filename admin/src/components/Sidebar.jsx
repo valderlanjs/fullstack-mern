@@ -19,7 +19,7 @@ import {
   FaColumns,
   FaInfoCircle,
   FaCertificate,
-  FaChartBar
+  FaChartBar,
 } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
 
@@ -69,7 +69,7 @@ const Sidebar = ({ token, setToken }) => {
       label: "Dashboard",
       icon: FaChartBar,
       to: "/dashboard",
-      type: "direct"
+      type: "direct",
     },
     {
       id: "home",
@@ -119,6 +119,19 @@ const Sidebar = ({ token, setToken }) => {
           to: "/list",
           label: "Lista de Produtos",
           icon: FaListAlt,
+        },
+      ],
+    },
+    {
+      id: "secoes",
+      label: "Seções",
+      icon: FaColumns,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/manage-sections",
+          label: "Gerenciar Seções",
+          icon: FaEdit,
         },
       ],
     },
@@ -195,12 +208,15 @@ const Sidebar = ({ token, setToken }) => {
           {menuItems.map((menu) => {
             const Icon = menu.icon;
             const isDirectItem = menu.type === "direct";
-            const hasSubItems = menu.type === "submenu" && menu.subItems && menu.subItems.length > 0;
-            
-            const isActive = isDirectItem 
+            const hasSubItems =
+              menu.type === "submenu" &&
+              menu.subItems &&
+              menu.subItems.length > 0;
+
+            const isActive = isDirectItem
               ? location.pathname === menu.to
               : isSubItemActive(menu.subItems);
-            
+
             const isOpen = openMenus[menu.id] || isActive;
 
             return (
@@ -223,7 +239,9 @@ const Sidebar = ({ token, setToken }) => {
                     <div className="flex items-center gap-3">
                       <Icon
                         className={`text-lg group-hover:text-secondary ${
-                          location.pathname === menu.to ? "text-secondary" : "text-gray-500"
+                          location.pathname === menu.to
+                            ? "text-secondary"
+                            : "text-gray-500"
                         }`}
                       />
                       <span className="font-medium">{menu.label}</span>
@@ -271,7 +289,8 @@ const Sidebar = ({ token, setToken }) => {
                         <div className="py-2 pl-9 space-y-1">
                           {menu.subItems.map((subItem) => {
                             const SubIcon = subItem.icon;
-                            const isSubActive = location.pathname === subItem.to;
+                            const isSubActive =
+                              location.pathname === subItem.to;
 
                             return (
                               <NavLink
@@ -286,7 +305,9 @@ const Sidebar = ({ token, setToken }) => {
                                 }
                               >
                                 <SubIcon className="text-sm" />
-                                <span className="font-medium">{subItem.label}</span>
+                                <span className="font-medium">
+                                  {subItem.label}
+                                </span>
                               </NavLink>
                             );
                           })}
