@@ -18,7 +18,8 @@ import {
   FaEdit,
   FaColumns,
   FaInfoCircle,
-  FaCertificate 
+  FaCertificate,
+  FaChartBar
 } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
 
@@ -41,7 +42,6 @@ const Sidebar = ({ token, setToken }) => {
     }));
   };
 
-  // Nova função: fecha o menu mas mantém na página atual
   const closeMenu = (menu) => {
     setOpenMenus((prev) => ({
       ...prev,
@@ -65,9 +65,17 @@ const Sidebar = ({ token, setToken }) => {
 
   const menuItems = [
     {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: FaChartBar,
+      to: "/dashboard",
+      type: "direct"
+    },
+    {
       id: "home",
       label: "Home",
       icon: FaHome,
+      type: "submenu",
       subItems: [
         {
           to: "/update-hero",
@@ -100,9 +108,10 @@ const Sidebar = ({ token, setToken }) => {
       id: "produtos",
       label: "Produtos",
       icon: FaBoxOpen,
+      type: "submenu",
       subItems: [
         {
-          to: "/",
+          to: "/add-product",
           label: "Adicionar Produto",
           icon: FaPlusSquare,
         },
@@ -117,6 +126,7 @@ const Sidebar = ({ token, setToken }) => {
       id: "contato",
       label: "Contato",
       icon: FaUsers,
+      type: "submenu",
       subItems: [
         {
           to: "/add-vendor",
@@ -139,18 +149,20 @@ const Sidebar = ({ token, setToken }) => {
       id: "footer",
       label: "Rodapé",
       icon: FaEdit,
+      type: "submenu",
       subItems: [
         {
           to: "/edit-footer",
           label: "Editar Rodapé",
           icon: FaColumns,
-        }
+        },
       ],
     },
     {
       id: "usuarios",
       label: "Usuários",
       icon: FaShieldAlt,
+      type: "submenu",
       subItems: [
         {
           to: "/users",
@@ -163,6 +175,9 @@ const Sidebar = ({ token, setToken }) => {
 
   // Verifica se algum subitem está ativo para manter o menu aberto
   const isSubItemActive = (subItems) => {
+    if (!subItems || !Array.isArray(subItems)) {
+      return false;
+    }
     return subItems.some((item) => location.pathname === item.to);
   };
 
@@ -179,7 +194,13 @@ const Sidebar = ({ token, setToken }) => {
         <nav className="space-y-2">
           {menuItems.map((menu) => {
             const Icon = menu.icon;
-            const isActive = isSubItemActive(menu.subItems);
+            const isDirectItem = menu.type === "direct";
+            const hasSubItems = menu.type === "submenu" && menu.subItems && menu.subItems.length > 0;
+            
+            const isActive = isDirectItem 
+              ? location.pathname === menu.to
+              : isSubItemActive(menu.subItems);
+            
             const isOpen = openMenus[menu.id] || isActive;
 
             return (
@@ -187,68 +208,93 @@ const Sidebar = ({ token, setToken }) => {
                 key={menu.id}
                 className="bg-gray-100 border-b border-gray-300 last:border-b-0 rounded-xl"
               >
-                {/* Menu Principal */}
-                <button
-                  onClick={() => {
-                    if (isOpen) {
-                      // Se o menu já está aberto, apenas fecha sem redirecionar
-                      closeMenu(menu.id);
-                    } else {
-                      // Se o menu está fechado, abre normalmente
-                      toggleMenu(menu.id);
+                {/* Item Direto (Dashboard) */}
+                {isDirectItem ? (
+                  <NavLink
+                    to={menu.to}
+                    className={({ isActive: navIsActive }) =>
+                      `w-full flex items-center p-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-secondary group ${
+                        navIsActive
+                          ? "bg-blue-50 text-secondary font-semibold"
+                          : "text-gray-700"
+                      }`
                     }
-                  }}
-                  className={`w-full flex items-center justify-between p-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-secondary group ${
-                    isActive
-                      ? "bg-blue-50 text-secondary font-semibold"
-                      : "text-gray-700"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon
-                      className={`text-lg group-hover:text-secondary ${
-                        isActive ? "text-secondary" : "text-gray-500"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon
+                        className={`text-lg group-hover:text-secondary ${
+                          location.pathname === menu.to ? "text-secondary" : "text-gray-500"
+                        }`}
+                      />
+                      <span className="font-medium">{menu.label}</span>
+                    </div>
+                  </NavLink>
+                ) : (
+                  /* Menu com Subitens */
+                  <>
+                    <button
+                      onClick={() => {
+                        if (isOpen) {
+                          closeMenu(menu.id);
+                        } else {
+                          toggleMenu(menu.id);
+                        }
+                      }}
+                      className={`w-full flex items-center justify-between p-3 rounded-lg transition-all duration-200 hover:bg-blue-50 hover:text-secondary group ${
+                        isActive
+                          ? "bg-blue-50 text-secondary font-semibold"
+                          : "text-gray-700"
                       }`}
-                    />
-                    <span className="font-medium">{menu.label}</span>
-                  </div>
-                  <FaChevronDown
-                    className={`text-xs transition-transform duration-300 ${
-                      isOpen ? "rotate-180 text-secondary" : "text-gray-400"
-                    }`}
-                  />
-                </button>
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon
+                          className={`text-lg group-hover:text-secondary ${
+                            isActive ? "text-secondary" : "text-gray-500"
+                          }`}
+                        />
+                        <span className="font-medium">{menu.label}</span>
+                      </div>
+                      <FaChevronDown
+                        className={`text-xs transition-transform duration-300 ${
+                          isOpen ? "rotate-180 text-secondary" : "text-gray-400"
+                        }`}
+                      />
+                    </button>
 
-                {/* Submenu */}
-                <div
-                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    isOpen ? "max-h-96" : "max-h-0"
-                  }`}
-                >
-                  <div className="py-2 pl-9 space-y-1">
-                    {menu.subItems.map((subItem) => {
-                      const SubIcon = subItem.icon;
-                      const isSubActive = location.pathname === subItem.to;
+                    {/* Submenu */}
+                    {hasSubItems && (
+                      <div
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                          isOpen ? "max-h-96" : "max-h-0"
+                        }`}
+                      >
+                        <div className="py-2 pl-9 space-y-1">
+                          {menu.subItems.map((subItem) => {
+                            const SubIcon = subItem.icon;
+                            const isSubActive = location.pathname === subItem.to;
 
-                      return (
-                        <NavLink
-                          key={subItem.to}
-                          to={subItem.to}
-                          className={({ isActive }) =>
-                            `flex items-center gap-3 p-2 rounded-lg text-sm transition-all duration-200 group ${
-                              isActive || isSubActive
-                                ? "bg-secondary text-white shadow-md"
-                                : "text-gray-600 hover:bg-gray-200 hover:text-secondary"
-                            }`
-                          }
-                        >
-                          <SubIcon className="text-sm" />
-                          <span className="font-medium">{subItem.label}</span>
-                        </NavLink>
-                      );
-                    })}
-                  </div>
-                </div>
+                            return (
+                              <NavLink
+                                key={subItem.to}
+                                to={subItem.to}
+                                className={({ isActive: navIsActive }) =>
+                                  `flex items-center gap-3 p-2 rounded-lg text-sm transition-all duration-200 group ${
+                                    navIsActive || isSubActive
+                                      ? "bg-secondary text-white shadow-md"
+                                      : "text-gray-600 hover:bg-gray-200 hover:text-secondary"
+                                  }`
+                                }
+                              >
+                                <SubIcon className="text-sm" />
+                                <span className="font-medium">{subItem.label}</span>
+                              </NavLink>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             );
           })}
@@ -308,16 +354,16 @@ const Sidebar = ({ token, setToken }) => {
             </div>
 
             {/* Ações do Modal */}
-            <div className="flex gap-3 p-6 border-t border-red-200 bg-red-500 rounded-b-xl">
+            <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-200 rounded-b-xl">
               <button
                 onClick={handleCancelLogout}
-                className="flex-1 px-4 py-2 text-green-800 bg-white border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                className="flex-1 px-4 py-3 border border-green-600 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleConfirmLogout}
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center justify-center gap-2"
               >
                 <BiLogOutCircle />
                 Sair do Sistema

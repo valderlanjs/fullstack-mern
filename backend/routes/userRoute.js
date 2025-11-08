@@ -28,6 +28,7 @@ import {
   getAllUsers,
   updateUser,
   updateUserPassword,
+  getCurrentUser
 } from "../controllers/userController.js";
 import adminAuth from "../middleware/adminAuth.js";
 
@@ -35,6 +36,7 @@ const userRoute = express.Router();
 
 userRoute.post("/register", registerUser);
 userRoute.post("/login", loginUser);
+userRoute.get("/current", adminAuth, getCurrentUser);
 
 // Rotas de administrador
 userRoute.post("/admin", adminLogin);

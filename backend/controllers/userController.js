@@ -332,6 +332,30 @@ const updateUserPassword = async (req, res) => {
   }
 };
 
+// userController.js - adicione esta função
+const getCurrentUser = async (req, res) => {
+  try {
+    // O middleware adminAuth já coloca o usuário em req.user
+    const user = req.user;
+    
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin
+      }
+    });
+  } catch (error) {
+    console.error("Erro ao buscar usuário atual:", error);
+    res.status(500).json({
+      success: false,
+      message: "Erro ao buscar informações do usuário."
+    });
+  }
+};
+
 export {
   loginUser,
   registerUser,
@@ -341,4 +365,5 @@ export {
   getAllUsers,
   updateUser,
   updateUserPassword,
+  getCurrentUser
 };

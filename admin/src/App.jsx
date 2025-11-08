@@ -21,6 +21,7 @@ import UserManagement from "./pages/UserManagement";
 import AdminFooter from "./pages/adminFooter";
 import AdminHomeSection from "./pages/AdminHomeSection";
 import AdminFeatures from "./pages/AdminFeature"
+import Dashboard from "./components/Dashboard";
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -92,8 +93,10 @@ function App() {
             <div className="flex-1 sm:ml-64 lg:ml-72 transition-all duration-300">
               <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
                 <Routes>
-                  <Route path="/" element={<Add token={token} />} />
+                  <Route path="/" element={<Dashboard token={token} />} />
+                  <Route path="/dashboard" element={<Dashboard token={token} />} />
                   <Route path="/list" element={<List token={token} />} />
+                  <Route path="/add-product" element={<Add token={token} />} />
                   <Route path="/list-vendor" element={<ListVendor token={token} />} />
                   <Route path="/add-vendor" element={<AddVendor token={token} />} />
                   <Route path="/update-banner" element={<UpdateBanner token={token} />} />
