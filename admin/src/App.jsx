@@ -23,6 +23,9 @@ import AdminHomeSection from "./pages/AdminHomeSection";
 import AdminFeatures from "./pages/AdminFeature"
 import Dashboard from "./components/Dashboard";
 import ManageSections from "./pages/SectionAboutOne"
+import ManageAboutSection from "./pages/AboutAdmin"
+import ManageServicesSection from "./pages/ManageSectionService"
+
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -105,7 +108,9 @@ function App() {
                   <Route path="/manage-cards" element={<ManageCards token={token} />} />
                   <Route path="/manage-logo" element={<LogoManager token={token} />} />
                   <Route path="/edit-home-section" element={<AdminHomeSection token={token} />} />
+                  <Route path="/manage-about" element={<ManageAboutSection token={token} />} />
                   <Route path="/manage-sections" element={<ManageSections token={token} />} />
+                  <Route path="/manage-section-two" element={<ManageServicesSection token={token} />} />
                   <Route path="/edit-features" element={<AdminFeatures token={token} />} />
                   <Route path="/edit-footer" element={<AdminFooter token={token} />} />
                   <Route path="/users" element={<UserManagement token={token} />} />

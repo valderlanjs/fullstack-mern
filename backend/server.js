@@ -66,11 +66,13 @@ import bannerRoute from "./routes/bannerRoute.js";
 import heroRoute from "./routes/heroRoute.js";
 import cardRoute from "./routes/CardRoute.js";
 import logoRoute from "./routes/logoRoute.js";
-import footerRoute from "./routes/footerRoute.js"
-import homeSectionRoute from "./routes/homeSectionRoute.js"
-import featuresRoute from "./routes/featureRoute.js"
+import footerRoute from "./routes/footerRoute.js";
+import homeSectionRoute from "./routes/homeSectionRoute.js";
+import featuresRoute from "./routes/featureRoute.js";
 import dashboardRoute from "./routes/dashboardRoute.js";
 import sectionRoute from "./routes/sectionRoute.js";
+import aboutSectionRoute from "./routes/aboutRoute.js";
+import servicesSectionRoute from "./routes/serviceSectionRoute.js";
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -120,12 +122,14 @@ const startServer = async () => {
     app.use("/api/hero", heroRoute);
     app.use("/api/cards", cardRoute);
     app.use("/api/logo", logoRoute);
-    app.use('/api/footer', footerRoute);
+    app.use("/api/footer", footerRoute);
     app.use("/api/home-section", homeSectionRoute);
-    app.use("/api/features", featuresRoute)
-    app.use("/api/dashboard", dashboardRoute)
+    app.use("/api/features", featuresRoute);
+    app.use("/api/dashboard", dashboardRoute);
     app.use("/api/sections", sectionRoute);
-    
+    app.use("/api/about-section", aboutSectionRoute);
+    app.use("/api/services-section", servicesSectionRoute);
+
     app.get("/", (req, res) => {
       res.send("API funcionando com MySQL e Sequelize!");
     });

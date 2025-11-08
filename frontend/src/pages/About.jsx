@@ -10,6 +10,8 @@ import dof from "../assets/imgAbout/dof.jpg";
 import FSC from "../assets/imgAbout/FSC.jpg";
 import Footer from "../components/Footer";
 import ImageTextSectionsPage from "../components/sectionAboutOnePage"
+import AboutSection from "../components/aboutSection"
+import ServicesSection from "../components/serviceSection"
 const About = () => {
   {
     /*const statistics = [
@@ -31,12 +33,12 @@ const About = () => {
 
   return (
     <>
-      <section className="">
+      {/*<section className="">
         <div className="max-padd-container">
           <div className="max-padd-container py-10 bg-white rounded-2xl my-6">
-            {/* CONTAINER */}
+            {/* CONTAINER *
             <div className="flex flex-col xl:flex-row gap-10">
-              {/* lado esquerdo */}
+              {/* lado esquerdo *
               <div className="flex-1 relative">
                 <div className="rounded-3xl rounded-tr-[155px] w-[530px]">
                   <img
@@ -46,7 +48,7 @@ const About = () => {
                   />
                 </div>
               </div>
-              {/* lado direito */}
+              {/* lado direito *
               <div className="flex-1 flex justify-center flex-col ">
                 <h2 className="h1 max-w-[472px] max-sm600:text-center">
                   Grupo Madenobre
@@ -69,12 +71,13 @@ const About = () => {
                         <p>{statistics.label}</p>
                     </div>
                 ))}
-              </div>*/}
+              </div>*
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </section>*/}
+      <AboutSection/>
       {/* MISSÃO E VISÃO
       <div className="max-padd-container mt-20">
         <div className="bg-white rounded-t-xl max-padd-container">
@@ -107,107 +110,9 @@ const About = () => {
           </div>
         </div>
       </div>*/}
-      <ImageTextSectionsPage />
+      <ImageTextSectionsPage className="max-padd-container" />
 
-      {/** Informações 1 */}
-      <div className="max-padd-container ">
-        <div className="mx-auto bg-white p-10 py-28  max-sm:px-5 max-md:py-16 ">
-          <div className="flex w-full gap-10 max-md:flex-col max-md:justify-center max-md:items-center max-md:text-center">
-            <div className="flex flex-col items-start justify-between max-md:items-center">
-              <h1 className="text-5xl font-bold w-max max-sm500:text-3xl mb-5">
-                O que nós oferecemos
-              </h1>
-              <div className="flex gap-2 sm:gap-6 mt-14 max-[968px]:mt-2">
-                <Link
-                  className="flex items-center gap-2 btn-secondary max-sm:!p-3 hover:bg-wood"
-                  to="/contact"
-                >
-                  Faça um orçamento
-                </Link>
-              </div>
-            </div>
-            <div className="h-[230px] bg-aboutImage2 w-full bg-cover bg-center"></div>
-          </div>
-          <div className="mt-14 gap-8 max-md:grid-cols-1 max-md:grid-rows-2 grid grid-cols-2 grid-rows-1">
-            <div>
-              <h2
-                className="text-2xl font-semibold"
-                style={{ color: "#00801A" }}
-              >
-                Corte sob medida.
-              </h2>
-              <p className="text-xl mt-2">
-                Seja para construção ou reforma, nossa equipe especializada te
-                auxilia na escolha da madeira ideal para o seu projeto, com
-                corte sob medida.
-              </p>
-            </div>
-            <div>
-              <h2
-                className="text-2xl font-semibold"
-                style={{ color: "#00801A" }}
-              >
-                Madeira da melhor qualidade.{" "}
-              </h2>
-              <p className="text-xl mt-2">
-                Com a qualidade incontestável de nossos produtos. Tudo o que
-                você precisa para transformar sua ideia em realidade, reunidos
-                em um só lugar, com qualidade garantida e preços competitivos.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/**Informações 2 */}
-
-      <div className="max-padd-container  ">
-        <div className=" bg-white  mx-auto  p-10 py-28  max-sm:px-5 max-md:py-16  ">
-          <div className=" flex max-md:flex-wrap-reverse justify-center items-end max-md:text-center gap-10 max-md:gap-12  -mt-44 max-md:mt-0 ">
-            <div className=" w-1/2 max-md:w-full flex flex-col text-white items-start justify-between max-md:items-center">
-              <div className="h-[230px] bg-cover bg-center bg-aboutImage3 w-full"></div>
-            </div>
-
-            <div className=" w-1/2 text-5xl max-lg:text-4xl max-md:w-full ">
-              <h1 className="font-semibold ">Nós nos concentramos em todos</h1>
-              <h1 className="font-semibold" style={{ color: "#00801A" }}>
-                os detalhes.
-              </h1>
-            </div>
-          </div>
-          <div className="grid grid-cols-3 max-md:grid-cols-1 grid-rows-1 max-md:grid-rows-3 gap-6 mt-10">
-            <div className="border-t-2 text-xl border-black/20 pt-4">
-              <h2 className="font-semibold">-01</h2>
-              <h2 className="mt-7  font-medium" style={{ color: "#00801A" }}>
-                Atendimento
-              </h2>
-              <p className="mt-2">
-                Atendimento excepcional do início ao fim. Sua satisfação é nossa
-                prioridade.
-              </p>
-            </div>
-            <div className="border-t-2 text-xl border-black/20 pt-4">
-              <h2 className="font-semibold">-02</h2>
-              <h2 className="mt-7  font-medium" style={{ color: "#00801A" }}>
-                Qualidade
-              </h2>
-              <p className="mt-2">
-                Qualidade incomparável em cada pedaço de madeira que entregamos.
-              </p>
-            </div>
-            <div className="border-t-2 text-xl border-black/20 pt-4">
-              <h2 className="font-semibold">-03</h2>
-              <h2 className="mt-7  font-medium" style={{ color: "#00801A" }}>
-                Entrega
-              </h2>
-              <p className="mt-2">
-                Entrega rápida e segura em cada canto. Pontualidade e cuidado em
-                cada passo do trajeto.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ServicesSection />
 
       {/** Banner*/}
       <div className="max-padd-container">

@@ -124,13 +124,23 @@ const Sidebar = ({ token, setToken }) => {
     },
     {
       id: "secoes",
-      label: "Seções",
+      label: "Página Sobre",
       icon: FaColumns,
       type: "submenu",
       subItems: [
         {
+          to: "/manage-about",
+          label: "Primeira Seção",
+          icon: FaEdit,
+        },
+        {
           to: "/manage-sections",
-          label: "Gerenciar Seções",
+          label: "Segunda Seção",
+          icon: FaEdit,
+        },
+        {
+          to: "/manage-section-two",
+          label: "Terceira Seção",
           icon: FaEdit,
         },
       ],

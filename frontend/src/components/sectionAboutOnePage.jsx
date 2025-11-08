@@ -1,4 +1,3 @@
-// pages/ImageTextSectionsPage.jsx - VERSÃO COM MAIS ESTILO
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ImageTextSection from "../components/sectionAboutOne";
