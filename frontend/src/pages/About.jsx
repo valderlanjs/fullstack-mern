@@ -33,85 +33,9 @@ const About = () => {
 
   return (
     <>
-      {/*<section className="">
-        <div className="max-padd-container">
-          <div className="max-padd-container py-10 bg-white rounded-2xl my-6">
-            {/* CONTAINER *
-            <div className="flex flex-col xl:flex-row gap-10">
-              {/* lado esquerdo *
-              <div className="flex-1 relative">
-                <div className="rounded-3xl rounded-tr-[155px] w-[530px]">
-                  <img
-                    src={aboutImg}
-                    alt=""
-                    className="w-full rounded-3xl rounded-tr-[155px] bg-cover bg-center bg-no-repeat h-96 max-w-[540px] max-sm500:w-[300px] max-sm500:h-[300px]"
-                  />
-                </div>
-              </div>
-              {/* lado direito *
-              <div className="flex-1 flex justify-center flex-col ">
-                <h2 className="h1 max-w-[472px] max-sm600:text-center">
-                  Grupo Madenobre
-                </h2>
-                <p className="text-xl py-5 max-sm600:text-center">
-                  Há mais de 25 anos, o Grupo Madenobre se consolidou como
-                  referência no mercado de madeiras em Maceió. Somos mais do que
-                  uma empresa de materiais de construção, somos parceiros dos
-                  seus sonhos e projetos. Acreditamos que cada obra é única, por
-                  isso, oferecemos soluções personalizadas que transcendem o
-                  simples fornecimento de produtos.
-                </p>
-                {/* Staitic container 
-              <div className="flex flex-wrap gap-4">
-                {statistics.map((statistics, index)=> (
-                    <div key={index} className="bg-primary text-secondary p-4 rounded-lg">
-                        <div className="flex items-center gap-2">
-                            <h3 className="h3">{statistics.value}</h3>
-                        </div>
-                        <p>{statistics.label}</p>
-                    </div>
-                ))}
-              </div>*
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>*/}
+      
       <AboutSection/>
-      {/* MISSÃO E VISÃO
-      <div className="max-padd-container mt-20">
-        <div className="bg-white rounded-t-xl max-padd-container">
-          <div className="flex flex-col xl:flex-row gap-10">
-            <div className="flex-1 flex justify-center flex-col max-sm600:text-center">
-              <h4 className="text-xl py-5">
-                Aqui, sabemos muito bem o que fazemos e onde queremos chegar.
-                Colocamos sempre você em primeiro lugar, pois nossa missão e
-                visão como empresa são guiadas por esse compromisso.
-              </h4>
-            </div>
-            <div className="flex-1 flex justify-center flex-col ">
-              <h2 className="h2 text-secondary max-w-[472px] max-sm600:text-center">
-                Nossa Missão
-              </h2>
-              <p className="text-xl py-5 max-sm600:text-center">
-                Oferecer o melhor aos nossos clientes para que alcancem a casa
-                dos seus sonhos.
-              </p>
-            </div>
-            <div className="flex-1 flex justify-center flex-col ">
-              <h2 className="h2 text-secondary max-w-[472px] max-sm600:text-center">
-                Nossa Visão
-              </h2>
-              <p className="text-xl py-5 max-sm600:text-center">
-                Inovar em soluções, buscando a melhoria contínua e prezando pela
-                responsabilidade socioambiental.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>*/}
-      <ImageTextSectionsPage className="max-padd-container" />
-
+      <ImageTextSectionsPage />
       <ServicesSection />
 
       {/** Banner*/}

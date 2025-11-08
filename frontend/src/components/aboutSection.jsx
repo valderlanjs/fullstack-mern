@@ -1,5 +1,5 @@
 // components/AboutSection.jsx - COM BOTÕES EDITÁVEIS
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
@@ -104,7 +104,7 @@ const AboutSection = () => {
           <div className="lg:w-1/2 lg:pl-8 pt-16">
             <div className="max-w-lg">
               {/* Badge de categoria */}
-              <div className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full mb-8">
+              <div className="inline-flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full mb-8">
                 <div
                   className="w-1.5 h-1.5 rounded-full"
                   style={{ backgroundColor: "#206E34" }}

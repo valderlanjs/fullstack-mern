@@ -242,7 +242,7 @@ const ServicesSection = () => {
               <div className="flex flex-col items-start justify-between max-md:items-center max-md:text-center">
                 
                 {/* Badge de categoria */}
-                <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full mb-8 shadow-sm">
+                <div className="inline-flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full mb-8 shadow-sm">
                   <div 
                     className="w-1.5 h-1.5 rounded-full"
                     style={{ backgroundColor: '#206E34' }}
@@ -329,7 +329,7 @@ const ServicesSection = () => {
           </div>
         </div>
 
-        {/* Elementos decorativos de fundo */}
+        {/* Elementos decorativos de fundo - ADICIONE O SEGUNDO CÍRCULO AQUI */}
         <div 
           className="absolute top-1/4 right-10 w-72 h-72 rounded-full blur-3xl -z-10 opacity-20"
           style={{
@@ -342,6 +342,7 @@ const ServicesSection = () => {
             background: 'linear-gradient(135deg, #206E34, #70BD44)'
           }}
         ></div>
+        
       </div>
     </>
   );
