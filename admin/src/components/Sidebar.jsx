@@ -143,6 +143,16 @@ const Sidebar = ({ token, setToken }) => {
           label: "Terceira Seção",
           icon: FaEdit,
         },
+        {
+          to: "/manage-banner-section",
+          label: "Quarta Seção",
+          icon: FaEdit,
+        },
+        {
+          to: "/certification-section",
+          label: "Quinta Seção",
+          icon: FaEdit,
+        },
       ],
     },
     {

@@ -12,6 +12,7 @@ import {
   FaUser
 } from "react-icons/fa6";
 import "../index.css";
+import { useState } from "react";
 
 const AddVendor = ({ token }) => {
   const [name, setName] = useState("");
