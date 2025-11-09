@@ -1,135 +1,319 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios"; // 1. Importamos o axios para fazer a chamada à API
+import { motion } from "framer-motion";
+import { animationVariants } from "../constants/animationVariants";
+import axios from "axios";
 import { ShopContext } from "../context/ShopContext";
-import { FaStar, FaTruckFast, FaWhatsapp } from "react-icons/fa6";
+import {
+  FaStar,
+  
+  FaWhatsapp,
+  FaArrowLeft,
+  FaShieldAlt,
+  FaCreditCard,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
+
+import { FaTruckFast } from "react-icons/fa6";
 import Footer from "../components/Footer";
 import RelatedProducts from "../components/RelatedProducts";
+import { Link } from "react-router-dom";
 
 const Product = () => {
   const { productId } = useParams();
-  // Continuamos a usar o context para dados globais como a URL do backend
   const { backendUrl } = useContext(ShopContext);
 
-  const [product, setProduct] = useState(null); // O estado inicial é nulo
+  const [product, setProduct] = useState(null);
   const [image, setImage] = useState("");
-  const [loading, setLoading] = useState(true); // Estado de carregamento explícito
-  const [error, setError] = useState(null); // Estado para capturar erros
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 2. O coração da melhoria: um useEffect que busca os dados deste produto específico
   useEffect(() => {
     const fetchSingleProduct = async () => {
-      setLoading(true); // Inicia o carregamento
+      setLoading(true);
       setError(null);
       try {
-        // Usamos o endpoint que busca um único produto pelo seu ID na URL
-        const response = await axios.get(`${backendUrl}/api/product/${productId}`);
+        const response = await axios.get(
+          `${backendUrl}/api/product/${productId}`
+        );
 
         if (response.data.success) {
           setProduct(response.data.product);
-          // Define a imagem inicial de forma segura, verificando se o array de imagens existe
-          if (response.data.product.image && response.data.product.image.length > 0) {
+          if (
+            response.data.product.image &&
+            response.data.product.image.length > 0
+          ) {
             setImage(response.data.product.image[0]);
           }
         } else {
           setError(response.data.message);
         }
       } catch (err) {
-        setError("Não foi possível carregar os dados do produto. Tente novamente mais tarde.");
+        setError(
+          "Não foi possível carregar os dados do produto. Tente novamente mais tarde."
+        );
         console.error("Erro ao buscar produto específico:", err);
       } finally {
-        setLoading(false); // Finaliza o carregamento, com sucesso ou erro
+        setLoading(false);
       }
     };
 
-    // Só executa a busca se tivermos o productId e a url do backend
     if (productId && backendUrl) {
       fetchSingleProduct();
     }
-  }, [productId, backendUrl]); // A busca é refeita se o ID do produto na URL mudar
+  }, [productId, backendUrl]);
 
-  // 3. Renderização condicional com base nos estados de carregamento e erro
   if (loading) {
-    return <div className="text-center p-10">...Carregando</div>;
-  }
-
-  if (error) {
-    return <div className="text-center p-10 text-red-600">{error}</div>;
-  }
-
-  // Se o produto não for encontrado, mas não houve erro, exibe uma mensagem amigável
-  if (!product) {
-    return <div className="text-center p-10">Produto não encontrado.</div>;
-  }
-
-  // 4. Se tudo correu bem, o restante do seu código de renderização é executado normalmente
-  return (
-    <section>
-      <div className="max-padd-container mt-8 xl:mt-6">
-        <div className="max-padd-container flex gap-12 flex-col xl:flex-row bg-white py-16 rounded-2xl">
-          <div className="flex flex-1 gap-x-2 xl:flex-1">
-            <div className="flexCenter flex-col gap-[7px] flex-wrap">
-              {product.image.map((item, i) => (
-                <img
-                  src={item}
-                  onClick={() => setImage(item)}
-                  key={i}
-                  alt="productImg"
-                  className="max-h-[89px] w-full rounded-lg cursor-pointer"
-                />
-              ))}
+    return (
+      <section className="min-h-screen flex items-center justify-center bg-white py-20 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6 lg:px-12 w-full relative z-10">
+          <div className="flex flex-col lg:flex-row gap-12">
+            <div className="lg:w-1/2">
+              <div className="h-96 bg-gray-200 rounded-2xl animate-pulse"></div>
             </div>
-            <div className="max-h-[377px] w-[350px] flex">
-              <img
-                src={image}
-                alt="productImg"
-                className="rounded-xl bg-gray-10 object-contain"
-              />
-            </div>
-          </div>
-          {/* Informações do produto */}
-          <div className="flex-[1.5] rounded-2xl px-7 ">
-            <h3 className="h3 !my-2.5">{product.name}</h3>
-            {/* Avaliação e Preço */}
-            <div className="flex items-baseline gap-x-5">
-              <div className="flex items-center gap-x-2 text-secondary mb-2">
-                <div className="flex gap-x-2 text-secondary text-xl">
-                  <FaStar />
-                  <FaStar />
-                  <FaStar />
-                  <FaStar />
-                  <FaStar />
-                </div>
-              </div>
-            </div>
-            <p>{product.description || "Descrição do produto não disponível."}</p>
-            <div className="flex flex-col gap-4 my-4 mb-5">
-              <div className="flex gap-2">
-                {/* Lógica de tamanhos/variações, se aplicável */}
-              </div>
-            </div>
-            <div className="flex items-center gap-x-4">
-              <a href="/contact" className="btn-secondary w-1/2 flexCenter gap-x-2 capitalize">Faça um Orçamento</a>
-              <a href='/contact' className="btn-light"><FaWhatsapp className="text-secondary" size={24}/></a>
-            </div>
-            <div className="flex items-center gap-x-2 mt-2">
-              <FaTruckFast className="text-lg" />
-              <span className="medium-14">Frete grátis!!</span>
-            </div>
-            <hr className="my-4 w-2/3" />
-            <div className="mt-2 flex-col gap-1">
-              <p>Garantia para que você possa confiar.</p>
-              <p>
-                Aproveite as diferentes formas de pagamento para sua
-                conveniência.
-              </p>
-              <p>Entrega em qualquer lugar de Alagoas.</p>
+            <div className="lg:w-1/2 space-y-4">
+              <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
+              <div className="h-24 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-12 bg-gray-200 rounded animate-pulse w-48"></div>
             </div>
           </div>
         </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="min-h-screen flex items-center justify-center bg-gray py-20">
+        <div className="max-w-2xl mx-auto px-6 text-center">
+          <div className="text-6xl mb-4 text-red-500">❌</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Erro ao carregar produto
+          </h2>
+          <p className="text-gray-600 mb-8">{error}</p>
+          <Link to="/collection" className="btn-secondary">
+            Voltar aos Produtos
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  if (!product) {
+    return (
+      <section className="min-h-screen flex items-center justify-center bg-gray py-20">
+        <div className="max-w-2xl mx-auto px-6 text-center">
+          <div className="text-6xl mb-4 text-gray-400">🔍</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Produto não encontrado
+          </h2>
+          <p className="text-gray-600 mb-8">
+            O produto que você está procurando não existe ou foi removido.
+          </p>
+          <Link to="/collection" className="btn-secondary">
+            Ver Todos os Produtos
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="min-h-screen bg-gray relative overflow-hidden">
+      {/* Botão Voltar */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 pt-8">
+        <motion.div
+          initial="initial"
+          animate="animate"
+          variants={animationVariants.fadeLeft}
+        >
+          <Link
+            to="/collection"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-green-700 transition-colors duration-300 mb-8 group"
+          >
+            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
+            <span>Voltar para Produtos</span>
+          </Link>
+        </motion.div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 py-8">
+        <motion.div
+          initial="initial"
+          animate="animate"
+          variants={animationVariants.stagger}
+          className="flex flex-col lg:flex-row gap-12 lg:gap-16"
+        >
+          {/* Galeria de Imagens */}
+          <motion.div variants={animationVariants.fadeUp} className="lg:w-1/2">
+            <div className="flex flex-col-reverse lg:flex-row gap-4">
+              {/* Miniaturas */}
+              <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible">
+                {product.image.map((item, i) => (
+                  <motion.img
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    src={item}
+                    onClick={() => setImage(item)}
+                    key={i}
+                    alt={`${product.name} - vista ${i + 1}`}
+                    className={`h-20 w-20 lg:h-24 lg:w-24 object-cover rounded-xl cursor-pointer border-2 transition-all duration-300 ${
+                      image === item
+                        ? "border-green-500 shadow-md"
+                        : "border-gray-200 hover:border-green-300"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Imagem Principal - CORRIGIDA */}
+              <div className="flex-1">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="relative bg-gradient-to-br from-gray-100 to-gray-100 rounded-2xl p-4 shadow-lg border border-gray-200 overflow-hidden h-96"
+                >
+                  <img
+                    src={image}
+                    alt={product.name}
+                    className="w-full h-full object-cover rounded-xl" // Alterado para object-cover
+                  />
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Informações do Produto */}
+          <motion.div
+            variants={animationVariants.fadeUp}
+            className="lg:w-1/2 lg:pl-8"
+          >
+            {/* Categoria */}
+            <div className="mb-6">
+              <span
+                className="inline-block px-4 py-2 text-sm font-medium rounded-full uppercase tracking-wide"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(32, 110, 52, 0.1), rgba(112, 189, 68, 0.1))",
+                  color: "#206E34",
+                  border: "1px solid rgba(32, 110, 52, 0.2)",
+                }}
+              >
+                {product.category}
+              </span>
+            </div>
+
+            {/* Nome do Produto */}
+            <h1 className="text-4xl lg:text-5xl font-light text-gray-900 mb-4 leading-tight">
+              {product.name}
+            </h1>
+
+            {/* Linha Decorativa */}
+            <div
+              className="w-16 h-1 rounded-full mb-6"
+              style={{
+                background: "linear-gradient(135deg, #206E34, #70BD44)",
+              }}
+            ></div>
+
+            {/* Avaliação */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex gap-1 text-yellow-400 text-xl">
+                {[...Array(5)].map((_, i) => (
+                  <FaStar key={i} />
+                ))}
+              </div>
+              <span className="text-gray-600">(5.0)</span>
+            </div>
+
+            {/* Descrição */}
+            <div className="mb-8">
+              <p className="text-lg text-gray-700 leading-relaxed">
+                {product.description || "Descrição do produto não disponível."}
+              </p>
+            </div>
+
+            {/* Botões de Ação */}
+            <motion.div
+              variants={animationVariants.fadeUp}
+              className="flex flex-col sm:flex-row gap-4 mb-8"
+            >
+              <a
+                href="/contact"
+                className="flex-1 px-8 py-4 text-white rounded-xl hover:opacity-90 transition-opacity duration-300 font-semibold text-center flex items-center justify-center gap-3"
+                style={{
+                  background: "linear-gradient(135deg, #206E34, #70BD44)",
+                }}
+              >
+                <FaWhatsapp className="text-lg" />
+                Faça um Orçamento
+              </a>
+              <a
+                href="/contact"
+                className="px-8 py-4 border border-gray-300 text-gray-700 rounded-xl hover:bg-green-700 hover:text-white hover:border-green-700 transition-colors duration-300 font-semibold flex items-center justify-center gap-3"
+              >
+                <FaWhatsapp className="text-lg" />
+                WhatsApp
+              </a>
+            </motion.div>
+
+            {/* Benefícios */}
+            <motion.div
+              variants={animationVariants.fadeUp}
+              className="space-y-4 p-6 rounded-2xl border border-gray-200 bg-gray-200"
+            >
+              <div className="flex items-center gap-3">
+                <FaTruckFast className="text-green-600 text-xl" />
+                <span className="font-medium text-gray-900">
+                  Frete grátis para todo Alagoas
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <FaShieldAlt className="text-green-600 text-xl" />
+                <span className="font-medium text-gray-900">
+                  Garantia de qualidade
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <FaCreditCard className="text-green-600 text-xl" />
+                <span className="font-medium text-gray-900">
+                  Diversas formas de pagamento
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <FaMapMarkerAlt className="text-green-600 text-xl" />
+                <span className="font-medium text-gray-900">
+                  Entrega em toda Alagoas
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Produtos Relacionados */}
+      <div className="mt-16">
         <RelatedProducts category={product.category} />
       </div>
+
       <Footer />
+
+      {/* Elementos decorativos de fundo */}
+      <div
+        className="absolute top-1/4 -right-20 w-72 h-72 rounded-full blur-3xl -z-10 opacity-30"
+        style={{
+          background: "linear-gradient(135deg, #206E34, #70BD44)",
+        }}
+      ></div>
+      <div
+        className="absolute bottom-1/4 -left-20 w-96 h-96 rounded-full blur-3xl -z-10 opacity-20"
+        style={{
+          background: "linear-gradient(135deg, #206E34, #70BD44)",
+        }}
+      ></div>
     </section>
   );
 };

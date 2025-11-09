@@ -12,7 +12,7 @@ const HomeSection = sequelize.define("HomeSection", {
   title: { 
     type: DataTypes.STRING, 
     allowNull: true,
-    defaultValue: "Bem-vindo ao Grupo Madenobre! No mercado"
+    defaultValue: "Bem-vindo ao Grupo Madenobre! No mercado desde 1998"
   },
   highlightedText: { 
     type: DataTypes.STRING, 

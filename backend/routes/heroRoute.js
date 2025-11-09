@@ -1,5 +1,6 @@
+// routes/heroRoute.js
 import express from "express";
-import { getHeroImages, addHero, deleteHero } from "../controllers/heroController.js";
+import { getHeroImages, addHero, updateHeroTexts, deleteHero } from "../controllers/heroController.js";
 import upload from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 
@@ -13,6 +14,8 @@ heroRouter.post(
   upload.fields([{ name: "image", maxCount: 1 }]),
   addHero
 );
+
+heroRouter.put("/:id/texts", adminAuth, updateHeroTexts);
 
 heroRouter.delete("/:id", adminAuth, deleteHero);
 

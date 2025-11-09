@@ -71,43 +71,139 @@ const Vendor = ({ vendor }) => {
 };
 
 export default Vendor;*/
-
-
-import React from "react";
-import { FaWhatsapp } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaWhatsapp, FaEnvelope, FaUser } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const Vendor = ({ vendor }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   return (
-    <div className="bg-[#299D45] rounded-xl p-4 w-full max-w-xs mx-auto shadow-md">
-      <div className="bg-white rounded-xl overflow-hidden flex flex-col items-center p-4 relative">
+    <motion.div 
+      className="group relative"
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Card Principal */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-500 group-hover:border-green-200 relative overflow-hidden">
         
-        {/* Imagem centralizada */}
-        <img
-          src={vendor.image}
-          alt={`Foto de ${vendor.name}`}
-          className="w-40 h-48 object-cover rounded-lg shadow-md mb-4"
-        />
+        {/* Elemento decorativo de fundo */}
+        <div className="absolute -inset-4 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <div 
+            className="w-full h-full rounded-2xl transform rotate-3 transition-transform duration-500 group-hover:rotate-2"
+            style={{
+              background: 'linear-gradient(135deg, rgba(32, 110, 52, 0.05), rgba(112, 189, 68, 0.05))'
+            }}
+          ></div>
+        </div>
 
-        {/* Nome do vendedor */}
-        <h2 className="text-lg font-semibold text-gray-800">{vendor.name}</h2>
+        {/* Header do Card */}
+        <div className="text-center mb-6">
+          
+          {/* Container da Imagem - AUMENTADA */}
+          <div className="relative inline-block mb-5">
+            {/* Elemento decorativo atrás da imagem */}
+            <div className="absolute -inset-4 -z-10">
+              <div 
+                className="w-full h-full rounded-2xl transform rotate-3 transition-transform duration-500 group-hover:rotate-6"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(32, 110, 52, 0.1), rgba(112, 189, 68, 0.1))'
+                }}
+              ></div>
+            </div>
 
-        {/* Email */}
-        <p className="text-sm text-gray-500 mt-1 break-words text-center w-full truncatetext-sm text-gray-500 mt-1 whitespace-nowrap overflow-auto w-full text-centermt-1 text-center text-gray-500 text-[clamp(10px,2vw,14px)] max-w-full overflow-hidden whitespace-nowrap">{vendor.email}</p>
+            {/* Imagem do vendedor - AUMENTADA */}
+            <div className="relative">
+              {vendor.image ? (
+                <>
+                  <img
+                    src={vendor.image}
+                    alt={`Foto de ${vendor.name}`}
+                    className={`w-40 h-48 object-cover rounded-2xl shadow-md transition-all duration-700 ${
+                      imageLoaded ? 'scale-100 opacity-100' : 'scale-110 opacity-0'
+                    }`}
+                    onLoad={() => setImageLoaded(true)}
+                  />
+                  
+                  {/* Overlay gradiente sutil */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  {/* Loading state */}
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 bg-gray-200 rounded-2xl animate-pulse flex items-center justify-center">
+                      <FaUser className="text-gray-400 text-2xl" />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="w-40 h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center shadow-md">
+                  <FaUser className="text-gray-400 text-4xl" />
+                </div>
+              )}
+            </div>
+          </div>
 
-        {/* Botão WhatsApp */}
-        {vendor.whatsapp && (
-          <a
-            href={`https://wa.me/${vendor.whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 bg-[#71BC45] text-white px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium hover:bg-[#299D45] transition duration-300"
-          >
-            <FaWhatsapp className="text-lg" />
-            WhatsApp
-          </a>
-        )}
+          {/* Nome do vendedor */}
+          <h2 className="text-xl font-bold text-gray-900 mb-2 leading-tight">
+            {vendor.name}
+          </h2>
+
+          {/* Linha decorativa */}
+          <div 
+            className="w-12 h-0.5 rounded-full mx-auto mb-3"
+            style={{
+              background: 'linear-gradient(135deg, #206E34, #70BD44)'
+            }}
+          ></div>
+        </div>
+
+        {/* Informações de Contato */}
+        <div className="space-y-4">
+          
+          {/* Email - ALTURA DIMINUÍDA */}
+          {vendor.email && (
+            <div className="flex items-center gap-3 p-2 bg-gray-200 rounded-xl hover:bg-gray-300 transition-colors duration-300 min-h-[40px]">
+              <div className="w-7 h-7 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0">
+                <FaEnvelope className="text-gray-600 text-xs" />
+              </div>
+              <p className="text-sm text-gray-600 break-all text-left flex-1 leading-tight">
+                {vendor.email}
+              </p>
+            </div>
+          )}
+
+          {/* Botão WhatsApp - SÓ ICONE E "WhatsApp" */}
+          {vendor.whatsapp && (
+            <motion.a
+              href={`https://wa.me/${vendor.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-gradient-to-r from-[#206E34] to-[#70BD44] text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold hover:shadow-lg transition-all duration-300 group/btn relative overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              
+              {/* Efeito de brilho no hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500 transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full"></div>
+              
+              <FaWhatsapp className="text-lg text-white z-10" />
+              <span className="z-10">WhatsApp</span>
+            </motion.a>
+          )}
+        </div>
+
+        {/* Badge de disponibilidade */}
+        <div className="absolute top-4 right-4">
+          <div className="flex items-center gap-1.5 bg-green-50 px-2 py-1 rounded-full border border-green-200">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+            <span className="text-xs font-medium text-green-700">Online</span>
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* Efeito de brilho externo */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#206E34] to-[#70BD44] opacity-0 group-hover:opacity-5 blur-md -z-10 transition-opacity duration-500"></div>
+    </motion.div>
   );
 };
 

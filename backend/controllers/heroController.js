@@ -100,9 +100,8 @@ export { getHeroImage, updateHeroImage };
 */
 
 
-
-
-import HeroBanner from "../models/heroModel.js";
+// controllers/heroController.js
+import Hero from "../models/heroModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const streamUpload = (fileBuffer) => {
@@ -120,7 +119,7 @@ const streamUpload = (fileBuffer) => {
 
 const getHeroImages = async (req, res) => {
   try {
-    const banners = await HeroBanner.findAll({ order: [["id", "DESC"]] });
+    const banners = await Hero.findAll({ order: [["id", "DESC"]] });
     res.json({ success: true, images: banners });
   } catch (error) {
     console.error(error);
@@ -135,7 +134,7 @@ const addHero = async (req, res) => {
 
     const imageUrl = await streamUpload(image.buffer);
 
-    const newHero = await HeroBanner.create({ imageUrl });
+    const newHero = await Hero.create({ imageUrl });
 
     res.json({ success: true, message: "Banner adicionado com sucesso!", hero: newHero });
   } catch (error) {
@@ -144,10 +143,35 @@ const addHero = async (req, res) => {
   }
 };
 
+const updateHeroTexts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { badgeText, title, description, button1Text, button2Text } = req.body;
+
+    const hero = await Hero.findByPk(id);
+    if (!hero) {
+      return res.status(404).json({ success: false, message: "Banner não encontrado." });
+    }
+
+    await hero.update({
+      badgeText: badgeText || hero.badgeText,
+      title: title || hero.title,
+      description: description || hero.description,
+      button1Text: button1Text || hero.button1Text,
+      button2Text: button2Text || hero.button2Text,
+    });
+
+    res.json({ success: true, message: "Textos atualizados com sucesso!", hero });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Erro ao atualizar textos." });
+  }
+};
+
 const deleteHero = async (req, res) => {
   try {
     const { id } = req.params;
-    const hero = await HeroBanner.findByPk(id);
+    const hero = await Hero.findByPk(id);
 
     if (!hero) {
       return res.json({ success: false, message: "Banner não encontrado" });
@@ -161,5 +185,4 @@ const deleteHero = async (req, res) => {
   }
 };
 
-export { getHeroImages, addHero, deleteHero };
-
+export { getHeroImages, addHero, updateHeroTexts, deleteHero };
