@@ -1,113 +1,76 @@
-/*import { v2 as cloudinary } from "cloudinary";
-import Product from "../models/productModel.js";
-
-const addProduct = async (req, res) => {
-    try {
-        const { name, category, subCategory, popular } = req.body; // Removi 'image' daqui, pois é um array de arquivos/URLs
-        const image1 = req.files.image1 && req.files.image1[0];
-        const image2 = req.files.image2 && req.files.image2[0];
-        const image3 = req.files.image3 && req.files.image3[0];
-        const image4 = req.files.image4 && req.files.image4[0];
-
-        // Certifique-se de que `req.files` está sendo populado corretamente pelo seu middleware de upload (ex: Multer)
-        // E que os nomes dos campos no formulário (image1, image2, etc.) correspondem
-
-        const images = [image1, image2, image3, image4].filter(
-            (item) => item !== undefined
-        );
-
-        const imagesUrl = await Promise.all(
-            images.map(async (item) => {
-                let result = await cloudinary.uploader.upload(item.path, {
-                    resource_type: "image",
-                });
-                return result.secure_url;
-            })
-        );
-
-        const productData = {
-            name,
-            category,
-            subCategory,
-            image: imagesUrl, // Armazena um array de URLs
-            popular: popular === "true",
-        };
-        const product = await Product.create(productData);
-
-        res.json({
-            success: true,
-            message: "Produto adicionado com sucesso!",
-            product,
-        });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: "Erro ao adicionar produto." });
-    }
-};
-
-
-const listProduct = async (req, res) => {
-    try {
-        // CORREÇÃO: Use Product.find() para listar todos os produtos
-        const products = await Product.find({});
-        res.json({ success: true, products });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: "Erro ao listar produtos." });
-    }
-};
-
-const removeProduct = async (req, res) => {
-    try {
-        console.log("ID recebido:", req.body.id);
-
-        const { id } = req.body; // Garantir que está vindo no corpo da requisição
-        if (!id) {
-            return res.json({
-                success: false,
-                message: "ID do produto não fornecido.",
-            });
-        }
-
-        // CORREÇÃO: Use findByIdAndDelete para remover pelo _id do MongoDB
-        // Ou findOneAndDelete se preferir, passando { _id: id }
-        const result = await Product.findByIdAndDelete(id);
-
-        if (!result) { // Se result for null, significa que o produto não foi encontrado
-            return res.json({
-                success: false,
-                message: "Produto não encontrado ou não foi possível removê-lo.",
-            });
-        }
-
-        res.json({ success: true, message: "Produto removido com sucesso!" });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: "Erro ao remover produto." });
-    }
-};
-
-const singleProduct = async (req, res) => {
-    try {
-        const { productId } = req.body; // Se você está passando na rota como param, use req.params.productId
-        // CORREÇÃO: Use findById para buscar um produto pelo _id
-        const product = await Product.findById(productId);
-
-        if (!product) {
-            return res.json({ success: false, message: "Produto não encontrado." });
-        }
-
-        res.json({ success: true, product });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: "Erro ao buscar produto." });
-    }
-};
-
-export { addProduct, listProduct, removeProduct, singleProduct };*/
-
 import { v2 as cloudinary } from "cloudinary";
+import { z } from "zod";
 import Product from "../models/productModel.js";
+
+// Schema atualizado - removendo os enums fixos
+const ProductCreateSchema = z.object({
+  name: z.string()
+    .min(1, "Nome é obrigatório")
+    .max(255, "Nome deve ter no máximo 255 caracteres")
+    .trim(),
+  
+  category: z.string()
+    .min(1, "Categoria é obrigatória")
+    .max(100, "Categoria deve ter no máximo 100 caracteres")
+    .trim(),
+  
+  subCategory: z.string()
+    .min(1, "Tipo do produto é obrigatório")
+    .max(100, "Tipo do produto deve ter no máximo 100 caracteres")
+    .trim(),
+  
+  popular: z.union([
+    z.string().transform(val => val === "true"),
+    z.boolean()
+  ]).default(false),
+});
+
+// Resto do código permanece igual...
+const ProductIdSchema = z.object({
+  id: z.coerce.number()
+    .int("ID deve ser um número inteiro")
+    .positive("ID deve ser um número positivo")
+});
+
+const ProductParamsSchema = z.object({
+  productId: z.coerce.number()
+    .int("ID do produto deve ser um número inteiro")
+    .positive("ID do produto deve ser um número positivo")
+});
+
+// Validação de arquivos (mantida igual)
+const validateFiles = (files) => {
+  const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+  const maxSize = 9 * 1024 * 1024;
+
+  if (files.length === 0) {
+    throw new Error("Pelo menos uma imagem é necessária");
+  }
+
+  const mainImage = files[0];
+  if (!mainImage) {
+    throw new Error("A imagem principal (image1) é obrigatória");
+  }
+
+  for (const file of files) {
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      throw new Error(`Tipo de arquivo não permitido: ${file.originalname}. Use apenas JPG, PNG ou WebP.`);
+    }
+    
+    if (file.size > maxSize) {
+      throw new Error(`Arquivo muito grande: ${file.originalname} (${(file.size / 1024 / 1024).toFixed(2)} MB). Máximo: 9MB.`);
+    }
+  }
+};
+
+const extractFiles = (files) => {
+  const extractedFiles = [];
+  if (files?.image1?.[0]) extractedFiles.push(files.image1[0]);
+  if (files?.image2?.[0]) extractedFiles.push(files.image2[0]);
+  if (files?.image3?.[0]) extractedFiles.push(files.image3[0]);
+  if (files?.image4?.[0]) extractedFiles.push(files.image4[0]);
+  return extractedFiles;
+};
 
 const streamUpload = (fileBuffer) => {
   return new Promise((resolve, reject) => {
@@ -122,48 +85,55 @@ const streamUpload = (fileBuffer) => {
   });
 };
 
+// Novo endpoint para buscar categorias e tipos únicos
+const getProductFilters = async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      attributes: ['category', 'subCategory'],
+      raw: true
+    });
+
+    // Extrair valores únicos
+    const categories = [...new Set(products.map(p => p.category))].filter(Boolean).sort();
+    const subCategories = [...new Set(products.map(p => p.subCategory))].filter(Boolean).sort();
+
+    res.json({
+      success: true,
+      categories,
+      subCategories
+    });
+  } catch (error) {
+    console.error("Erro ao buscar filtros:", error);
+    res.status(500).json({
+      success: false,
+      message: "Erro ao buscar categorias e tipos"
+    });
+  }
+};
+
 const addProduct = async (req, res) => {
   try {
-    const { name, category, subCategory, popular } = req.body;
+    const validatedData = ProductCreateSchema.parse(req.body);
+    const files = extractFiles(req.files);
+    
+    console.log("Dados validados:", validatedData);
+    console.log("Arquivos recebidos:", files.length);
 
-    // Multer popula req.files em arrays
-    const files = [];
-    if (req.files?.image1) files.push(req.files.image1[0]);
-    if (req.files?.image2) files.push(req.files.image2[0]);
-    if (req.files?.image3) files.push(req.files.image3[0]);
-    if (req.files?.image4) files.push(req.files.image4[0]);
+    validateFiles(files);
 
-    console.log(
-      "Arquivos recebidos:",
-      files.map((f) => ({
-        originalname: f.originalname,
-        mimetype: f.mimetype,
-        size: f.size,
-        hasBuffer: !!f.buffer,
-      }))
-    );
-
-    if (files.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Pelo menos uma imagem é necessária.",
-      });
-    }
-
-    // Upload para Cloudinary
-    const imagesUrl = await Promise.all(
-      files.map(async (file) => {
+    const uploadPromises = files.map(async (file) => {
+      try {
         return await streamUpload(file.buffer);
-      })
-    );
+      } catch (uploadError) {
+        throw new Error(`Falha no upload da imagem ${file.originalname}`);
+      }
+    });
 
-    // Criando o produto no banco
+    const imagesUrl = await Promise.all(uploadPromises);
+
     const productData = {
-      name,
-      category,
-      subCategory,
-      image: imagesUrl, // array de URLs
-      popular: popular === "true" || popular === true,
+      ...validatedData,
+      image: imagesUrl,
     };
 
     const product = await Product.create(productData);
@@ -171,10 +141,36 @@ const addProduct = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Produto adicionado com sucesso!",
-      product,
+      product: {
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        subCategory: product.subCategory,
+        image: product.image,
+        popular: product.popular,
+      },
     });
   } catch (error) {
-    console.error("Erro ao adicionar produto:", error.message, error.stack);
+    console.error("Erro ao adicionar produto:", error);
+    
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        success: false,
+        message: "Dados de entrada inválidos",
+        errors: error.errors.map(err => ({
+          field: err.path.join('.'),
+          message: err.message
+        }))
+      });
+    }
+    
+    if (error.message.includes("imagem") || error.message.includes("arquivo")) {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Erro ao adicionar produto.",
@@ -182,54 +178,50 @@ const addProduct = async (req, res) => {
   }
 };
 
+// Resto das funções (listProduct, removeProduct, singleProduct) mantidas iguais...
 const listProduct = async (req, res) => {
   try {
-    const products = await Product.findAll();
+    const products = await Product.findAll({
+      order: [['createdAt', 'DESC']]
+    });
     res.json({ success: true, products });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Erro ao listar produtos." });
+    res.status(500).json({ success: false, message: "Erro ao listar produtos." });
   }
 };
+
 const removeProduct = async (req, res) => {
   try {
-    const { id } = req.body;
-    if (!id) {
-      return res
-        .status(400)
-        .json({ success: false, message: "ID do produto não fornecido." });
-    }
-    const result = await Product.destroy({ where: { id: id } });
+    const { id } = ProductIdSchema.parse(req.body);
+    const result = await Product.destroy({ where: { id } });
+    
     if (result === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Produto não encontrado." });
+      return res.status(404).json({ success: false, message: "Produto não encontrado." });
     }
+    
     res.json({ success: true, message: "Produto removido com sucesso!" });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Erro ao remover produto." });
+    res.status(500).json({ success: false, message: "Erro ao remover produto." });
   }
 };
+
 const singleProduct = async (req, res) => {
   try {
-    const { productId } = req.params;
+    const { productId } = ProductParamsSchema.parse(req.params);
     const product = await Product.findByPk(productId);
+    
     if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Produto não encontrado." });
+      return res.status(404).json({ success: false, message: "Produto não encontrado." });
     }
+    
     res.json({ success: true, product });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Erro ao buscar produto." });
+    res.status(500).json({ success: false, message: "Erro ao buscar produto." });
   }
 };
-export { addProduct, listProduct, removeProduct, singleProduct };
+
+// Exportar a nova função
+export { addProduct, listProduct, removeProduct, singleProduct, getProductFilters };
