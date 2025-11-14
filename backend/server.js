@@ -75,6 +75,9 @@ import aboutSectionRoute from "./routes/aboutRoute.js";
 import servicesSectionRoute from "./routes/serviceSectionRoute.js";
 import AboutBannerRouter from "./routes/AboutBannerRoute.js";
 import certificationRouter from "./routes/certificationSectionRoute.js"
+import newsletterRoute from "./routes/newsleterRoute.js";
+import faqRoutes from './routes/faqRoute.js';
+import pageRoutes from './routes/pageRoute.js';
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -133,6 +136,9 @@ const startServer = async () => {
     app.use("/api/services-section", servicesSectionRoute);
     app.use("/api/about-banner", AboutBannerRouter);
     app.use("/api/certification-section", certificationRouter);
+    app.use("/api/newsletter", newsletterRoute);
+    app.use('/api/faqs', faqRoutes);
+    app.use('/api/pages', pageRoutes);
 
     app.get("/", (req, res) => {
       res.send("API funcionando com MySQL e Sequelize!");

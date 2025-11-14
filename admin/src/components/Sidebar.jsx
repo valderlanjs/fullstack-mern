@@ -20,6 +20,7 @@ import {
   FaInfoCircle,
   FaCertificate,
   FaChartBar,
+  FaEnvelope,
 } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
 
@@ -190,6 +191,40 @@ const Sidebar = ({ token, setToken }) => {
           icon: FaColumns,
         },
       ],
+    },
+    {
+      id: "faq",
+      label: "FAQ",
+      icon: FaEdit,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/faq",
+          label: "Editar FAQ",
+          icon: FaColumns,
+        },
+      ],
+    },
+    {
+      id: "pages",
+      label: "Politica e Termos",
+      icon: FaEdit,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/pages",
+          label: "Editar Termos e Politicas",
+          icon: FaColumns,
+        },
+      ],
+    },
+    {
+      id: "newsletter",
+      label: "Newsletter",
+      icon: FaEnvelope,
+      to: "/newsletter",
+      type: "direct",
+      gradient: "from-teal-600 to-cyan-500",
     },
     {
       id: "usuarios",

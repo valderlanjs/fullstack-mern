@@ -16,6 +16,9 @@ import {
   FaTimes,
   FaLink,
   FaPalette,
+  FaEye,
+  FaEyeSlash,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import "../index.css";
 
@@ -137,6 +140,9 @@ const UpdateHero = ({ token }) => {
       button2Link: banner.button2Link || "/collection",
       gradientWord: banner.gradientWord || "",
       gradientColor: banner.gradientColor || "#70BD44",
+      showButtons: banner.showButtons !== undefined ? banner.showButtons : true,
+      showTexts: banner.showTexts !== undefined ? banner.showTexts : true,
+      buttonsPosition: banner.buttonsPosition || "bottom-left",
     });
     setIsEditing(true);
   };
@@ -190,6 +196,9 @@ const UpdateHero = ({ token }) => {
           button2Link: editingBanner.button2Link,
           gradientWord: editingBanner.gradientWord,
           gradientColor: editingBanner.gradientColor,
+          showButtons: editingBanner.showButtons,
+          showTexts: editingBanner.showTexts,
+          buttonsPosition: editingBanner.buttonsPosition,
         },
         {
           headers: { token },
@@ -231,6 +240,19 @@ const UpdateHero = ({ token }) => {
     { label: "WhatsApp", value: "https://wa.me/5511999999999" },
   ];
 
+  // Função para determinar a classe de posição dos botões no preview
+  const getButtonsPositionClass = (position) => {
+    switch (position) {
+      case "bottom-center":
+        return "left-1/2 transform -translate-x-1/2";
+      case "bottom-right":
+        return "right-6";
+      case "bottom-left":
+      default:
+        return "left-6";
+    }
+  };
+
   return (
     <>
       <div className="p-6 max-w-7xl mx-auto fade-in">
@@ -241,8 +263,7 @@ const UpdateHero = ({ token }) => {
             Gerenciar Banners da Home
           </h1>
           <p className="text-gray-600">
-            Adicione, edite textos e gerencie os banners exibidos na página
-            inicial
+            Adicione, edite textos e gerencie os banners exibidos na página inicial
           </p>
         </div>
 
@@ -283,73 +304,91 @@ const UpdateHero = ({ token }) => {
                       <FaImage className="text-blue-600" />
                       Preview do Banner
                     </h4>
-                    <div className="bg-gray-900 rounded-lg p-6 h-96 overflow-y-auto">
+                    <div className="bg-gray-900 rounded-lg p-6 h-96 overflow-y-auto relative">
                       <div className="space-y-4">
                         {/* Badge */}
-                        <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                          <div
-                            className="w-2 h-2 rounded-full"
-                            style={{
-                              backgroundColor: editingBanner.gradientColor,
-                            }}
-                          ></div>
-                          <span className="text-sm font-medium text-white uppercase tracking-wide">
-                            {editingBanner.badgeText || "Madeiras Premium"}
-                          </span>
-                        </div>
+                        {editingBanner.showTexts && editingBanner.badgeText && (
+                          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                            <div
+                              className="w-2 h-2 rounded-full"
+                              style={{
+                                backgroundColor: editingBanner.gradientColor,
+                              }}
+                            ></div>
+                            <span className="text-sm font-medium text-white uppercase tracking-wide">
+                              {editingBanner.badgeText || "Madeiras Premium"}
+                            </span>
+                          </div>
+                        )}
 
                         {/* Título com Gradiente */}
-                        <h2
-                          className="text-2xl font-bold text-white leading-tight"
-                          dangerouslySetInnerHTML={{
-                            __html: applyGradientToTitle(
-                              editingBanner.title || "Título do Banner",
-                              editingBanner.gradientWord,
-                              editingBanner.gradientColor
-                            ),
-                          }}
-                        />
+                        {editingBanner.showTexts && editingBanner.title && (
+                          <h2
+                            className="text-2xl font-bold text-white leading-tight"
+                            dangerouslySetInnerHTML={{
+                              __html: applyGradientToTitle(
+                                editingBanner.title || "Título do Banner",
+                                editingBanner.gradientWord,
+                                editingBanner.gradientColor
+                              ),
+                            }}
+                          />
+                        )}
 
                         {/* Descrição */}
-                        <p className="text-white/80 text-sm leading-relaxed">
-                          {editingBanner.description ||
-                            "Descrição do banner será exibida aqui."}
-                        </p>
+                        {editingBanner.showTexts && editingBanner.description && (
+                          <p className="text-white/80 text-sm leading-relaxed">
+                            {editingBanner.description ||
+                              "Descrição do banner será exibida aqui."}
+                          </p>
+                        )}
 
                         {/* Botões */}
-                        <div className="flex flex-wrap gap-2 pt-4">
-                          <button
-                            className="px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2"
-                            style={{
-                              background:
-                                "linear-gradient(135deg, #206E34, #70BD44)",
-                            }}
-                          >
-                            {editingBanner.button1Text || "Botão 1"}
-                            <FaLink className="text-xs opacity-70" />
-                          </button>
-                          <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium border border-white/30 flex items-center gap-2">
-                            {editingBanner.button2Text || "Botão 2"}
-                            <FaLink className="text-xs opacity-70" />
-                          </button>
-                        </div>
+                        {editingBanner.showButtons && (editingBanner.button1Text || editingBanner.button2Text) && (
+                          <div className={`absolute bottom-4 ${getButtonsPositionClass(editingBanner.buttonsPosition)} flex flex-wrap gap-2`}>
+                            {editingBanner.button1Text && (
+                              <button
+                                className="px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2"
+                                style={{
+                                  background:
+                                    "linear-gradient(135deg, #206E34, #70BD44)",
+                                }}
+                              >
+                                {editingBanner.button1Text || "Botão 1"}
+                                <FaLink className="text-xs opacity-70" />
+                              </button>
+                            )}
+                            {editingBanner.button2Text && (
+                              <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium border border-white/30 flex items-center gap-2">
+                                {editingBanner.button2Text || "Botão 2"}
+                                <FaLink className="text-xs opacity-70" />
+                              </button>
+                            )}
+                          </div>
+                        )}
 
-                        {/* Info dos Links */}
-                        <div className="pt-4 border-t border-white/20">
-                          <p className="text-white/60 text-xs">
-                            <strong>Link Botão 1:</strong>{" "}
-                            {editingBanner.button1Link}
-                          </p>
-                          <p className="text-white/60 text-xs">
-                            <strong>Link Botão 2:</strong>{" "}
-                            {editingBanner.button2Link}
-                          </p>
-                          {editingBanner.gradientWord && (
-                            <p className="text-white/60 text-xs">
-                              <strong>Palavra com gradiente:</strong>{" "}
-                              {editingBanner.gradientWord}
-                            </p>
-                          )}
+                        {/* Info dos Links e Configurações */}
+                        <div className="pt-4 border-t border-white/20 mt-4">
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div>
+                              <p className="text-white/60">
+                                <strong>Textos:</strong> {editingBanner.showTexts ? "✅" : "❌"}
+                              </p>
+                              <p className="text-white/60">
+                                <strong>Botões:</strong> {editingBanner.showButtons ? "✅" : "❌"}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-white/60">
+                                <strong>Posição:</strong> {editingBanner.buttonsPosition === "bottom-left" ? "⬅️" : editingBanner.buttonsPosition === "bottom-center" ? "⬇️" : "➡️"}
+                              </p>
+                              {editingBanner.gradientWord && (
+                                <p className="text-white/60">
+                                  <strong>Gradiente:</strong> {editingBanner.gradientWord}
+                                </p>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -360,6 +399,61 @@ const UpdateHero = ({ token }) => {
                     <h4 className="font-semibold text-gray-800">
                       Editar Conteúdo
                     </h4>
+
+                    {/* Controles de Visibilidade e Posição */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-200 rounded-lg border border-gray-200">
+                      <div className="space-y-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={editingBanner.showTexts}
+                            onChange={(e) => handleEditChange("showTexts", e.target.checked)}
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                          <span className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                            {editingBanner.showTexts ? <FaEye className="text-green-600" /> : <FaEyeSlash className="text-red-600" />}
+                            Mostrar Textos
+                          </span>
+                        </label>
+                        <p className="text-xs text-gray-500">
+                          Exibe badge, título e descrição
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={editingBanner.showButtons}
+                            onChange={(e) => handleEditChange("showButtons", e.target.checked)}
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                          <span className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                            {editingBanner.showButtons ? <FaEye className="text-green-600" /> : <FaEyeSlash className="text-red-600" />}
+                            Mostrar Botões
+                          </span>
+                        </label>
+                        <p className="text-xs text-gray-500">
+                          Exibe os botões de ação
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                          <FaMapMarkerAlt className="text-blue-600" />
+                          Posição dos Botões
+                        </label>
+                        <select
+                          value={editingBanner.buttonsPosition}
+                          onChange={(e) => handleEditChange("buttonsPosition", e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        >
+                          <option value="bottom-left">Inferior Esquerdo</option>
+                          <option value="bottom-center">Inferior Central</option>
+                          <option value="bottom-right">Inferior Direito</option>
+                        </select>
+                      </div>
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Coluna 1 */}
@@ -380,8 +474,7 @@ const UpdateHero = ({ token }) => {
                             maxLength={30}
                           />
                           <p className="text-xs text-gray-500 mt-1">
-                            Texto pequeno que aparece no badge (máx. 30
-                            caracteres)
+                            Texto pequeno que aparece no badge (máx. 30 caracteres)
                           </p>
                         </div>
 
@@ -429,8 +522,7 @@ const UpdateHero = ({ token }) => {
                               )}
                             </select>
                             <p className="text-xs text-gray-500 mt-1">
-                              Escolha qual palavra do título terá o efeito
-                              colorido
+                              Escolha qual palavra do título terá o efeito colorido
                             </p>
 
                             {/* Seleção de Cor */}
@@ -646,6 +738,25 @@ const UpdateHero = ({ token }) => {
                   {/* Informações do Banner */}
                   <div className="p-4">
                     <div className="space-y-2 mb-4">
+                      {/* Status de Visibilidade */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-gray-500">
+                          Visibilidade:
+                        </span>
+                        <div className="flex gap-1">
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            banner.showTexts !== false ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          }`}>
+                            {banner.showTexts !== false ? '📝' : '❌'}
+                          </span>
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            banner.showButtons !== false ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          }`}>
+                            {banner.showButtons !== false ? '🔘' : '❌'}
+                          </span>
+                        </div>
+                      </div>
+
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-gray-500">
                           Badge:
@@ -680,6 +791,15 @@ const UpdateHero = ({ token }) => {
                           </span>
                         </div>
                       )}
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-gray-500">
+                          Posição:
+                        </span>
+                        <span className="text-xs text-gray-700 truncate ml-2">
+                          {banner.buttonsPosition === "bottom-left" ? "⬅️ Esquerda" : 
+                           banner.buttonsPosition === "bottom-center" ? "⬇️ Centro" : "➡️ Direita"}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -723,7 +843,7 @@ const UpdateHero = ({ token }) => {
           )}
         </div>
 
-        {/* Resto do código permanece igual (Adicionar Novo Banner e Estatísticas) */}
+        {/* Adicionar Novo Banner */}
         <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 scale-in">
           <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             <FaPlus className="text-green-600" />
@@ -858,9 +978,9 @@ const UpdateHero = ({ token }) => {
           </div>
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 card-hover">
             <div className="text-2xl font-bold text-purple-600">
-              {banners.length > 0 ? "Ativo" : "Inativo"}
+              {banners.filter(b => b.showButtons !== false).length}
             </div>
-            <div className="text-sm text-purple-800">Status</div>
+            <div className="text-sm text-purple-800">Com Botões Ativos</div>
           </div>
           <div className="bg-orange-50 p-4 rounded-lg border border-orange-200 card-hover">
             <div className="text-2xl font-bold text-orange-600">
@@ -871,7 +991,7 @@ const UpdateHero = ({ token }) => {
         </div>
       </div>
 
-      {/* Modal de Confirmação de Exclusão (permanece igual) */}
+      {/* Modal de Confirmação de Exclusão */}
       {deleteModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 modal-enter-active">
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">

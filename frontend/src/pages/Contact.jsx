@@ -2,6 +2,8 @@ import React from "react";
 import BannerContact from "../components/BannerContact";
 import InfoContact from "../components/InfoContact";
 import Footer from "../components/Footer";
+import ScrollToTopButton from "../components/ScrollTopButton"
+
 
 const Contact = () => {
   return (
@@ -9,6 +11,7 @@ const Contact = () => {
       <BannerContact />
       <InfoContact />
       <Footer />
+      <ScrollToTopButton />
     </section>
   );
 };

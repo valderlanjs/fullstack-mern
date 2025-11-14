@@ -16,13 +16,15 @@ const Footer = sequelize.define("Footer", {
   // Links Rápidos
   aboutLink: { type: DataTypes.STRING, allowNull: true },
   productsLink: { type: DataTypes.STRING, allowNull: true },
-  servicesLink: { type: DataTypes.STRING, allowNull: true },
   contactLink: { type: DataTypes.STRING, allowNull: true },
+  faqLink: { type: DataTypes.STRING, allowNull: true }, // NOVO CAMPO
   
   // Informações de Contato
   phone: { type: DataTypes.STRING, allowNull: true },
   email: { type: DataTypes.STRING, allowNull: true },
   address: { type: DataTypes.TEXT, allowNull: true },
+  whatsapp: { type: DataTypes.STRING, allowNull: true }, // NOVO CAMPO
+  businessHours: { type: DataTypes.STRING, allowNull: true }, // NOVO CAMPO
   
   // Redes Sociais
   facebookUrl: { type: DataTypes.STRING, allowNull: true },

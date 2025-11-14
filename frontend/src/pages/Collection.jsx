@@ -1,14 +1,11 @@
 // Collection.jsx - CORRIGIDO E SIMPLIFICADO
 import React, { useContext, useEffect, useState } from "react";
-import Title from "../components/Title";
 import { ShopContext } from "../context/ShopContext";
 import Item from "../components/Item";
-import ShowSearch from "../components/ShowSearch";
 import Footer from "../components/Footer";
 import axios from "axios";
+import ScrollToTopButton from "../components/ScrollTopButton"
 
-import { motion } from "framer-motion";
-import { animationVariants } from "../constants/animationVariants";
 
 const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -559,6 +556,7 @@ const Collection = () => {
         </div>
       </section>
       <Footer />
+      <ScrollToTopButton />
     </>
   );
 };

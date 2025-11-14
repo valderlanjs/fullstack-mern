@@ -71,6 +71,33 @@ const Hero = () => {
     }
   };
 
+  // Função para aplicar o gradiente no título
+  const applyGradientToTitle = (title, gradientWord, gradientColor) => {
+    if (!title || !gradientWord) return title;
+
+    const words = title.split(" ");
+    return words
+      .map((word) =>
+        word.toLowerCase() === gradientWord.toLowerCase()
+          ? `<span style="background: linear-gradient(135deg, ${gradientColor}, #8CE563); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${word}</span>`
+          : word
+      )
+      .join(" ");
+  };
+
+  // Função para determinar a posição dos botões
+  const getButtonsPositionClass = (position) => {
+    switch (position) {
+      case "bottom-center":
+        return "left-1/2 transform -translate-x-1/2";
+      case "bottom-right":
+        return "right-6";
+      case "bottom-left":
+      default:
+        return "left-6";
+    }
+  };
+
   if (loading) {
     return (
       <section className="max-padd-container max-xl:mt-8 mb-16">
@@ -103,103 +130,125 @@ const Hero = () => {
                 {/* Overlay gradiente para melhor legibilidade */}
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"></div>
                 
-                {/* Conteúdo do Hero */}
-                <div className="relative h-full flex items-center">
-                  <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
-                    <div className="max-w-2xl">
-                      
-                      {/* Badge de categoria */}
-                      <motion.div
-                        initial="initial"
-                        animate="animate"
-                        variants={textVariants}
-                        className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full mb-8 border border-white/30"
-                      >
-                        <div 
-                          className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: '#70BD44' }}
-                        ></div>
-                        <span className="text-base font-medium text-white uppercase tracking-wide">
-                          {banner.badgeText || "Madeiras Premium"}
-                        </span>
-                      </motion.div>
+                {/* Conteúdo do Hero - Textos (condicional) */}
+                {banner.showTexts !== false && (
+                  <div className="relative h-full flex items-center">
+                    <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
+                      <div className="max-w-2xl">
+                        
+                        {/* Badge de categoria (condicional) */}
+                        {banner.badgeText && (
+                          <motion.div
+                            initial="initial"
+                            animate="animate"
+                            variants={textVariants}
+                            className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full mb-8 border border-white/30"
+                          >
+                            <div 
+                              className="w-2 h-2 rounded-full"
+                              style={{ backgroundColor: banner.gradientColor || '#70BD44' }}
+                            ></div>
+                            <span className="text-base font-medium text-white uppercase tracking-wide">
+                              {banner.badgeText}
+                            </span>
+                          </motion.div>
+                        )}
 
-                      {/* Título principal */}
-                      <motion.h1
-                        initial="initial"
-                        animate="animate"
-                        variants={textVariants}
-                        className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-tight"
-                        dangerouslySetInnerHTML={{ 
-                          __html: banner.title || "O melhor em <span style=\"background: linear-gradient(135deg, #70BD44, #8CE563); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;\">madeiras</span> você encontra aqui!"
-                        }}
-                      />
-
-                      {/* Linha decorativa */}
-                      <motion.div
-                        initial="initial"
-                        animate="animate"
-                        variants={textVariants}
-                        transition={{ delay: 0.2 }}
-                        className="w-24 h-1 rounded-full mb-8"
-                        style={{
-                          background: 'linear-gradient(135deg, #70BD44, #8CE563)'
-                        }}
-                      ></motion.div>
-
-                      {/* Descrição */}
-                      <motion.p
-                        initial="initial"
-                        animate="animate"
-                        variants={textVariants}
-                        transition={{ delay: 0.3 }}
-                        className="text-xl lg:text-2xl text-white/90 mb-10 leading-relaxed max-w-lg"
-                      >
-                        {banner.description || "Qualidade, variedade e atendimento especializado para atender todas as suas necessidades em madeiras."}
-                      </motion.p>
-
-                      {/* Botões de ação */}
-                      <motion.div
-                        initial="initial"
-                        animate="animate"
-                        variants={textVariants}
-                        transition={{ delay: 0.4 }}
-                        className="flex flex-col sm:flex-row gap-4"
-                      >
-                        <motion.div
-                          variants={buttonVariants}
-                          whileHover="hover"
-                        >
-                          <Link
-                            className="inline-flex items-center gap-3 px-8 py-4 text-white rounded-xl font-semibold hover:shadow-2xl transition-all duration-300 group"
-                            style={{
-                              background: 'linear-gradient(135deg, #206E34, #70BD44)'
+                        {/* Título principal (condicional) */}
+                        {banner.title && (
+                          <motion.h1
+                            initial="initial"
+                            animate="animate"
+                            variants={textVariants}
+                            className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-tight"
+                            dangerouslySetInnerHTML={{ 
+                              __html: applyGradientToTitle(
+                                banner.title,
+                                banner.gradientWord,
+                                banner.gradientColor
+                              ) || banner.title
                             }}
-                            to="/contact"
-                          >
-                            <FaWhatsapp className="text-lg" />
-                            {banner.button1Text || "Faça um orçamento"}
-                            <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-200" />
-                          </Link>
-                        </motion.div>
+                          />
+                        )}
 
-                        <motion.div
-                          variants={buttonVariants}
-                          whileHover="hover"
-                          transition={{ delay: 0.5 }}
-                        >
-                          <Link
-                            className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-xl font-semibold border border-white/20 hover:bg-white/20 transition-all duration-300 group"
-                            to="/collection"
+                        {/* Linha decorativa (apenas se houver título) */}
+                        {banner.title && (
+                          <motion.div
+                            initial="initial"
+                            animate="animate"
+                            variants={textVariants}
+                            transition={{ delay: 0.2 }}
+                            className="w-24 h-1 rounded-full mb-8"
+                            style={{
+                              background: `linear-gradient(135deg, ${banner.gradientColor || '#70BD44'}, #8CE563)`
+                            }}
+                          ></motion.div>
+                        )}
+
+                        {/* Descrição (condicional) */}
+                        {banner.description && (
+                          <motion.p
+                            initial="initial"
+                            animate="animate"
+                            variants={textVariants}
+                            transition={{ delay: 0.3 }}
+                            className="text-xl lg:text-2xl text-white/90 mb-10 leading-relaxed max-w-lg"
                           >
-                            {banner.button2Text || "Ver Produtos"}
-                            <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-200" />
-                          </Link>
-                        </motion.div>
-                      </motion.div>
+                            {banner.description}
+                          </motion.p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+
+                {/* Botões de ação - SEMPRE no canto inferior esquerdo */}
+                {banner.showButtons !== false && (banner.button1Text || banner.button2Text) && (
+                  <motion.div
+                    initial="initial"
+                    animate="animate"
+                    variants={buttonVariants}
+                    transition={{ delay: 0.4 }}
+                    className={`absolute bottom-6 ${getButtonsPositionClass(banner.buttonsPosition)} flex flex-col sm:flex-row gap-4`}
+                  >
+                    {/* Botão 1 */}
+                    {banner.button1Text && (
+                      <motion.div
+                        variants={buttonVariants}
+                        whileHover="hover"
+                      >
+                        <Link
+                          className="inline-flex items-center gap-3 px-8 py-4 text-white rounded-xl font-semibold hover:shadow-2xl transition-all duration-300 group"
+                          style={{
+                            background: 'linear-gradient(135deg, #206E34, #70BD44)'
+                          }}
+                          to={banner.button1Link || "/contact"}
+                        >
+                          <FaWhatsapp className="text-lg" />
+                          {banner.button1Text}
+                          <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-200" />
+                        </Link>
+                      </motion.div>
+                    )}
+
+                    {/* Botão 2 */}
+                    {banner.button2Text && (
+                      <motion.div
+                        variants={buttonVariants}
+                        whileHover="hover"
+                        transition={{ delay: 0.5 }}
+                      >
+                        <Link
+                          className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-xl font-semibold border border-white/20 hover:bg-white/20 transition-all duration-300 group"
+                          to={banner.button2Link || "/collection"}
+                        >
+                          {banner.button2Text}
+                          <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-200" />
+                        </Link>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                )}
 
                 {/* Indicadores de slide */}
                 <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
