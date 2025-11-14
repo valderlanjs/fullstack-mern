@@ -1,3 +1,4 @@
+// models/heroModel.js
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/postgres.js";
 
@@ -5,33 +6,67 @@ const Hero = sequelize.define('Hero', {
   imageUrl: { type: DataTypes.STRING, allowNull: false },
   badgeText: { 
     type: DataTypes.STRING, 
-    allowNull: false, 
-    defaultValue: "Madeiras Premium" 
+    allowNull: true, // Alterado para true
+    defaultValue: null // Alterado para null
   },
   title: { 
     type: DataTypes.TEXT, 
-    allowNull: false, 
-    defaultValue: "O melhor em <span style=\"background: linear-gradient(135deg, #70BD44, #8CE563); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;\">madeiras</span> você encontra aqui!" 
+    allowNull: true, // Alterado para true
+    defaultValue: null // Alterado para null
   },
   description: { 
     type: DataTypes.TEXT, 
-    allowNull: false, 
-    defaultValue: "Qualidade, variedade e atendimento especializado para atender todas as suas necessidades em madeiras." 
+    allowNull: true, // Alterado para true
+    defaultValue: null // Alterado para null
   },
   button1Text: { 
     type: DataTypes.STRING, 
-    allowNull: false, 
-    defaultValue: "Faça um orçamento" 
+    allowNull: true, // Alterado para true
+    defaultValue: null // Alterado para null
   },
   button2Text: { 
     type: DataTypes.STRING, 
-    allowNull: false, 
-    defaultValue: "Ver Produtos" 
+    allowNull: true, // Alterado para true
+    defaultValue: null // Alterado para null
   },
+  button1Link: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: "/contact"
+  },
+  button2Link: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: "/collection"
+  },
+  gradientWord: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null
+  },
+  gradientColor: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: "#70BD44"
+  },
+  showButtons: { // Novo campo para controlar visibilidade dos botões
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  },
+  showTexts: { // Novo campo para controlar visibilidade dos textos
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  },
+  buttonsPosition: { // Novo campo para controlar posição dos botões
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: "bottom-left" // bottom-left, bottom-center, bottom-right
+  }
 }, {
   tableName: 'heros',
   timestamps: false,
 });
 
 export default Hero;
-

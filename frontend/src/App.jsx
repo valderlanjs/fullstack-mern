@@ -11,6 +11,9 @@ import Collection from "./pages/Collection";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Product from "./pages/Product";
+import FaqPage from "./components/FaqPage"
+import TermsOfUsePage from "./components/TermsOfUsePage"
+import PrivacyPolicyPage from "./components/PrivacyPolicyPage"
 
 
 
@@ -26,6 +29,9 @@ export default function App() {
         <Route path="/collection" element={<Collection />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/faqs" element={<FaqPage />} />
+        <Route path="/termos-uso" element={<TermsOfUsePage />} />
+        <Route path="/politica-privacidade" element={<PrivacyPolicyPage />} />
       </Routes>
     </main>
   )

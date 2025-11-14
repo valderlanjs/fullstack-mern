@@ -27,6 +27,9 @@ import ManageAboutSection from "./pages/AboutAdmin"
 import ManageServicesSection from "./pages/ManageSectionService"
 import AboutSectionBannerAdmin from "./pages/AbourBanner"
 import CertificationAdmin from "./pages/CertificationSection"
+import NewsletterManager from "./pages/NewsletterAdmin"
+import FaqAdmin from "./pages/FaqAdmin"
+import PagesAdmin from "./pages/PagesAdmin"
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -113,8 +116,11 @@ function App() {
                   <Route path="/manage-sections" element={<ManageSections token={token} />} />
                   <Route path="/manage-section-two" element={<ManageServicesSection token={token} />} />
                   <Route path="/manage-banner-section" element={<AboutSectionBannerAdmin token={token} />} />
+                  <Route path="/faq" element={<FaqAdmin token={token} />} />
                   <Route path="/certification-section" element={<CertificationAdmin token={token} />} />
+                  <Route path="/pages" element={<PagesAdmin token={token} />} />
                   <Route path="/edit-features" element={<AdminFeatures token={token} />} />
+                  <Route path="/newsletter" element={<NewsletterManager token={token} />} />
                   <Route path="/edit-footer" element={<AdminFooter token={token} />} />
                   <Route path="/users" element={<UserManagement token={token} />} />
                   <Route path="*" element={<Navigate to="/" />} />

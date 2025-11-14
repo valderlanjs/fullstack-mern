@@ -99,8 +99,6 @@ const updateHeroImage = async (req, res) => {
 export { getHeroImage, updateHeroImage };
 */
 
-
-// controllers/heroController.js
 import Hero from "../models/heroModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -146,7 +144,20 @@ const addHero = async (req, res) => {
 const updateHeroTexts = async (req, res) => {
   try {
     const { id } = req.params;
-    const { badgeText, title, description, button1Text, button2Text } = req.body;
+    const { 
+      badgeText, 
+      title, 
+      description, 
+      button1Text, 
+      button2Text,
+      button1Link,
+      button2Link,
+      gradientWord,
+      gradientColor,
+      showButtons,
+      showTexts,
+      buttonsPosition
+    } = req.body;
 
     const hero = await Hero.findByPk(id);
     if (!hero) {
@@ -154,11 +165,18 @@ const updateHeroTexts = async (req, res) => {
     }
 
     await hero.update({
-      badgeText: badgeText || hero.badgeText,
-      title: title || hero.title,
-      description: description || hero.description,
-      button1Text: button1Text || hero.button1Text,
-      button2Text: button2Text || hero.button2Text,
+      badgeText: badgeText !== undefined ? badgeText : hero.badgeText,
+      title: title !== undefined ? title : hero.title,
+      description: description !== undefined ? description : hero.description,
+      button1Text: button1Text !== undefined ? button1Text : hero.button1Text,
+      button2Text: button2Text !== undefined ? button2Text : hero.button2Text,
+      button1Link: button1Link !== undefined ? button1Link : hero.button1Link,
+      button2Link: button2Link !== undefined ? button2Link : hero.button2Link,
+      gradientWord: gradientWord !== undefined ? gradientWord : hero.gradientWord,
+      gradientColor: gradientColor !== undefined ? gradientColor : hero.gradientColor,
+      showButtons: showButtons !== undefined ? showButtons : hero.showButtons,
+      showTexts: showTexts !== undefined ? showTexts : hero.showTexts,
+      buttonsPosition: buttonsPosition !== undefined ? buttonsPosition : hero.buttonsPosition
     });
 
     res.json({ success: true, message: "Textos atualizados com sucesso!", hero });

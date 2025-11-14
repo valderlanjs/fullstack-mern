@@ -1,3 +1,4 @@
+// components/AddProduct.jsx - ATUALIZADO
 import React, { useState } from "react";
 import upload_icon from "../assets/upload_icon.png";
 import axios from "axios";
@@ -20,22 +21,20 @@ const Add = ({ token }) => {
   const [image3, setImage3] = useState(false);
   const [image4, setImage4] = useState(false);
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("Madeira Bruta");
-  const [subCategory, setSubCategory] = useState("Jatobá");
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
   const [popular, setPopular] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Função auxiliar para limpar o formulário
   const clearForm = () => {
     setName("");
-    setCategory("Madeira Bruta");
-    setSubCategory("Jatobá");
+    setCategory("");
+    setSubCategory("");
     setPopular(false);
     setImage1(false);
     setImage2(false);
     setImage3(false);
     setImage4(false);
-    // Para remover a seleção de arquivos dos inputs
     document.getElementById("image1").value = "";
     document.getElementById("image2").value = "";
     document.getElementById("image3").value = "";
@@ -46,8 +45,8 @@ const Add = ({ token }) => {
     e.preventDefault();
     console.log("Botão clicado — tentativa de envio iniciada")
 
-    if (!name || !image1) {
-      toast.error("Por favor, preencha o nome e adicione a imagem principal.");
+    if (!name || !category || !subCategory || !image1) {
+      toast.error("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
@@ -78,7 +77,13 @@ const Add = ({ token }) => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Ocorreu um erro ao adicionar o produto.");
+      if (error.response?.data?.errors) {
+        error.response.data.errors.forEach(err => {
+          toast.error(`${err.field}: ${err.message}`);
+        });
+      } else {
+        toast.error("Ocorreu um erro ao adicionar o produto.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -104,13 +109,13 @@ const Add = ({ token }) => {
           Adicionar Novo Produto
         </h1>
         <p className="text-gray-600">
-          Cadastre novos produtos no catálogo com imagens e informações detalhadas
+          Cadastre novos produtos no catálogo com categorias e tipos personalizados
         </p>
       </div>
 
       <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 scale-in">
         <form onSubmit={onSubmitHandler} className="space-y-8">
-          {/* Seção de Upload de Imagens */}
+          {/* Seção de Upload de Imagens (mantida igual) */}
           <div>
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <FaImage className="text-blue-600" />
@@ -161,7 +166,6 @@ const Add = ({ token }) => {
               })}
             </div>
 
-            {/* Informações sobre imagens */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 card-hover">
               <div className="flex items-start gap-3">
                 <FaCircleExclamation className="text-blue-600 text-lg mt-0.5 flex-shrink-0 gentle-bounce" />
@@ -171,15 +175,13 @@ const Add = ({ token }) => {
                     <li>• <strong>Imagem 1 é obrigatória</strong> - será a imagem principal do produto</li>
                     <li>• Tamanho máximo por imagem: 9MB</li>
                     <li>• Formatos suportados: JPG, PNG, WebP</li>
-                    <li>• Dimensões recomendadas: 800x600px ou quadrado</li>
-                    <li>• Imagens 2, 3 e 4 são opcionais para galeria</li>
                   </ul>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Informações do Produto */}
+          {/* Informações do Produto - ATUALIZADO */}
           <div>
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <FaBox className="text-purple-600" />
@@ -202,57 +204,46 @@ const Add = ({ token }) => {
                 />
               </div>
 
-              {/* Categoria e Subcategoria */}
+              {/* Categoria e Subcategoria - AGORA COM INPUTS DE TEXTO */}
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Categoria *
                   </label>
-                  <select
-                    value={category} 
+                  <input
+                    value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200 bg-white"
-                  >
-                    <option value="Madeira Bruta">Madeira Bruta</option>
-                    <option value="Pergolados">Pergolados</option>
-                    <option value="Decks">Decks</option>
-                    <option value="Cobertas">Cobertas</option>
-                    <option value="Ripados">Ripados</option>
-                    <option value="Esquadrias">Esquadrias</option>
-                    <option value="Telhas">Telhas</option>
-                    <option value="Outros">Outros</option>
-                  </select>
+                    type="text"
+                    placeholder="Ex: Madeira Bruta, Decks, Telhas..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                    required
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Esta categoria aparecerá para os clientes filtrarem
+                  </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Tipo do Produto *
                   </label>
-                  <select
-                    value={subCategory} 
+                  <input
+                    value={subCategory}
                     onChange={(e) => setSubCategory(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200 bg-white"
-                  >
-                    <option value="Jatobá">Jatobá</option>
-                    <option value="Cumaru">Cumaru</option>
-                    <option value="Ipê">Ipê</option>
-                    <option value="Eucalípto">Eucalípto</option>
-                    <option value="Eucalípto Tratado">Eucalípto Tratado</option>
-                    <option value="Mista">Mista</option>
-                    <option value="Pinus">Pinus</option>
-                    <option value="Madeirite">Madeirite</option>
-                    <option value="Maçaranduba">Maçaranduba</option>
-                    <option value="Angelim Pedra">Angelim Pedra</option>
-                    <option value="Brasilit">Brasilit</option>
-                    <option value="PVC">PVC</option>
-                    <option value="Pequí">Pequí</option>
-                  </select>
+                    type="text"
+                    placeholder="Ex: Jatobá, Cumaru, Ipê, PVC..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                    required
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Este tipo aparecerá para os clientes filtrarem
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Configurações Adicionais */}
+          {/* Configurações Adicionais (mantida igual) */}
           <div>
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <FaStar className="text-yellow-600" />
@@ -273,7 +264,7 @@ const Add = ({ token }) => {
               </label>
             </div>
             <p className="text-sm text-gray-500 mt-2">
-              Produtos populares aparecem em destaque na página inicial e têm maior visibilidade.
+              Produtos populares aparecem em destaque na página inicial.
             </p>
           </div>
 
@@ -281,7 +272,7 @@ const Add = ({ token }) => {
           <div className="flex gap-3 pt-6 border-t border-gray-200">
             <button
               type="submit"
-              disabled={isLoading || !name || !image1}
+              disabled={isLoading || !name || !category || !subCategory || !image1}
               className="btn-hover-lift bg-secondary text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isLoading ? (
@@ -297,7 +288,7 @@ const Add = ({ token }) => {
               )}
             </button>
 
-            {(name || image1 || image2 || image3 || image4) && (
+            {(name || category || subCategory || image1 || image2 || image3 || image4) && (
               <button
                 type="button"
                 onClick={clearForm}
@@ -311,19 +302,19 @@ const Add = ({ token }) => {
         </form>
       </div>
 
-      {/* Estatísticas de Ajuda */}
+      {/* Informações atualizadas */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 fade-in">
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 card-hover">
-          <div className="text-2xl font-bold text-blue-600">1</div>
-          <div className="text-sm text-blue-800">Imagem Obrigatória</div>
+          <div className="text-2xl font-bold text-blue-600">✓</div>
+          <div className="text-sm text-blue-800">Categorias Livres</div>
         </div>
         <div className="bg-green-50 p-4 rounded-lg border border-green-200 card-hover">
-          <div className="text-2xl font-bold text-green-600">4</div>
-          <div className="text-sm text-green-800">Imagens Máximas</div>
+          <div className="text-2xl font-bold text-green-600">✓</div>
+          <div className="text-sm text-green-800">Tipos Personalizados</div>
         </div>
         <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 card-hover">
-          <div className="text-2xl font-bold text-purple-600">9MB</div>
-          <div className="text-sm text-purple-800">Tamanho por Imagem</div>
+          <div className="text-2xl font-bold text-purple-600">4</div>
+          <div className="text-sm text-purple-800">Imagens Máximas</div>
         </div>
       </div>
     </div>

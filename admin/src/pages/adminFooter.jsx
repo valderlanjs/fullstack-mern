@@ -11,9 +11,12 @@ import {
   FaEnvelope,
   FaFacebook,
   FaInstagram,
+  FaWhatsapp,
+  FaClock,
+  
 } from "react-icons/fa6";
 
-import { FaInfoCircle, FaMapMarkerAlt, FaSave, FaUndo} from "react-icons/fa";
+import { FaInfoCircle, FaMapMarkerAlt, FaSave, FaUndo, FaQuestionCircle} from "react-icons/fa";
 
 const AdminFooter = ({ token }) => {
     const [footerData, setFooterData] = useState({
@@ -21,11 +24,13 @@ const AdminFooter = ({ token }) => {
         copyright: "",
         aboutLink: "",
         productsLink: "",
-        servicesLink: "",
         contactLink: "",
+        faqLink: "",
         phone: "",
         email: "",
         address: "",
+        whatsapp: "",
+        businessHours: "",
         facebookUrl: "",
         instagramUrl: "",
         quickLinksTitle: "",
@@ -139,11 +144,13 @@ const AdminFooter = ({ token }) => {
                         copyright: "",
                         aboutLink: "",
                         productsLink: "",
-                        servicesLink: "",
                         contactLink: "",
+                        faqLink: "",
                         phone: "",
                         email: "",
                         address: "",
+                        whatsapp: "",
+                        businessHours: "",
                         facebookUrl: "",
                         instagramUrl: "",
                         quickLinksTitle: "",
@@ -301,20 +308,21 @@ const AdminFooter = ({ token }) => {
                                         value={footerData.productsLink || ""}
                                         onChange={handleInputChange}
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
-                                        placeholder="/properties"
+                                        placeholder="/products"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Link Serviços
+                                        <FaQuestionCircle className="inline mr-2 text-sm text-blue-600" />
+                                        Link FAQ
                                     </label>
                                     <input
                                         type="text"
-                                        name="servicesLink"
-                                        value={footerData.servicesLink || ""}
+                                        name="faqLink"
+                                        value={footerData.faqLink || ""}
                                         onChange={handleInputChange}
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
-                                        placeholder="/services"
+                                        placeholder="/faq"
                                     />
                                 </div>
                                 <div>
@@ -371,6 +379,20 @@ const AdminFooter = ({ token }) => {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <FaWhatsapp className="inline mr-2 text-sm text-green-600" />
+                                        WhatsApp
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="whatsapp"
+                                        value={footerData.whatsapp || ""}
+                                        onChange={handleInputChange}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                                        placeholder="+558200000000"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
                                         <FaEnvelope className="inline mr-2 text-sm" />
                                         Email
                                     </label>
@@ -380,7 +402,21 @@ const AdminFooter = ({ token }) => {
                                         value={footerData.email || ""}
                                         onChange={handleInputChange}
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
-                                        placeholder="valderlanjosr15@gmail.com"
+                                        placeholder="contato@madenobre.com"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <FaClock className="inline mr-2 text-sm text-orange-600" />
+                                        Horário de Atendimento
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="businessHours"
+                                        value={footerData.businessHours || ""}
+                                        onChange={handleInputChange}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                                        placeholder="Seg - Sex: 7:00 - 18:00 | Sáb: 7:00 - 12:00"
                                     />
                                 </div>
                             </div>
@@ -494,7 +530,7 @@ const AdminFooter = ({ token }) => {
                     <div>
                         <h4 className="font-semibold text-blue-800 mb-2">Informações do Footer</h4>
                         <ul className="text-blue-700 text-sm space-y-1">
-                            <li>• Todas as alterações são salvas imediatamente no banco de dados</li>
+                            <li>• Todos os campos são opcionais - use apenas os que deseja personalizar</li>
                             <li>• Campos vazios usarão os valores padrão do sistema</li>
                             <li>• A logo suporta formatos JPG, PNG, WebP (máx. 9MB)</li>
                             <li>• Use "Resetar Footer" para voltar aos valores iniciais</li>

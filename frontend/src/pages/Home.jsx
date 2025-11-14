@@ -6,6 +6,7 @@ import PopularProducts from "../components/PopularProducts";
 import Features from "../components/Features";
 import HomeSection from "../components/HomeSection";
 import CardsSection from "../components/CardsSection";
+import ScrollToTopButton from "../components/ScrollTopButton"
 
 const Home = () => {
   return (
@@ -17,6 +18,7 @@ const Home = () => {
      {/**  <NewArrivals /> Card no final da pagina */}
       <CardsSection />
       <Footer />
+      <ScrollToTopButton />
     </>
   );
 };

@@ -29,13 +29,13 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #e6e6e6;
+  background: #70BD44;
   border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #ccc;
+  background: #70BD45;
 }
 
 @layer base {

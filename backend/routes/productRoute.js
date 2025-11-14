@@ -1,6 +1,6 @@
+// routes/productRoute.js
 import express from "express";
-
-import { addProduct, listProduct, removeProduct, singleProduct } from "../controllers/productController.js";
+import { addProduct, listProduct, removeProduct, singleProduct, getProductFilters } from "../controllers/productController.js";
 import upload from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 
@@ -13,12 +13,11 @@ productRouter.post('/add', adminAuth, upload.fields([
     { name: 'image4', maxCount: 1 }
 ]), addProduct);
 
-//Rota para remover um produto (protegida)
-productRouter.post('/remove', adminAuth, removeProduct);
-//Rota para listar os produtos
-productRouter.get('/list', listProduct);
-// 
-productRouter.get('/:productId', singleProduct);
+// Nova rota para buscar filtros
+productRouter.get('/filters', getProductFilters);
 
+productRouter.post('/remove', adminAuth, removeProduct);
+productRouter.get('/list', listProduct);
+productRouter.get('/:productId', singleProduct);
 
 export default productRouter;
