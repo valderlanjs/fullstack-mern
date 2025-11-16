@@ -74,10 +74,10 @@ import sectionRoute from "./routes/sectionRoute.js";
 import aboutSectionRoute from "./routes/aboutRoute.js";
 import servicesSectionRoute from "./routes/serviceSectionRoute.js";
 import AboutBannerRouter from "./routes/AboutBannerRoute.js";
-import certificationRouter from "./routes/certificationSectionRoute.js"
+import certificationRouter from "./routes/certificationSectionRoute.js";
 import newsletterRoute from "./routes/newsleterRoute.js";
-import faqRoutes from './routes/faqRoute.js';
-import pageRoutes from './routes/pageRoute.js';
+import faqRoutes from "./routes/faqRoute.js";
+import pageRoutes from "./routes/pageRoute.js";
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -85,6 +85,9 @@ const allowedOrigins = [
   "http://localhost:5174",
   "http://127.0.0.1:5174",
   "https://dev-valderlan.com.br",
+  "http://dev-valderlan.com.br",
+  "http://www.dev-valderlan.com.br",
+  "https://www.dev-valderlan.com.br",
 ];
 
 // Função para conectar ao banco de dados e iniciar o servidor
@@ -137,8 +140,8 @@ const startServer = async () => {
     app.use("/api/about-banner", AboutBannerRouter);
     app.use("/api/certification-section", certificationRouter);
     app.use("/api/newsletter", newsletterRoute);
-    app.use('/api/faqs', faqRoutes);
-    app.use('/api/pages', pageRoutes);
+    app.use("/api/faqs", faqRoutes);
+    app.use("/api/pages", pageRoutes);
 
     app.get("/", (req, res) => {
       res.send("API funcionando com MySQL e Sequelize!");

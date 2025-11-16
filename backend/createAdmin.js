@@ -1,58 +1,61 @@
-// Arquivo: createAdmin.js
-
-import { sequelize } from './config/mysql.js'; // Ajuste o caminho se necessário
-import User from './models/userModel.js'; // Ajuste o caminho se necessário
+// createAdmin.js
+import { sequelize } from './config/postgres.js';
+import User from './models/userModel.js';
 import bcrypt from 'bcryptjs';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const createAdminUser = async () => {
-    try {
-        console.log('Iniciando script para criar administrador...');
+  try {
+    // Conectar ao banco de dados
+    await sequelize.authenticate();
+    console.log('✅ Conectado ao banco de dados PostgreSQL');
 
-        // Conecta e sincroniza para garantir que a tabela 'users' exista
-        await sequelize.sync();
+    // Sincronizar modelos (caso necessário)
+    await sequelize.sync();
+    console.log('✅ Modelos sincronizados');
 
-        // --- DADOS DO ADMINISTRADOR ---
-        const adminEmail = 'admin15@gmail.com';
-        const adminPassword = 'admin123'; 
-        // -----------------------------
-
-        // 1. Verifica se o usuário já existe
-        const existingAdmin = await User.findOne({ where: { email: adminEmail } });
-
-        if (existingAdmin) {
-            console.log(`✅ O usuário administrador com o email '${adminEmail}' já existe.`);
-            return;
-        }
-
-        // 2. Criptografa a senha
-        console.log('Criptografando a senha...');
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(adminPassword, salt);
-
-        // 3. Cria o novo usuário administrador
-        console.log('Criando o novo administrador no banco de dados...');
-        const newUser = await User.create({
-            name: 'Administrador',
-            email: adminEmail,
-            password: hashedPassword,
-            isAdmin: true, // A MÁGICA ACONTECE AQUI!
-        });
-
-        console.log('🎉 Usuário administrador criado com sucesso!');
-        console.log(`   - Email: ${newUser.email}`);
-        console.log(`   - isAdmin: ${newUser.isAdmin}`);
-
-    } catch (error) {
-        console.error('❌ Erro ao executar o script:', error);
-    } finally {
-        // 4. Fecha a conexão com o banco de dados
-        console.log('Fechando conexão com o banco de dados.');
-        await sequelize.close();
+    // Verificar se já existe um usuário admin
+    const existingAdmin = await User.findOne({ 
+      where: { email: 'admin@dev-valderlan.com.br' } 
+    });
+    
+    if (existingAdmin) {
+      console.log('⚠️  Usuário admin já existe:');
+      console.log(`   📧 Email: ${existingAdmin.email}`);
+      console.log(`   👤 Nome: ${existingAdmin.name}`);
+      console.log(`   🔑 Admin: ${existingAdmin.isAdmin ? 'Sim' : 'Não'}`);
+      return;
     }
+
+    // Criar hash da senha
+    const hashedPassword = await bcrypt.hash('admin123', 10);
+
+    // Criar usuário admin
+    const adminUser = await User.create({
+      name: 'Administrador Principal',
+      email: 'admin@gmail.com',
+      password: hashedPassword,
+      isAdmin: true
+    });
+
+    console.log('✅ USUÁRIO ADMIN CRIADO COM SUCESSO!');
+    console.log('=====================================');
+    console.log(`📧 Email: ${adminUser.email}`);
+    console.log('🔑 Senha: admin123');
+    console.log(`👤 Nome: ${adminUser.name}`);
+    console.log(`🎯 Tipo: Administrador`);
+    console.log('=====================================');
+    console.log('⚠️  IMPORTANTE: Altere esta senha após o primeiro login!');
+    console.log('🔗 Acesse: https://dev-valderlan.com.br/admin');
+
+  } catch (error) {
+    console.error('❌ Erro ao criar usuário admin:', error.message);
+    console.error('Detalhes:', error);
+  } finally {
+    // Fechar conexão
+    await sequelize.close();
+    console.log('🔌 Conexão com o banco fechada');
+  }
 };
 
-// Executa a função
+// Executar o script
 createAdminUser();

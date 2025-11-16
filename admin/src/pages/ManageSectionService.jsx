@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
-import { 
-  FaEdit, 
-  FaTrash, 
-  FaImage, 
+import {
+  FaEdit,
+  FaTrash,
+  FaImage,
   FaSave,
   FaPlus,
   FaUpload,
@@ -14,9 +14,8 @@ import {
   FaTimes,
   FaEye,
   FaChartLine,
-  FaCog
+  FaCog,
 } from "react-icons/fa";
-
 
 const ManageServicesSection = ({ token }) => {
   const [servicesSections, setServicesSections] = useState([]);
@@ -34,13 +33,13 @@ const ManageServicesSection = ({ token }) => {
     ctaLink: "/contact",
     services: [
       { title: "", description: "" },
-      { title: "", description: "" }
+      { title: "", description: "" },
     ],
     features: [
       { title: "", description: "" },
       { title: "", description: "" },
-      { title: "", description: "" }
-    ]
+      { title: "", description: "" },
+    ],
   });
   const [image1File, setImage1File] = useState(null);
   const [image2File, setImage2File] = useState(null);
@@ -48,7 +47,7 @@ const ManageServicesSection = ({ token }) => {
   const [isDeleting, setIsDeleting] = useState(null);
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
-    section: null
+    section: null,
   });
   const [previewImage1, setPreviewImage1] = useState(null);
   const [previewImage2, setPreviewImage2] = useState(null);
@@ -56,9 +55,12 @@ const ManageServicesSection = ({ token }) => {
   // Buscar seções de serviços
   const fetchServicesSections = async () => {
     try {
-      const response = await axios.get(`${backend_url}/api/services-section/admin/all`, {
-        headers: { token }
-      });
+      const response = await axios.get(
+        `${backend_url}/api/services-section/admin/all`,
+        {
+          headers: { token },
+        }
+      );
       if (response.data.success) {
         setServicesSections(response.data.servicesSections);
       }
@@ -71,40 +73,66 @@ const ManageServicesSection = ({ token }) => {
   const handleSaveSection = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const formDataToSend = new FormData();
-      
+
       // Adicionar campos básicos
       const basicFields = [
-        'section1Title', 'section1Description', 'section1ImageAlt',
-        'section2Title', 'section2ImageAlt', 'ctaText', 'ctaLink'
+        "section1Title",
+        "section1Description",
+        "section1ImageAlt",
+        "section2Title",
+        "section2ImageAlt",
+        "ctaText",
+        "ctaLink",
       ];
-      
-      basicFields.forEach(key => {
+
+      basicFields.forEach((key) => {
         if (formData[key] !== null && formData[key] !== undefined) {
           formDataToSend.append(key, formData[key]);
+          console.log(`🔸 Campo ${key}:`, formData[key]); // DEBUG
         }
       });
 
       // Adicionar arrays como JSON
-      formDataToSend.append('services', JSON.stringify(formData.services));
-      formDataToSend.append('features', JSON.stringify(formData.features));
+      const servicesJSON = JSON.stringify(formData.services);
+      const featuresJSON = JSON.stringify(formData.features);
+
+      formDataToSend.append("services", servicesJSON);
+      formDataToSend.append("features", featuresJSON);
+
+      console.log("🔸 Services:", servicesJSON); // DEBUG
+      console.log("🔸 Features:", featuresJSON); // DEBUG
 
       // Adicionar arquivos de imagem
       if (image1File) {
         formDataToSend.append("section1Image", image1File);
+        console.log("🔸 Image1 File:", image1File.name); // DEBUG
       }
       if (image2File) {
         formDataToSend.append("section2Image", image2File);
+        console.log("🔸 Image2 File:", image2File.name); // DEBUG
       }
 
-      await axios.post(`${backend_url}/api/services-section`, formDataToSend, {
-        headers: { 
-          token,
-          'Content-Type': 'multipart/form-data'
+      // DEBUG: Verificar todos os campos do FormData
+      console.log("📤 Dados sendo enviados:");
+      for (let [key, value] of formDataToSend.entries()) {
+        console.log(`   ${key}:`, value);
+      }
+
+      const response = await axios.post(
+        `${backend_url}/api/services-section`,
+        formDataToSend,
+        {
+          headers: {
+            token,
+            "Content-Type": "multipart/form-data",
+          },
         }
-      });
+      );
+
+      console.log("✅ Resposta do servidor:", response.data); // DEBUG
 
       toast.success("Seção de serviços atualizada com sucesso! 🎉");
       setShowForm(false);
@@ -112,7 +140,14 @@ const ManageServicesSection = ({ token }) => {
       resetForm();
       fetchServicesSections();
     } catch (error) {
-      toast.error("Erro ao salvar seção de serviços");
+      console.error("❌ Erro detalhado:", error); // DEBUG
+      console.error("❌ Resposta de erro:", error.response?.data); // DEBUG
+
+      if (error.response?.data?.message) {
+        toast.error(`Erro: ${error.response.data.message}`);
+      } else {
+        toast.error("Erro ao salvar seção de serviços");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -132,13 +167,13 @@ const ManageServicesSection = ({ token }) => {
       ctaLink: "/contact",
       services: [
         { title: "", description: "" },
-        { title: "", description: "" }
+        { title: "", description: "" },
       ],
       features: [
         { title: "", description: "" },
         { title: "", description: "" },
-        { title: "", description: "" }
-      ]
+        { title: "", description: "" },
+      ],
     });
     setImage1File(null);
     setImage2File(null);
@@ -150,7 +185,7 @@ const ManageServicesSection = ({ token }) => {
   const openDeleteModal = (section) => {
     setDeleteModal({
       isOpen: true,
-      section: section
+      section: section,
     });
   };
 
@@ -158,7 +193,7 @@ const ManageServicesSection = ({ token }) => {
   const closeDeleteModal = () => {
     setDeleteModal({
       isOpen: false,
-      section: null
+      section: null,
     });
   };
 
@@ -168,9 +203,12 @@ const ManageServicesSection = ({ token }) => {
 
     setIsDeleting(deleteModal.section.id);
     try {
-      await axios.delete(`${backend_url}/api/services-section/${deleteModal.section.id}`, {
-        headers: { token }
-      });
+      await axios.delete(
+        `${backend_url}/api/services-section/${deleteModal.section.id}`,
+        {
+          headers: { token },
+        }
+      );
       toast.success("Seção excluída com sucesso!");
       fetchServicesSections();
       closeDeleteModal();
@@ -199,13 +237,13 @@ const ManageServicesSection = ({ token }) => {
           ctaLink: currentSection.ctaLink || "/contact",
           services: currentSection.services || [
             { title: "", description: "" },
-            { title: "", description: "" }
+            { title: "", description: "" },
           ],
           features: currentSection.features || [
             { title: "", description: "" },
             { title: "", description: "" },
-            { title: "", description: "" }
-          ]
+            { title: "", description: "" },
+          ],
         });
         setEditingSection(currentSection);
         setPreviewImage1(currentSection.section1Image);
@@ -257,7 +295,7 @@ const ManageServicesSection = ({ token }) => {
     loadCurrentSection();
   }, []);
 
-  const activeSection = servicesSections.find(section => section.isActive);
+  const activeSection = servicesSections.find((section) => section.isActive);
 
   return (
     <>
@@ -269,7 +307,8 @@ const ManageServicesSection = ({ token }) => {
             Gerenciar Seção de Serviços
           </h1>
           <p className="text-gray-600">
-            Edite o conteúdo, imagens e informações da seção "Serviços" da empresa
+            Edite o conteúdo, imagens e informações da seção "Serviços" da
+            empresa
           </p>
         </div>
 
@@ -279,42 +318,59 @@ const ManageServicesSection = ({ token }) => {
             <FaEye className="text-blue-600" />
             Preview da Seção Atual
           </h2>
-          
+
           {activeSection ? (
             <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden card-hover">
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-green-600">ATIVO</span>
+                  <span className="text-sm font-medium text-green-600">
+                    ATIVO
+                  </span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{activeSection.section1Title}</h3>
-                <p className="text-gray-600 line-clamp-2 mb-4">{activeSection.section1Description}</p>
-                
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  {activeSection.section1Title}
+                </h3>
+                <p className="text-gray-600 line-clamp-2 mb-4">
+                  {activeSection.section1Description}
+                </p>
+
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-700 mb-2">Serviços:</p>
+                    <p className="text-sm font-medium text-gray-700 mb-2">
+                      Serviços:
+                    </p>
                     <div className="space-y-2">
-                      {activeSection.services?.slice(0, 2).map((service, index) => (
-                        <div key={index} className="text-sm text-gray-600">
-                          • {service.title}
-                        </div>
-                      ))}
+                      {activeSection.services
+                        ?.slice(0, 2)
+                        .map((service, index) => (
+                          <div key={index} className="text-sm text-gray-600">
+                            • {service.title}
+                          </div>
+                        ))}
                     </div>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-700 mb-2">Diferenciais:</p>
+                    <p className="text-sm font-medium text-gray-700 mb-2">
+                      Diferenciais:
+                    </p>
                     <div className="space-y-2">
-                      {activeSection.features?.slice(0, 2).map((feature, index) => (
-                        <div key={index} className="text-sm text-gray-600">
-                          • {feature.title}
-                        </div>
-                      ))}
+                      {activeSection.features
+                        ?.slice(0, 2)
+                        .map((feature, index) => (
+                          <div key={index} className="text-sm text-gray-600">
+                            • {feature.title}
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 text-sm text-gray-500">
-                  Atualizado em: {new Date(activeSection.updatedAt).toLocaleDateString('pt-BR')}
+                  Atualizado em:{" "}
+                  {new Date(activeSection.updatedAt).toLocaleDateString(
+                    "pt-BR"
+                  )}
                 </div>
               </div>
             </div>
@@ -335,7 +391,8 @@ const ManageServicesSection = ({ token }) => {
             onClick={openEditForm}
             className="bg-secondary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium flex items-center gap-2 btn-hover-lift"
           >
-            <FaEdit /> {activeSection ? 'Editar Seção Atual' : 'Criar Seção de Serviços'}
+            <FaEdit />{" "}
+            {activeSection ? "Editar Seção Atual" : "Criar Seção de Serviços"}
           </button>
         </div>
       </div>
@@ -351,7 +408,9 @@ const ManageServicesSection = ({ token }) => {
                   <FaCog className="text-white text-xl" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">
-                  {editingSection ? 'Editar Seção de Serviços' : 'Criar Seção de Serviços'}
+                  {editingSection
+                    ? "Editar Seção de Serviços"
+                    : "Criar Seção de Serviços"}
                 </h2>
               </div>
               <button
@@ -375,11 +434,13 @@ const ManageServicesSection = ({ token }) => {
                   <FaImage className="text-green-600" />
                   Seção 1 - O que oferecemos
                 </h3>
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Imagem da Seção 1 */}
                   <div>
-                    <label className="block text-sm font-medium mb-3">Imagem da Seção 1</label>
+                    <label className="block text-sm font-medium mb-3">
+                      Imagem da Seção 1
+                    </label>
                     <div className="border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-secondary transition-colors duration-300 bg-gray-200 aspect-video flex items-center justify-center card-hover">
                       {previewImage1 ? (
                         <img
@@ -390,19 +451,23 @@ const ManageServicesSection = ({ token }) => {
                       ) : (
                         <div className="text-center p-6 gentle-pulse">
                           <FaUpload className="text-gray-400 text-3xl mx-auto mb-3" />
-                          <p className="text-gray-600 font-medium">Selecione uma imagem</p>
-                          <p className="text-gray-400 text-sm mt-1">ou arraste aqui</p>
+                          <p className="text-gray-600 font-medium">
+                            Selecione uma imagem
+                          </p>
+                          <p className="text-gray-400 text-sm mt-1">
+                            ou arraste aqui
+                          </p>
                         </div>
                       )}
                     </div>
-                    
+
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleImage1Change}
                       className="w-full p-2 border rounded-lg mt-3"
                     />
-                    
+
                     {image1File && (
                       <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3 fade-in">
                         <p className="text-green-700 text-sm font-medium">
@@ -415,11 +480,18 @@ const ManageServicesSection = ({ token }) => {
                   {/* Conteúdo da Seção 1 */}
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Título da Seção 1 *</label>
+                      <label className="block text-sm font-medium mb-2">
+                        Título da Seção 1 *
+                      </label>
                       <input
                         type="text"
                         value={formData.section1Title}
-                        onChange={(e) => setFormData({...formData, section1Title: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            section1Title: e.target.value,
+                          })
+                        }
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                         placeholder="Ex: O que nós oferecemos"
                         required
@@ -427,10 +499,17 @@ const ManageServicesSection = ({ token }) => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2">Descrição da Seção 1 *</label>
+                      <label className="block text-sm font-medium mb-2">
+                        Descrição da Seção 1 *
+                      </label>
                       <textarea
                         value={formData.section1Description}
-                        onChange={(e) => setFormData({...formData, section1Description: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            section1Description: e.target.value,
+                          })
+                        }
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent h-24"
                         placeholder="Descreva os serviços oferecidos..."
                         required
@@ -438,11 +517,18 @@ const ManageServicesSection = ({ token }) => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2">Alt da Imagem 1 *</label>
+                      <label className="block text-sm font-medium mb-2">
+                        Alt da Imagem 1 *
+                      </label>
                       <input
                         type="text"
                         value={formData.section1ImageAlt}
-                        onChange={(e) => setFormData({...formData, section1ImageAlt: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            section1ImageAlt: e.target.value,
+                          })
+                        }
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                         placeholder="Ex: Serviços oferecidos"
                         required
@@ -458,16 +544,23 @@ const ManageServicesSection = ({ token }) => {
                   <FaImage className="text-green-600" />
                   Seção 2 - Nossos diferenciais
                 </h3>
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Conteúdo da Seção 2 */}
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Título da Seção 2 *</label>
+                      <label className="block text-sm font-medium mb-2">
+                        Título da Seção 2 *
+                      </label>
                       <input
                         type="text"
                         value={formData.section2Title}
-                        onChange={(e) => setFormData({...formData, section2Title: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            section2Title: e.target.value,
+                          })
+                        }
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                         placeholder="Ex: Nós nos concentramos em todos os detalhes"
                         required
@@ -475,11 +568,18 @@ const ManageServicesSection = ({ token }) => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2">Alt da Imagem 2 *</label>
+                      <label className="block text-sm font-medium mb-2">
+                        Alt da Imagem 2 *
+                      </label>
                       <input
                         type="text"
                         value={formData.section2ImageAlt}
-                        onChange={(e) => setFormData({...formData, section2ImageAlt: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            section2ImageAlt: e.target.value,
+                          })
+                        }
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                         placeholder="Ex: Detalhes e qualidade"
                         required
@@ -489,7 +589,9 @@ const ManageServicesSection = ({ token }) => {
 
                   {/* Imagem da Seção 2 */}
                   <div>
-                    <label className="block text-sm font-medium mb-3">Imagem da Seção 2</label>
+                    <label className="block text-sm font-medium mb-3">
+                      Imagem da Seção 2
+                    </label>
                     <div className="border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-secondary transition-colors duration-300 bg-gray-200 aspect-video flex items-center justify-center card-hover">
                       {previewImage2 ? (
                         <img
@@ -500,19 +602,23 @@ const ManageServicesSection = ({ token }) => {
                       ) : (
                         <div className="text-center p-6 gentle-pulse">
                           <FaUpload className="text-gray-400 text-3xl mx-auto mb-3" />
-                          <p className="text-gray-600 font-medium">Selecione uma imagem</p>
-                          <p className="text-gray-400 text-sm mt-1">ou arraste aqui</p>
+                          <p className="text-gray-600 font-medium">
+                            Selecione uma imagem
+                          </p>
+                          <p className="text-gray-400 text-sm mt-1">
+                            ou arraste aqui
+                          </p>
                         </div>
                       )}
                     </div>
-                    
+
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleImage2Change}
                       className="w-full p-2 border rounded-lg mt-3"
                     />
-                    
+
                     {image2File && (
                       <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3 fade-in">
                         <p className="text-green-700 text-sm font-medium">
@@ -530,28 +636,49 @@ const ManageServicesSection = ({ token }) => {
                   <FaCog className="text-green-600" />
                   Serviços Oferecidos
                 </h3>
-                
+
                 <div className="space-y-6">
                   {formData.services.map((service, index) => (
-                    <div key={index} className="bg-gray-200 p-4 rounded-lg border border-gray-200">
-                      <h4 className="font-medium text-gray-900 mb-4">Serviço {index + 1}</h4>
+                    <div
+                      key={index}
+                      className="bg-gray-200 p-4 rounded-lg border border-gray-200"
+                    >
+                      <h4 className="font-medium text-gray-900 mb-4">
+                        Serviço {index + 1}
+                      </h4>
                       <div className="grid grid-cols-1 gap-4">
                         <div>
-                          <label className="block text-sm font-medium mb-2">Título do Serviço *</label>
+                          <label className="block text-sm font-medium mb-2">
+                            Título do Serviço *
+                          </label>
                           <input
                             type="text"
                             value={service.title}
-                            onChange={(e) => handleServiceChange(index, 'title', e.target.value)}
+                            onChange={(e) =>
+                              handleServiceChange(
+                                index,
+                                "title",
+                                e.target.value
+                              )
+                            }
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                             placeholder="Ex: Corte sob medida"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-2">Descrição do Serviço *</label>
+                          <label className="block text-sm font-medium mb-2">
+                            Descrição do Serviço *
+                          </label>
                           <textarea
                             value={service.description}
-                            onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
+                            onChange={(e) =>
+                              handleServiceChange(
+                                index,
+                                "description",
+                                e.target.value
+                              )
+                            }
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent h-20"
                             placeholder="Descreva o serviço..."
                             required
@@ -569,28 +696,49 @@ const ManageServicesSection = ({ token }) => {
                   <FaChartLine className="text-green-600" />
                   Nossos Diferenciais
                 </h3>
-                
+
                 <div className="space-y-6">
                   {formData.features.map((feature, index) => (
-                    <div key={index} className="bg-gray-200 p-4 rounded-lg border border-gray-200">
-                      <h4 className="font-medium text-gray-900 mb-4">Diferencial {index + 1}</h4>
+                    <div
+                      key={index}
+                      className="bg-gray-200 p-4 rounded-lg border border-gray-200"
+                    >
+                      <h4 className="font-medium text-gray-900 mb-4">
+                        Diferencial {index + 1}
+                      </h4>
                       <div className="grid grid-cols-1 gap-4">
                         <div>
-                          <label className="block text-sm font-medium mb-2">Título do Diferencial *</label>
+                          <label className="block text-sm font-medium mb-2">
+                            Título do Diferencial *
+                          </label>
                           <input
                             type="text"
                             value={feature.title}
-                            onChange={(e) => handleFeatureChange(index, 'title', e.target.value)}
+                            onChange={(e) =>
+                              handleFeatureChange(
+                                index,
+                                "title",
+                                e.target.value
+                              )
+                            }
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                             placeholder="Ex: Atendimento"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-2">Descrição do Diferencial *</label>
+                          <label className="block text-sm font-medium mb-2">
+                            Descrição do Diferencial *
+                          </label>
                           <textarea
                             value={feature.description}
-                            onChange={(e) => handleFeatureChange(index, 'description', e.target.value)}
+                            onChange={(e) =>
+                              handleFeatureChange(
+                                index,
+                                "description",
+                                e.target.value
+                              )
+                            }
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent h-20"
                             placeholder="Descreva o diferencial..."
                             required
@@ -608,25 +756,33 @@ const ManageServicesSection = ({ token }) => {
                   <FaPlus className="text-green-600" />
                   Botão de Ação (CTA)
                 </h3>
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Texto do Botão *</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Texto do Botão *
+                    </label>
                     <input
                       type="text"
                       value={formData.ctaText}
-                      onChange={(e) => setFormData({...formData, ctaText: e.target.value})}
+                      onChange={(e) =>
+                        setFormData({ ...formData, ctaText: e.target.value })
+                      }
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                       placeholder="Ex: Faça um orçamento"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Link do Botão *</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Link do Botão *
+                    </label>
                     <input
                       type="text"
                       value={formData.ctaLink}
-                      onChange={(e) => setFormData({...formData, ctaLink: e.target.value})}
+                      onChange={(e) =>
+                        setFormData({ ...formData, ctaLink: e.target.value })
+                      }
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
                       placeholder="Ex: /contato"
                       required
@@ -701,14 +857,19 @@ const ManageServicesSection = ({ token }) => {
                 Tem certeza que deseja excluir esta seção de serviços?
               </p>
               <p className="text-sm text-gray-500 mb-4">
-                Esta ação não pode ser desfeita. A seção será removida permanentemente do sistema.
+                Esta ação não pode ser desfeita. A seção será removida
+                permanentemente do sistema.
               </p>
-              
+
               {deleteModal.section && (
                 <div className="p-3 bg-gray-100 rounded-lg border border-gray-200">
                   <div className="text-sm text-gray-600">
-                    <p className="font-medium">{deleteModal.section.section1Title}</p>
-                    <p className="text-xs text-red-500 mt-1">Será removida permanentemente</p>
+                    <p className="font-medium">
+                      {deleteModal.section.section1Title}
+                    </p>
+                    <p className="text-xs text-red-500 mt-1">
+                      Será removida permanentemente
+                    </p>
                   </div>
                 </div>
               )}

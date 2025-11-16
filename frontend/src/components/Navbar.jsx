@@ -11,22 +11,22 @@ const Navbar = ({ containerStyles, toggleMenu, menuOpened, logoUrl, altText }) =
         {
             to: "/", 
             label: "Início", 
-            icon: <SiGooglehome />
+            icon: <SiGooglehome className="text-lg" />
         },
         {
             to: "/collection",
             label: "Produtos",
-            icon: <BsCollectionFill />
+            icon: <BsCollectionFill className="text-lg" />
         },
         {
             to: "/about",
             label: "Sobre",
-            icon: <SiAtlassian />
+            icon: <SiAtlassian className="text-lg" />
         },
         {
             to: "/contact",
             label: "Contato",
-            icon: <SiMaildotcom />
+            icon: <SiMaildotcom className="text-lg" />
         }
     ]
 
@@ -34,41 +34,64 @@ const Navbar = ({ containerStyles, toggleMenu, menuOpened, logoUrl, altText }) =
     const safeLogoUrl = logoUrl || "/logo.png";
     const safeAltText = altText || "Logo da empresa";
 
+    // Função para lidar com o clique nos links
+    const handleLinkClick = () => {
+        if (menuOpened && toggleMenu) {
+            toggleMenu();
+        }
+    };
+
     return (
        <nav className={containerStyles}>
-        {/** Botão de fechar barra de navegação */} 
+        {/** Header do Menu Mobile */} 
         {menuOpened && (
-            <>
-                <FaRegWindowClose 
-                    onClick={toggleMenu}
-                    className="text-xl cursor-pointer self-end relative left-8 text-secondary transition-transform duration-300 hover:scale-110"
-                />
-                {/*LOGO*/}
-                <Link to={'/'} className='mb-10 transition-opacity duration-300'>
+            <div className="flexBetween border-b border-gray-100 pb-6 mb-4">
+                {/* LOGO Mobile */}
+                <Link 
+                    to={'/'} 
+                    className="transition-transform duration-300 hover:scale-105"
+                    onClick={handleLinkClick}
+                >
                     <img 
-                        src={safeLogoUrl}  // ← CORRIGIDO: usando safeLogoUrl
-                        alt={safeAltText}   // ← CORRIGIDO: usando safeAltText
-                        className="w-24 h-28 object-contain transition-transform duration-300 hover:scale-105" 
+                        src={safeLogoUrl}
+                        alt={safeAltText}
+                        className="w-20 h-20 object-contain" 
                         onError={(e) => {
-                            e.target.src = "/logo.png"; // Fallback seguro
+                            e.target.src = "/logo.png";
                         }}
                     />
                 </Link>
-            </>
+                
+                {/* Botão de fechar */}
+                <button 
+                    onClick={toggleMenu}
+                    className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all duration-300 text-2xl text-gray-600 hover:text-red-500 hover:scale-110"
+                >
+                    <FaRegWindowClose />
+                </button>
+            </div>
         )}
+        
+        {/* Links de Navegação */}
         {navItems.map(({to, label, icon}) => (
-            <div key={label} className='inline-flex'>
+            <div key={label} className='inline-flex group relative'>
                 <NavLink 
                     to={to} 
                     className={({isActive}) => 
-                        isActive 
-                            ? "active-link flexCenter gap-x-2 transition-all duration-300" 
-                            : "flexCenter gap-x-2 transition-all duration-300 hover:text-secondary"
+                        `flex items-center gap-x-3 medium-16 transition-all duration-300 ${
+                            isActive 
+                                ? "text-green-600 font-semibold" 
+                                : "text-gray-700 group-hover:text-green-600"
+                        }`
                     }
-                    onClick={menuOpened ? toggleMenu : undefined}
+                    onClick={handleLinkClick}
                 >
-                    {icon}
-                    <h5 className='medium-16'>{label}</h5>
+                    <span className="text-xl">{icon}</span>
+                    <span className="whitespace-nowrap relative">
+                        {label}
+                        {/* Linha verde no hover - EFEITO ORIGINAL */}
+                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+                    </span>
                 </NavLink>
             </div>
         ))}

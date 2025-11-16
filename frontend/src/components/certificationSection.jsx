@@ -1,4 +1,4 @@
-// components/CertificationSection.jsx
+// components/CertificationSection.jsx (versão completa corrigida)
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -84,7 +84,7 @@ const CertificationSection = () => {
           <div className="bg-gray rounded-3xl p-10 lg:p-16 mb-16">
             <div className="flex flex-col lg:flex-row gap-16 items-center">
               <div className="w-full lg:w-1/2">
-                <div className="h-96 bg-gray-200 rounded-2xl animate-pulse"></div>
+                <div className="h-64 bg-gray-200 rounded-2xl animate-pulse"></div>
               </div>
               <div className="w-full lg:w-1/2 space-y-5">
                 <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
@@ -98,7 +98,7 @@ const CertificationSection = () => {
           <div className="bg-gray rounded-3xl p-10 lg:p-16">
             <div className="flex flex-col lg:flex-row-reverse gap-16 items-center">
               <div className="w-full lg:w-1/2">
-                <div className="h-96 bg-gray-200 rounded-2xl animate-pulse"></div>
+                <div className="h-64 bg-gray-200 rounded-2xl animate-pulse"></div>
               </div>
               <div className="w-full lg:w-1/2 space-y-5">
                 <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
@@ -116,7 +116,7 @@ const CertificationSection = () => {
       <div className="mx-auto py-24">
         
         {/* Header moderno */}
-        <div className="text-center mb-24 relative z-10">
+        <div className="text-center mb-24 relative z-10 px-4">
           {/* Badge de categoria */}
           <div className="inline-flex items-center gap-2 bg-gray-200 px-6 py-3 rounded-full mb-8">
             <div 
@@ -128,24 +128,26 @@ const CertificationSection = () => {
             </span>
           </div>
 
-          {/* Título principal com gradiente */}
-          <h1 className="text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 mb-8 leading-tight relative">
-            Nossas
-            <span 
-              className="font-bold ml-4"
-              style={{
-                background: 'linear-gradient(135deg, #206E34, #70BD44)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}
-            >
-              Certificações
-            </span>
+          {/* Título principal com gradiente - CORRIGIDO */}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 mb-8 leading-tight relative">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+              <span>Nossas</span>
+              <span 
+                className="font-bold"
+                style={{
+                  background: 'linear-gradient(135deg, #206E34, #70BD44)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                Certificações
+              </span>
+            </div>
             
-            {/* Círculo decorativo no título */}
+            {/* Círculo decorativo no título - CORRIGIDO */}
             <div 
-              className="absolute -right-20 -top-10 w-40 h-40 rounded-full blur-3xl -z-10 opacity-25"
+              className="absolute -right-10 sm:-right-20 -top-8 sm:-top-10 w-20 h-20 sm:w-40 sm:h-40 rounded-full blur-3xl -z-10 opacity-25"
               style={{
                 background: 'linear-gradient(135deg, #206E34, #70BD44)'
               }}
@@ -161,16 +163,16 @@ const CertificationSection = () => {
           ></div>
 
           {/* Subtítulo */}
-          <p className="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
             Compromisso com a qualidade, sustentabilidade e procedência responsável
           </p>
         </div>
 
         {/* Seção FSC */}
-        <div className="bg-gray rounded-3xl p-10 lg:p-16 mb-16 relative z-10">
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
+        <div className="bg-gray rounded-3xl p-6 sm:p-10 lg:p-16 mb-16 relative z-10">
+          <div className="flex flex-col lg:flex-row gap-8 sm:gap-16 items-center">
             
-            {/* Imagem FSC */}
+            {/* Imagem FSC - CORRIGIDA */}
             <motion.div 
               className="w-full lg:w-1/2"
               initial="initial"
@@ -185,7 +187,7 @@ const CertificationSection = () => {
                       <img 
                         src={data.fscImage} 
                         alt={data.fscImageAlt}
-                        className={`w-full h-96 object-contain transition-all duration-700 ${
+                        className={`w-full max-w-[400px] sm:max-w-[600px] mx-auto h-auto object-contain transition-all duration-700 ${
                           fscImageLoaded ? 'scale-100 opacity-100' : 'scale-110 opacity-0'
                         }`}
                         onLoad={() => setFscImageLoaded(true)}
@@ -195,14 +197,14 @@ const CertificationSection = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </>
                   ) : (
-                    <div className="w-full h-96 bg-gray-200 flex items-center justify-center rounded-3xl">
+                    <div className="w-full max-w-[400px] sm:max-w-[600px] h-48 sm:h-64 mx-auto bg-gray-200 flex items-center justify-center rounded-3xl">
                       <span className="text-gray-400">Imagem FSC</span>
                     </div>
                   )}
                 </div>
                 
                 {/* Elemento decorativo */}
-                <div className="absolute -inset-4 -z-10">
+                <div className="absolute -inset-2 sm:-inset-4 -z-10">
                   <div 
                     className="w-full h-full rounded-3xl transform rotate-3 transition-transform duration-500 group-hover:rotate-2"
                     style={{
@@ -229,7 +231,7 @@ const CertificationSection = () => {
               <div className="flex flex-col items-start justify-between max-md:items-center max-md:text-center">
                 
                 {/* Badge FSC */}
-                <div className="inline-flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full mb-8 shadow-sm">
+                <div className="inline-flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full mb-6 sm:mb-8 shadow-sm">
                   <div 
                     className="w-1.5 h-1.5 rounded-full"
                     style={{ backgroundColor: '#206E34' }}
@@ -240,7 +242,7 @@ const CertificationSection = () => {
                 </div>
 
                 {/* Título FSC */}
-                <h2 className="text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 mb-6 leading-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 mb-6 leading-tight">
                   {safeSplit(data.fscTitle).map((word, index, array) => (
                     <span
                       key={index}
@@ -263,21 +265,21 @@ const CertificationSection = () => {
 
                 {/* Linha decorativa */}
                 <div 
-                  className="w-20 h-0.5 rounded-full mb-8"
+                  className="w-20 h-0.5 rounded-full mb-6 sm:mb-8"
                   style={{
                     background: 'linear-gradient(135deg, #206E34, #70BD44)'
                   }}
                 ></div>
 
                 {/* Descrições FSC */}
-                <div className="space-y-6">
-                  <p className="text-lg text-gray-600 leading-relaxed">
+                <div className="space-y-4 sm:space-y-6">
+                  <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
                     {data.fscDescription1}
                   </p>
-                  <p className="text-lg text-gray-600 leading-relaxed">
+                  <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
                     {data.fscDescription2}
                   </p>
-                  <p className="text-lg text-gray-600 leading-relaxed">
+                  <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
                     {data.fscDescription3}
                   </p>
                 </div>
@@ -287,10 +289,10 @@ const CertificationSection = () => {
         </div>
 
         {/* Seção DOF */}
-        <div className="bg-gray rounded-3xl p-10 lg:p-16 relative z-10">
-          <div className="flex flex-col lg:flex-row-reverse gap-16 items-center">
+        <div className="bg-gray rounded-3xl p-6 sm:p-10 lg:p-16 relative z-10">
+          <div className="flex flex-col lg:flex-row-reverse gap-8 sm:gap-16 items-center">
             
-            {/* Imagem DOF */}
+            {/* Imagem DOF - CORRIGIDA */}
             <motion.div 
               className="w-full lg:w-1/2"
               initial="initial"
@@ -305,7 +307,7 @@ const CertificationSection = () => {
                       <img 
                         src={data.dofImage} 
                         alt={data.dofImageAlt}
-                        className={`w-full h-96 object-contain transition-all duration-700 ${
+                        className={`w-full max-w-[400px] sm:max-w-[600px] mx-auto h-auto object-contain transition-all duration-700 ${
                           dofImageLoaded ? 'scale-100 opacity-100' : 'scale-110 opacity-0'
                         }`}
                         onLoad={() => setDofImageLoaded(true)}
@@ -315,14 +317,14 @@ const CertificationSection = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </>
                   ) : (
-                    <div className="w-full h-96 bg-gray-200 flex items-center justify-center rounded-3xl">
+                    <div className="w-full max-w-[400px] sm:max-w-[600px] h-48 sm:h-64 mx-auto bg-gray-200 flex items-center justify-center rounded-3xl">
                       <span className="text-gray-400">Imagem DOF</span>
                     </div>
                   )}
                 </div>
                 
                 {/* Elemento decorativo */}
-                <div className="absolute -inset-4 -z-10">
+                <div className="absolute -inset-2 sm:-inset-4 -z-10">
                   <div 
                     className="w-full h-full rounded-3xl transform -rotate-3 transition-transform duration-500 group-hover:-rotate-2"
                     style={{
@@ -349,7 +351,7 @@ const CertificationSection = () => {
               <div className="flex flex-col items-start justify-between max-md:items-center max-md:text-center">
                 
                 {/* Badge DOF */}
-                <div className="inline-flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full mb-8 shadow-sm">
+                <div className="inline-flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full mb-6 sm:mb-8 shadow-sm">
                   <div 
                     className="w-1.5 h-1.5 rounded-full"
                     style={{ backgroundColor: '#206E34' }}
@@ -360,7 +362,7 @@ const CertificationSection = () => {
                 </div>
 
                 {/* Título DOF */}
-                <h2 className="text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 mb-6 leading-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 mb-6 leading-tight">
                   {safeSplit(data.dofTitle).map((word, index, array) => (
                     <span
                       key={index}
@@ -383,14 +385,14 @@ const CertificationSection = () => {
 
                 {/* Linha decorativa */}
                 <div 
-                  className="w-20 h-0.5 rounded-full mb-8"
+                  className="w-20 h-0.5 rounded-full mb-6 sm:mb-8"
                   style={{
                     background: 'linear-gradient(135deg, #206E34, #70BD44)'
                   }}
                 ></div>
 
                 {/* Descrição DOF */}
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
                   {data.dofDescription}
                 </p>
               </div>
@@ -400,13 +402,13 @@ const CertificationSection = () => {
 
         {/* Elementos decorativos de fundo - MÚLTIPLOS CÍRCULOS */}
         <div 
-          className="absolute top-1/4 left-10 w-80 h-80 rounded-full blur-3xl -z-10 opacity-20"
+          className="absolute top-1/4 left-4 sm:left-10 w-40 h-40 sm:w-80 sm:h-80 rounded-full blur-3xl -z-10 opacity-20"
           style={{
             background: 'linear-gradient(135deg, #206E34, #70BD44)'
           }}
         ></div>
         <div 
-          className="absolute bottom-1/4 right-10 w-[500px] h-[500px] rounded-full blur-3xl -z-10 opacity-10"
+          className="absolute bottom-1/4 right-4 sm:right-10 w-60 h-60 sm:w-[500px] sm:h-[500px] rounded-full blur-3xl -z-10 opacity-10"
           style={{
             background: 'linear-gradient(135deg, #206E34, #70BD44)'
           }}
@@ -414,19 +416,19 @@ const CertificationSection = () => {
         
         {/* Círculos adicionais */}
         <div 
-          className="absolute top-1/2 right-1/4 w-64 h-64 rounded-full blur-3xl -z-10 opacity-15"
+          className="absolute top-1/2 right-1/4 w-32 h-32 sm:w-64 sm:h-64 rounded-full blur-3xl -z-10 opacity-15"
           style={{
             background: 'linear-gradient(135deg, #206E34, #70BD44)'
           }}
         ></div>
         <div 
-          className="absolute bottom-1/3 left-1/4 w-96 h-96 rounded-full blur-3xl -z-10 opacity-10"
+          className="absolute bottom-1/3 left-1/4 w-48 h-48 sm:w-96 sm:h-96 rounded-full blur-3xl -z-10 opacity-10"
           style={{
             background: 'linear-gradient(135deg, #206E34, #70BD44)'
           }}
         ></div>
         <div 
-          className="absolute top-3/4 left-1/3 w-72 h-72 rounded-full blur-3xl -z-10 opacity-12"
+          className="absolute top-3/4 left-1/3 w-36 h-36 sm:w-72 sm:h-72 rounded-full blur-3xl -z-10 opacity-12"
           style={{
             background: 'linear-gradient(135deg, #206E34, #70BD44)'
           }}
@@ -434,13 +436,13 @@ const CertificationSection = () => {
 
         {/* Círculos específicos para as seções */}
         <div 
-          className="absolute top-[40%] left-[15%] w-60 h-60 rounded-full blur-3xl -z-10 opacity-18"
+          className="absolute top-[40%] left-[10%] sm:left-[15%] w-32 h-32 sm:w-60 sm:h-60 rounded-full blur-3xl -z-10 opacity-18"
           style={{
             background: 'linear-gradient(135deg, #206E34, #70BD44)'
           }}
         ></div>
         <div 
-          className="absolute bottom-[30%] right-[20%] w-56 h-56 rounded-full blur-3xl -z-10 opacity-14"
+          className="absolute bottom-[30%] right-[15%] sm:right-[20%] w-28 h-28 sm:w-56 sm:h-56 rounded-full blur-3xl -z-10 opacity-14"
           style={{
             background: 'linear-gradient(135deg, #206E34, #70BD44)'
           }}
