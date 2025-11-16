@@ -5,7 +5,7 @@ import {
   deleteCard,
   updateSectionTitle,
 } from "../controllers/CardController.js";
-import upload from "../middleware/multer.js";
+import {upload} from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 
 const cardRoute = express.Router();

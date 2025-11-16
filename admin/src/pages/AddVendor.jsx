@@ -2,14 +2,19 @@ import axios from "axios";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import { 
-  FaCircleExclamation, 
   FaUpload,
   FaSpinner,
   FaPlus,
   FaUserTie,
   FaEnvelope,
   FaWhatsapp,
-  FaUser
+  FaUser,
+  FaCheckCircle,
+  FaTimesCircle
+} from "react-icons/fa";
+
+import { 
+  FaCircleExclamation, 
 } from "react-icons/fa6";
 import "../index.css";
 import { useState } from "react";
@@ -20,16 +25,13 @@ const AddVendor = ({ token }) => {
   const [whatsapp, setWhatsapp] = useState("");
   const [image, setImage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [imageError, setImageError] = useState("");
 
   // Função para formatar o telefone automaticamente
   const formatPhoneNumber = (value) => {
-    // Remove tudo que não é número
     const numbers = value.replace(/\D/g, '');
-    
-    // Limita a 11 caracteres (DDD + 9 dígitos)
     const limitedNumbers = numbers.slice(0, 11);
     
-    // Aplica a formatação
     if (limitedNumbers.length <= 2) {
       return limitedNumbers;
     } else if (limitedNumbers.length <= 7) {
@@ -52,13 +54,17 @@ const AddVendor = ({ token }) => {
       return;
     }
 
+    if (imageError) {
+      toast.error("Por favor, corrija o erro na imagem antes de enviar.");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("email", email);
       
-      // Envia apenas os números do WhatsApp (remove formatação)
       if (whatsapp) {
         const cleanWhatsapp = whatsapp.replace(/\D/g, '');
         formData.append("whatsapp", cleanWhatsapp);
@@ -78,13 +84,18 @@ const AddVendor = ({ token }) => {
         setEmail("");
         setWhatsapp("");
         setImage(false);
+        setImageError("");
         document.getElementById("image").value = "";
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error("Erro ao adicionar vendedor.");
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Erro ao adicionar vendedor.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -92,12 +103,25 @@ const AddVendor = ({ token }) => {
 
   const handleImageChange = (e) => {
     const selectedImage = e.target.files[0];
+    setImageError(""); // Limpa erros anteriores
+
     if (selectedImage) {
-      if (selectedImage.size > 9 * 1024 * 1024) {
-        toast.error("A imagem deve ter no máximo 9MB");
+      // Validação de tamanho (1MB)
+      if (selectedImage.size > 1 * 1024 * 1024) {
+        setImageError("A imagem deve ter no máximo 1MB");
+        setImage(false);
         return;
       }
+
+      // Validação do tipo de arquivo
+      if (!selectedImage.type.startsWith('image/')) {
+        setImageError("Por favor, selecione um arquivo de imagem válido");
+        setImage(false);
+        return;
+      }
+
       setImage(selectedImage);
+      setImageError("");
     }
   };
 
@@ -106,7 +130,17 @@ const AddVendor = ({ token }) => {
     setEmail("");
     setWhatsapp("");
     setImage(false);
+    setImageError("");
     document.getElementById("image").value = "";
+  };
+
+  // Função para calcular e formatar o tamanho
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   return (
@@ -135,13 +169,32 @@ const AddVendor = ({ token }) => {
               {/* Área de Upload */}
               <div className="flex-shrink-0">
                 <label htmlFor="image" className="cursor-pointer block">
-                  <div className="w-80 h-96 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-secondary transition-colors duration-300 bg-gray-50 flex items-center justify-center card-hover">
+                  <div className={`w-80 h-96 border-2 border-dashed rounded-xl overflow-hidden transition-all duration-300 bg-gray-200 flex items-center justify-center card-hover ${
+                    imageError 
+                      ? 'border-red-300 bg-red-50' 
+                      : image 
+                        ? 'border-green-300 bg-green-50' 
+                        : 'border-gray-300 hover:border-secondary'
+                  }`}>
                     {image ? (
-                      <img
-                        src={URL.createObjectURL(image)}
-                        alt="Preview do vendedor"
-                        className="w-full h-full object-cover fade-in"
-                      />
+                      <div className="relative w-full h-full">
+                        <img
+                          src={URL.createObjectURL(image)}
+                          alt="Preview do vendedor"
+                          className="w-full h-full object-cover fade-in"
+                        />
+                        {/* Indicador de sucesso */}
+                        <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1">
+                          <FaCheckCircle size={20} />
+                        </div>
+                      </div>
+                    ) : imageError ? (
+                      <div className="text-center p-6">
+                        <FaTimesCircle className="text-red-400 text-4xl mx-auto mb-4" />
+                        <p className="text-red-600 font-medium">Erro na Imagem</p>
+                        <p className="text-red-500 text-sm mt-1">{imageError}</p>
+                        <p className="text-red-400 text-xs mt-2">Clique para tentar novamente</p>
+                      </div>
                     ) : (
                       <div className="text-center p-6 gentle-pulse">
                         <FaUpload className="text-gray-400 text-4xl mx-auto mb-4" />
@@ -165,18 +218,35 @@ const AddVendor = ({ token }) => {
               {/* Informações e Dicas */}
               <div className="flex-1 space-y-4 slide-in-right">
                 {/* Informações da Imagem */}
-                {image && (
+                {image && !imageError && (
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4 fade-in">
                     <div className="flex items-start gap-3">
-                      <FaUser className="text-green-600 text-lg mt-0.5 flex-shrink-0" />
+                      <FaCheckCircle className="text-green-600 text-lg mt-0.5 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold text-green-800 mb-2">
-                          Foto Selecionada
+                          Foto Válida ✓
                         </h4>
                         <div className="text-green-700 text-sm space-y-1">
                           <p><strong>Arquivo:</strong> {image.name}</p>
-                          <p><strong>Tamanho:</strong> {(image.size / 1024 / 1024).toFixed(2)} MB</p>
-                          <p><strong>Dimensões:</strong> Recomendado 1300x1800px</p>
+                          <p><strong>Tamanho:</strong> {formatFileSize(image.size)}</p>
+                          <p><strong>Status:</strong> <span className="text-green-600">Pronta para upload</span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Mensagem de Erro */}
+                {imageError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 fade-in">
+                    <div className="flex items-start gap-3">
+                      <FaTimesCircle className="text-red-600 text-lg mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-red-800 mb-2">
+                          Problema na Imagem
+                        </h4>
+                        <div className="text-red-700 text-sm">
+                          <p>{imageError}</p>
                         </div>
                       </div>
                     </div>
@@ -192,7 +262,7 @@ const AddVendor = ({ token }) => {
                         Recomendações Técnicas
                       </h4>
                       <ul className="text-blue-700 text-sm space-y-1">
-                        <li>• Tamanho máximo: 9MB</li>
+                        <li>• <strong>Tamanho máximo: 1MB</strong></li>
                         <li>• Largura ideal: 1300px - 1450px</li>
                         <li>• Altura ideal: 1800px - 1900px</li>
                         <li>• Formatos: JPG, PNG, WebP</li>
@@ -258,7 +328,7 @@ const AddVendor = ({ token }) => {
                   type="text"
                   placeholder="Ex: (11) 99999-9999"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
-                  maxLength={15} // (11) 99999-9999 = 15 caracteres
+                  maxLength={15}
                 />
                 <div className="flex justify-between items-center mt-1">
                   <p className="text-xs text-gray-500">
@@ -281,7 +351,7 @@ const AddVendor = ({ token }) => {
           <div className="flex gap-3 pt-6 border-t border-gray-200">
             <button
               type="submit"
-              disabled={isLoading || !name || !email || !image}
+              disabled={isLoading || !name || !email || !image || imageError}
               className="btn-hover-lift bg-secondary text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isLoading ? (
@@ -302,7 +372,7 @@ const AddVendor = ({ token }) => {
                 type="button"
                 onClick={handleCancel}
                 disabled={isLoading}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-300 font-medium btn-hover-lift"
+                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300 font-medium btn-hover-lift"
               >
                 Limpar Formulário
               </button>
@@ -318,7 +388,7 @@ const AddVendor = ({ token }) => {
           <div className="text-sm text-blue-800">Campos Obrigatórios</div>
         </div>
         <div className="bg-green-50 p-4 rounded-lg border border-green-200 card-hover">
-          <div className="text-2xl font-bold text-green-600">9MB</div>
+          <div className="text-2xl font-bold text-green-600">1MB</div>
           <div className="text-sm text-green-800">Tamanho Máximo</div>
         </div>
         <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 card-hover">

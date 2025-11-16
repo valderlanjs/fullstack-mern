@@ -4,7 +4,7 @@ import {
   getCertificationSection, 
   updateCertificationSection 
 } from "../controllers/certificationController.js";
-import upload from "../middleware/multer.js";
+import { upload, handleMulterError } from "../middleware/multer.js";
 
 const certificationRouter = express.Router();
 

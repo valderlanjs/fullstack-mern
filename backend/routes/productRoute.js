@@ -7,7 +7,7 @@ import {
   singleProduct, 
   getProductFilters 
 } from "../controllers/productController.js";
-import upload from "../middleware/multer.js";
+import { upload, handleMulterError } from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 import { checkPermission } from "../middleware/permissionAuth.js";
 

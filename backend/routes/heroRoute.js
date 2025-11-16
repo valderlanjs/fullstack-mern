@@ -1,7 +1,7 @@
 // routes/heroRoute.js
 import express from "express";
 import { getHeroImages, addHero, updateHeroTexts, deleteHero } from "../controllers/heroController.js";
-import upload from "../middleware/multer.js";
+import { upload, handleMulterError } from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 
 const heroRouter = express.Router();

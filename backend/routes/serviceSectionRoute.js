@@ -6,7 +6,7 @@ import {
   createOrUpdateServicesSection,
   deleteServicesSection
 } from "../controllers/servicesSectionController.js";
-import upload from "../middleware/multer.js";
+import { upload, handleMulterError } from "../middleware/multer.js";
 
 
 const servicesSectionRoute = express.Router();

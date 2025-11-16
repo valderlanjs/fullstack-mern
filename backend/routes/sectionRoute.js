@@ -9,7 +9,7 @@ import {
   deleteSection,
   reorderSections
 } from "../controllers/sectionController.js";
-import upload from "../middleware/multer.js";
+import { upload, handleMulterError } from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 
 const sectionRoute = express.Router();

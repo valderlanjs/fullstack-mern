@@ -1,5 +1,4 @@
 
-
 import { v2 as cloudinary } from "cloudinary";
 import Vendor from "../models/vendorModel.js";
 
@@ -26,6 +25,14 @@ const addVendor = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "A imagem é obrigatória.",
+      });
+    }
+
+    // Validação adicional do tamanho (backup)
+    if (image.size > 1 * 1024 * 1024) {
+      return res.status(400).json({
+        success: false,
+        message: "A imagem deve ter no máximo 1MB.",
       });
     }
 

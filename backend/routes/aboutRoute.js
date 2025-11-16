@@ -6,7 +6,7 @@ import {
   createOrUpdateAboutSection,
   deleteAboutSection
 } from "../controllers/aboutController.js";
-import upload from "../middleware/multer.js";
+import { upload, handleMulterError } from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 
 const aboutSectionRoute = express.Router();
