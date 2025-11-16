@@ -28,7 +28,8 @@ import {
   getAllUsers,
   updateUser,
   updateUserPassword,
-  getCurrentUser
+  getCurrentUser,
+  deleteUser
 } from "../controllers/userController.js";
 import adminAuth from "../middleware/adminAuth.js";
 
@@ -42,6 +43,7 @@ userRoute.get("/current", adminAuth, getCurrentUser);
 userRoute.post("/admin", adminLogin);
 userRoute.post("/register-admin", registerAdmin);
 userRoute.post("/change-credentials", changeAdminCredentials);
+userRoute.delete("/admin/users/:id", adminAuth, deleteUser);
 
 // 🔐 Rotas para gerenciamento de usuários
 userRoute.get("/admin/users",  getAllUsers);

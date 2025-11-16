@@ -356,6 +356,41 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+// userController.js - Adicione esta função
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Impedir que o usuário exclua a si mesmo
+    if (parseInt(id) === req.user.id) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Você não pode excluir sua própria conta." 
+      });
+    }
+
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Usuário não encontrado." 
+      });
+    }
+
+    await user.destroy();
+    res.json({ 
+      success: true, 
+      message: "Usuário excluído com sucesso!" 
+    });
+  } catch (error) {
+    console.error("Erro ao excluir usuário:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao excluir usuário." 
+    });
+  }
+};
+
 export {
   loginUser,
   registerUser,
@@ -365,5 +400,6 @@ export {
   getAllUsers,
   updateUser,
   updateUserPassword,
-  getCurrentUser
+  getCurrentUser,
+  deleteUser
 };

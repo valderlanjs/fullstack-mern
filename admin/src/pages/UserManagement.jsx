@@ -1,4 +1,4 @@
-// components/admin/UserManagement.jsx - Versão com cadastro integrado
+// components/admin/UserManagement.jsx - Versão corrigida
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { backend_url } from "../App";
@@ -13,7 +13,6 @@ import {
   FaKey,
   FaEye,
   FaEyeSlash,
-  FaPlus,
   FaUserPlus,
 } from "react-icons/fa";
 
@@ -82,8 +81,47 @@ const UserManagement = ({ token }) => {
     fetchUsers();
   }, [token]);
 
+  // 🔧 CORREÇÃO: Função para editar usuário
+  const handleEditUser = (user) => {
+    setEditingUser(user);
+    setEditForm({
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  };
+
+  // 🗑️ CORREÇÃO: Função para excluir usuário
+  const handleDeleteUser = async (userId, userName) => {
+    if (!window.confirm(`Tem certeza que deseja excluir o usuário "${userName}"? Esta ação não pode ser desfeita.`)) {
+      return;
+    }
+
+    try {
+      // 🔧 CORREÇÃO: Adicione a rota de exclusão no seu backend se ainda não existir
+      // Por enquanto, vou mostrar como seria a implementação
+      const response = await axios.delete(
+        `${backend_url}/api/user/admin/users/${userId}`,
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        toast.success("Usuário excluído com sucesso!");
+        fetchUsers(); // Recarrega a lista
+      }
+    } catch (error) {
+      console.error("Erro ao excluir usuário:", error);
+      
+      // 🔧 CORREÇÃO: Se a rota DELETE não existir, mostre uma mensagem
+      if (error.response?.status === 404) {
+        toast.error("Funcionalidade de exclusão não implementada no servidor.");
+      } else {
+        toast.error(error.response?.data?.message || "Erro ao excluir usuário");
+      }
+    }
+  };
+
   // Add new user
-  // UserManagement.jsx - handleAddUser CORRIGIDO
   const handleAddUser = async (e) => {
     e.preventDefault();
 
@@ -93,7 +131,6 @@ const UserManagement = ({ token }) => {
     }
 
     try {
-      // USE ROTA PÚBLICA - SEM TOKEN
       const response = await axios.post(
         `${backend_url}/api/user/register`,
         {
@@ -101,16 +138,14 @@ const UserManagement = ({ token }) => {
           email: addUserForm.email,
           password: addUserForm.password,
         }
-        // REMOVA: { headers: { token } }
       );
 
       if (response.data.success) {
-        // Se for para criar admin, atualize via API administrativa
         if (addUserForm.isAdmin) {
           await axios.put(
             `${backend_url}/api/user/admin/users/${response.data.user.id}`,
             { isAdmin: true },
-            { headers: { token } } // ← SÓ AQUI PRECISA DE TOKEN
+            { headers: { token } }
           );
         }
 

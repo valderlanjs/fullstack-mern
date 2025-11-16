@@ -36,6 +36,7 @@ export const backend_url = import.meta.env.VITE_BACKEND_URL;
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [isLoading, setIsLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     // Simular um loading inicial
@@ -55,6 +56,14 @@ function App() {
       delete axios.defaults.headers.common["Authorization"];
     }
   }, [token]);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
 
   if (isLoading) {
     return (
@@ -84,22 +93,44 @@ function App() {
       />
       
       {token ? (
-        <div className="flex flex-col min-h-screen">
-          {/* Header Fixo */}
-          <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
-            <Header token={token} setToken={setToken} />
+        <div className="flex min-h-screen">
+          {/* Sidebar - Agora faz parte do fluxo normal do flex */}
+          <div className={`
+            fixed inset-y-0 left-0 z-40
+            sm:relative sm:z-auto
+            transform transition-transform duration-300 ease-in-out
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'}
+          `}>
+            <Sidebar 
+              token={token} 
+              isOpen={isSidebarOpen} 
+              onClose={closeSidebar} 
+            />
           </div>
           
-          {/* Conteúdo Principal */}
-          <div className="flex flex-1 pt-16"> {/* pt-16 para compensar o header fixo */}
-            {/* Sidebar - Fixo em desktop, hidden em mobile */}
-            <div className="hidden sm:block fixed left-0 top-16 h-[calc(100vh-4rem)] z-40">
-              <Sidebar token={token} setToken={setToken} />
+          {/* Overlay para mobile */}
+          {isSidebarOpen && (
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 z-30 sm:hidden"
+              onClick={closeSidebar}
+            />
+          )}
+          
+          {/* Conteúdo Principal - Lado direito */}
+          <div className="flex-1 flex flex-col min-w-0"> {/* min-w-0 para evitar overflow */}
+            {/* Header Fixo */}
+            <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+              <Header 
+                token={token} 
+                setToken={setToken} 
+                onToggleSidebar={toggleSidebar}
+                isSidebarOpen={isSidebarOpen}
+              />
             </div>
             
-            {/* Área de Conteúdo */}
-            <div className="flex-1 sm:ml-64 lg:ml-72 transition-all duration-300">
-              <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+            {/* Área de Conteúdo das Páginas */}
+            <div className="flex-1 pt-16 overflow-auto"> {/* pt-16 para compensar o header fixo */}
+              <div className="w-full h-full p-4 sm:p-6 lg:p-8">
                 <Routes>
                   <Route path="/" element={<Dashboard token={token} />} />
                   <Route path="/dashboard" element={<Dashboard token={token} />} />
