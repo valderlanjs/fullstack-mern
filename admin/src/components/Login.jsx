@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
-import { FaEye, FaEyeSlash, FaShieldAlt } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaShieldAlt, FaUser } from "react-icons/fa";
 
 const Login = ({ setToken }) => {
   const [email, setEmail] = useState("");
@@ -20,7 +20,8 @@ const Login = ({ setToken }) => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${backend_url}/api/user/admin`, {
+      // 🔥 CORREÇÃO: Use a rota de login comum, não a de admin
+      const response = await axios.post(`${backend_url}/api/user/login`, {
         email: email.trim().toLowerCase(),
         password,
       });
@@ -32,6 +33,7 @@ const Login = ({ setToken }) => {
         toast.error(response.data.message || "Erro no login");
       }
     } catch (error) {
+      console.error("Erro no login:", error);
       toast.error(error.response?.data?.message || "Erro ao fazer login");
     } finally {
       setLoading(false);
@@ -58,7 +60,7 @@ const Login = ({ setToken }) => {
                 <span className="text-[#4a491c]">Grupo Madenobre</span>
               </h3>
               <p className="text-sm text-gray-600">
-                Acesso restrito a administradores autorizados
+                Acesso para usuários autorizados
               </p>
             </div>
 
@@ -71,7 +73,7 @@ const Login = ({ setToken }) => {
                 value={email}
                 type="email"
                 required
-                placeholder="Digite seu email administrativo"
+                placeholder="Digite seu email"
                 className="w-full px-3 py-2.5 ring-1 ring-slate-900/10 rounded-lg bg-white mt-1 focus:outline-none focus:ring-2 focus:ring-secondary"
                 disabled={loading}
               />
@@ -114,10 +116,9 @@ const Login = ({ setToken }) => {
             </button>
 
             <div className="w-full mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200 text-xs text-blue-800 text-center">
-              <p className="font-medium">⚠️ Cadastro de novos usuários</p>
+              <p className="font-medium">ℹ️ Sistema de Permissões</p>
               <p className="mt-1">
-                O cadastro de novos usuários é realizado exclusivamente por
-                administradores através do painel interno.
+                Seu acesso será limitado às funcionalidades de acordo com suas permissões.
               </p>
             </div>
 
@@ -133,18 +134,18 @@ const Login = ({ setToken }) => {
         <div className="w-1/2 hidden sm:block bg-gradient-to-br from-gray-900 to-secondary">
           <div className="flex flex-col items-center justify-center h-full text-white p-8">
             <div className="text-center max-w-md">
-              <FaShieldAlt className="text-6xl opacity-20 mx-auto mb-6" />
+              <FaUser className="text-6xl opacity-20 mx-auto mb-6" />
               <h2 className="text-2xl font-bold mb-4">
-                Sistema Administrativo
+                Sistema de Gestão
               </h2>
               <p className="text-gray-300">
-                Área restrita para administradores. Aqui você pode gerenciar
-                produtos, usuários, banners e todas as configurações do site.
+                Área para usuários autorizados. Acesso personalizado baseado em permissões específicas.
               </p>
               <div className="mt-6 space-y-2 text-sm text-gray-400">
-                <p>• Gerencie usuários e permissões</p>
-                <p>• Controle total do conteúdo</p>
-                <p>• Acesso seguro e monitorado</p>
+                <p>• Acesso personalizado por permissões</p>
+                <p>• Interface adaptada ao seu perfil</p>
+                <p>• Controle seguro e monitorado</p>
+                <p>• Funcionalidades específicas</p>
               </div>
             </div>
           </div>

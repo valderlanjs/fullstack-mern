@@ -20,187 +20,222 @@ import {
   FaCertificate,
   FaChartBar,
   FaEnvelope,
+  FaFileAlt,
+  FaQuestionCircle
 } from "react-icons/fa";
 
-const menuItems = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: FaChartBar,
-    to: "/dashboard",
-    type: "direct",
-  },
-  {
-    id: "home",
-    label: "Home",
-    icon: FaHome,
-    type: "submenu",
-    subItems: [
-      {
-        to: "/update-hero",
-        label: "Banner Principal",
-        icon: FaImage,
-      },
-      {
-        to: "/manage-cards",
-        label: "Gerenciar Cards",
-        icon: FaIdCard,
-      },
-      {
-        to: "/manage-logo",
-        label: "Gerenciar Logo",
-        icon: FaStore,
-      },
-      {
-        to: "/edit-home-section",
-        label: "Informações",
-        icon: FaInfoCircle,
-      },
-      {
-        to: "/edit-features",
-        label: "Certificações",
-        icon: FaCertificate,
-      },
-    ],
-  },
-  {
-    id: "produtos",
-    label: "Produtos",
-    icon: FaBoxOpen,
-    type: "submenu",
-    subItems: [
-      {
-        to: "/add-product",
-        label: "Adicionar Produto",
-        icon: FaPlusSquare,
-      },
-      {
-        to: "/list",
-        label: "Lista de Produtos",
-        icon: FaListAlt,
-      },
-    ],
-  },
-  {
-    id: "secoes",
-    label: "Página Sobre",
-    icon: FaColumns,
-    type: "submenu",
-    subItems: [
-      {
-        to: "/manage-about",
-        label: "Primeira Seção",
-        icon: FaEdit,
-      },
-      {
-        to: "/manage-sections",
-        label: "Segunda Seção",
-        icon: FaEdit,
-      },
-      {
-        to: "/manage-section-two",
-        label: "Terceira Seção",
-        icon: FaEdit,
-      },
-      {
-        to: "/manage-banner-section",
-        label: "Quarta Seção",
-        icon: FaEdit,
-      },
-      {
-        to: "/certification-section",
-        label: "Quinta Seção",
-        icon: FaEdit,
-      },
-    ],
-  },
-  {
-    id: "contato",
-    label: "Contato",
-    icon: FaUsers,
-    type: "submenu",
-    subItems: [
-      {
-        to: "/add-vendor",
-        label: "Adicionar Vendedor",
-        icon: FaUserPlus,
-      },
-      {
-        to: "/list-vendor",
-        label: "Lista de Vendedores",
-        icon: FaUsers,
-      },
-      {
-        to: "/update-banner",
-        label: "Banner de Contato",
-        icon: FaImage,
-      },
-    ],
-  },
-  {
-    id: "footer",
-    label: "Rodapé",
-    icon: FaEdit,
-    type: "submenu",
-    subItems: [
-      {
-        to: "/edit-footer",
-        label: "Editar Rodapé",
-        icon: FaColumns,
-      },
-    ],
-  },
-  {
-    id: "faq",
-    label: "FAQ",
-    icon: FaEdit,
-    type: "submenu",
-    subItems: [
-      {
-        to: "/faq",
-        label: "Editar FAQ",
-        icon: FaColumns,
-      },
-    ],
-  },
-  {
-    id: "pages",
-    label: "Politica e Termos",
-    icon: FaEdit,
-    type: "submenu",
-    subItems: [
-      {
-        to: "/pages",
-        label: "Editar Termos e Politicas",
-        icon: FaColumns,
-      },
-    ],
-  },
-  {
-    id: "newsletter",
-    label: "Newsletter",
-    icon: FaEnvelope,
-    to: "/newsletter",
-    type: "direct",
-  },
-  {
-    id: "usuarios",
-    label: "Usuários",
-    icon: FaShieldAlt,
-    type: "submenu",
-    subItems: [
-      {
-        to: "/users",
-        label: "Gerenciar Usuários",
-        icon: FaUserCog,
-      },
-    ],
-  },
-];
+// Menu base - itens que aparecem para todos os usuários autenticados
+const getMenuItems = (currentUser) => {
+  const baseMenuItems = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: FaChartBar,
+      to: "/dashboard",
+      type: "direct",
+    },
+    {
+      id: "home",
+      label: "Home",
+      icon: FaHome,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/update-hero",
+          label: "Banner Principal",
+          icon: FaImage,
+        },
+        {
+          to: "/manage-cards",
+          label: "Gerenciar Cards",
+          icon: FaIdCard,
+        },
+        {
+          to: "/manage-logo",
+          label: "Gerenciar Logo",
+          icon: FaStore,
+        },
+        {
+          to: "/edit-home-section",
+          label: "Informações",
+          icon: FaInfoCircle,
+        },
+        {
+          to: "/edit-features",
+          label: "Certificações",
+          icon: FaCertificate,
+        },
+      ],
+    },
+    {
+      id: "secoes",
+      label: "Página Sobre",
+      icon: FaColumns,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/manage-about",
+          label: "Primeira Seção",
+          icon: FaEdit,
+        },
+        {
+          to: "/manage-sections",
+          label: "Segunda Seção",
+          icon: FaEdit,
+        },
+        {
+          to: "/manage-section-two",
+          label: "Terceira Seção",
+          icon: FaEdit,
+        },
+        {
+          to: "/manage-banner-section",
+          label: "Quarta Seção",
+          icon: FaEdit,
+        },
+        {
+          to: "/certification-section",
+          label: "Quinta Seção",
+          icon: FaEdit,
+        },
+      ],
+    },
+    {
+      id: "footer",
+      label: "Rodapé",
+      icon: FaEdit,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/edit-footer",
+          label: "Editar Rodapé",
+          icon: FaColumns,
+        },
+      ],
+    },
+    {
+      id: "faq",
+      label: "FAQ",
+      icon: FaQuestionCircle,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/faq",
+          label: "Editar FAQ",
+          icon: FaEdit,
+        },
+      ],
+    },
+    {
+      id: "newsletter",
+      label: "Newsletter",
+      icon: FaEnvelope,
+      to: "/newsletter",
+      type: "direct",
+    },
+  ];
 
-const Sidebar = ({ token, isOpen, onClose }) => {
+  // 🔐 MENUS COM PERMISSÕES ESPECÍFICAS
+
+  // Menu de Produtos - apenas para admin OU com permissão manageProducts
+  if (currentUser?.isAdmin || currentUser?.permissions?.manageProducts) {
+    baseMenuItems.push({
+      id: "produtos",
+      label: "Produtos",
+      icon: FaBoxOpen,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/add-product",
+          label: "Adicionar Produto",
+          icon: FaPlusSquare,
+        },
+        {
+          to: "/list",
+          label: "Lista de Produtos",
+          icon: FaListAlt,
+        },
+      ],
+    });
+  }
+
+  // Menu de Contato/Vendedores - apenas para admin OU com permissão manageVendors
+  if (currentUser?.isAdmin || currentUser?.permissions?.manageVendors) {
+    baseMenuItems.push({
+      id: "contato",
+      label: "Contato",
+      icon: FaUsers,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/add-vendor",
+          label: "Adicionar Vendedor",
+          icon: FaUserPlus,
+        },
+        {
+          to: "/list-vendor",
+          label: "Lista de Vendedores",
+          icon: FaUsers,
+        },
+        {
+          to: "/update-banner",
+          label: "Banner de Contato",
+          icon: FaImage,
+        },
+      ],
+    });
+  }
+
+  // Menu de Política e Termos - apenas para admin OU com permissão managePrivacyTerms
+  if (currentUser?.isAdmin || currentUser?.permissions?.managePrivacyTerms) {
+    baseMenuItems.push({
+      id: "pages",
+      label: "Política e Termos",
+      icon: FaFileAlt,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/pages",
+          label: "Editar Termos e Políticas",
+          icon: FaEdit,
+        },
+      ],
+    });
+  }
+
+  // 🔐 MENU DE USUÁRIOS - APENAS PARA ADMINISTRADORES
+  if (currentUser?.isAdmin) {
+    baseMenuItems.push({
+      id: "usuarios",
+      label: "Usuários",
+      icon: FaShieldAlt,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/users",
+          label: "Gerenciar Usuários",
+          icon: FaUserCog,
+        },
+      ],
+    });
+  }
+
+  return baseMenuItems;
+};
+
+const Sidebar = ({ token, currentUser, isOpen, onClose }) => {
   const [openMenus, setOpenMenus] = useState({});
+  const [menuItems, setMenuItems] = useState([]);
   const location = useLocation();
+
+  // Atualiza os menus quando o currentUser muda
+  useEffect(() => {
+    const items = getMenuItems(currentUser);
+    setMenuItems(items);
+    
+    console.log('🔐 Sidebar - Usuário atual:', currentUser);
+    console.log('📋 Menus disponíveis:', items.map(item => item.label));
+  }, [currentUser]);
 
   // Inicializar menus abertos baseado na rota atual
   useEffect(() => {
@@ -218,7 +253,7 @@ const Sidebar = ({ token, isOpen, onClose }) => {
     });
 
     setOpenMenus(initialOpenMenus);
-  }, [location.pathname]);
+  }, [location.pathname, menuItems]);
 
   const toggleMenu = (menu) => {
     setOpenMenus((prev) => ({
@@ -242,6 +277,13 @@ const Sidebar = ({ token, isOpen, onClose }) => {
     return subItems.some((item) => location.pathname === item.to);
   };
 
+  // Informações do usuário para debug
+  const userInfo = currentUser ? {
+    name: currentUser.name,
+    isAdmin: currentUser.isAdmin,
+    permissions: currentUser.permissions
+  } : null;
+
   return (
     <div
       className={`
@@ -256,6 +298,18 @@ const Sidebar = ({ token, isOpen, onClose }) => {
         <div>
           <h1 className="text-xl font-bold text-secondary">Grupo Madenobre</h1>
           <p className="text-xs text-gray-500 mt-1">Gerenciamento do site</p>
+          
+          {/* Informações do usuário logado */}
+          {currentUser && (
+            <div className="mt-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-xs font-medium text-blue-800 truncate">
+                {currentUser.name}
+              </p>
+              <p className="text-xs text-blue-600">
+                {currentUser.isAdmin ? '👑 Administrador' : '👤 Usuário'}
+              </p>
+            </div>
+          )}
         </div>
         <button
           onClick={onClose}
@@ -267,122 +321,152 @@ const Sidebar = ({ token, isOpen, onClose }) => {
 
       {/** Menu Navigation com Scroll */}
       <nav className="space-y-2 h-[calc(100vh-180px)] overflow-y-auto">
-        {menuItems.map((menu) => {
-          const Icon = menu.icon;
-          const isDirectItem = menu.type === "direct";
-          const hasSubItems =
-            menu.type === "submenu" &&
-            menu.subItems &&
-            menu.subItems.length > 0;
+        {menuItems.length === 0 ? (
+          // Loading state
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-secondary mx-auto"></div>
+            <p className="text-sm text-gray-500 mt-2">Carregando menus...</p>
+          </div>
+        ) : (
+          menuItems.map((menu) => {
+            const Icon = menu.icon;
+            const isDirectItem = menu.type === "direct";
+            const hasSubItems =
+              menu.type === "submenu" &&
+              menu.subItems &&
+              menu.subItems.length > 0;
 
-          const isActive = isDirectItem
-            ? location.pathname === menu.to
-            : isSubItemActive(menu.subItems);
+            const isActive = isDirectItem
+              ? location.pathname === menu.to
+              : isSubItemActive(menu.subItems);
 
-          const isMenuOpen = openMenus[menu.id] || false;
+            const isMenuOpen = openMenus[menu.id] || false;
 
-          return (
-            <div
-              key={menu.id}
-              className="bg-gray-100 border border-gray-200 rounded-lg overflow-hidden"
-            >
-              {/* Item Direto (Dashboard, Newsletter) */}
-              {isDirectItem ? (
-                <NavLink
-                  to={menu.to}
-                  onClick={handleLinkClick}
-                  className={({ isActive: navIsActive }) =>
-                    `w-full flex items-center p-3 rounded-lg transition-all duration-200 group ${
-                      navIsActive
-                        ? "bg-blue-50 text-secondary font-semibold border-l-4 border-l-secondary"
-                        : "text-gray-700 hover:bg-blue-50 hover:text-secondary"
-                    }`
-                  }
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon
-                      className={`text-lg ${
-                        location.pathname === menu.to
-                          ? "text-secondary"
-                          : "text-gray-500 group-hover:text-secondary"
-                      }`}
-                    />
-                    <span className="font-medium">{menu.label}</span>
-                  </div>
-                </NavLink>
-              ) : (
-                /* Menu com Subitens */
-                <>
-                  <button
-                    onClick={() => toggleMenu(menu.id)}
-                    className={`w-full flex items-center justify-between p-3 rounded-lg transition-all duration-200 group ${
-                      isActive
-                        ? "bg-blue-50 text-secondary font-semibold border-l-4 border-l-secondary"
-                        : "text-gray-700 hover:bg-blue-50 hover:text-secondary"
-                    }`}
+            return (
+              <div
+                key={menu.id}
+                className="bg-gray-100 border border-gray-200 rounded-lg overflow-hidden"
+              >
+                {/* Item Direto (Dashboard, Newsletter) */}
+                {isDirectItem ? (
+                  <NavLink
+                    to={menu.to}
+                    onClick={handleLinkClick}
+                    className={({ isActive: navIsActive }) =>
+                      `w-full flex items-center p-3 rounded-lg transition-all duration-200 group ${
+                        navIsActive
+                          ? "bg-blue-50 text-secondary font-semibold border-l-4 border-l-secondary"
+                          : "text-gray-700 hover:bg-blue-50 hover:text-secondary"
+                      }`
+                    }
                   >
                     <div className="flex items-center gap-3">
                       <Icon
                         className={`text-lg ${
-                          isActive
+                          location.pathname === menu.to
                             ? "text-secondary"
                             : "text-gray-500 group-hover:text-secondary"
                         }`}
                       />
                       <span className="font-medium">{menu.label}</span>
                     </div>
-                    <FaChevronDown
-                      className={`text-xs transition-transform duration-300 ${
-                        isMenuOpen
-                          ? "rotate-180 text-secondary"
-                          : "text-gray-400"
-                      }`}
-                    />
-                  </button>
-
-                  {/* Submenu */}
-                  {hasSubItems && (
-                    <div
-                      className={`transition-all duration-300 ease-in-out ${
-                        isMenuOpen
-                          ? "max-h-96 opacity-100"
-                          : "max-h-0 opacity-0"
+                  </NavLink>
+                ) : (
+                  /* Menu com Subitens */
+                  <>
+                    <button
+                      onClick={() => toggleMenu(menu.id)}
+                      className={`w-full flex items-center justify-between p-3 rounded-lg transition-all duration-200 group ${
+                        isActive
+                          ? "bg-blue-50 text-secondary font-semibold border-l-4 border-l-secondary"
+                          : "text-gray-700 hover:bg-blue-50 hover:text-secondary"
                       }`}
                     >
-                      <div className="py-2 pl-4 pr-2 space-y-1">
-                        {menu.subItems.map((subItem) => {
-                          const SubIcon = subItem.icon;
-                          const isSubActive = location.pathname === subItem.to;
-
-                          return (
-                            <NavLink
-                              key={subItem.to}
-                              to={subItem.to}
-                              onClick={handleLinkClick}
-                              className={({ isActive: navIsActive }) =>
-                                `flex items-center gap-3 p-2 rounded-lg text-sm transition-all duration-200 group ${
-                                  navIsActive || isSubActive
-                                    ? "bg-secondary text-white shadow-md"
-                                    : "text-gray-600 hover:bg-gray-200 hover:text-secondary"
-                                }`
-                              }
-                            >
-                              <SubIcon className="text-sm" />
-                              <span className="font-medium">
-                                {subItem.label}
-                              </span>
-                            </NavLink>
-                          );
-                        })}
+                      <div className="flex items-center gap-3">
+                        <Icon
+                          className={`text-lg ${
+                            isActive
+                              ? "text-secondary"
+                              : "text-gray-500 group-hover:text-secondary"
+                          }`}
+                        />
+                        <span className="font-medium">{menu.label}</span>
                       </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          );
-        })}
+                      <FaChevronDown
+                        className={`text-xs transition-transform duration-300 ${
+                          isMenuOpen
+                            ? "rotate-180 text-secondary"
+                            : "text-gray-400"
+                        }`}
+                      />
+                    </button>
+
+                    {/* Submenu */}
+                    {hasSubItems && (
+                      <div
+                        className={`transition-all duration-300 ease-in-out ${
+                          isMenuOpen
+                            ? "max-h-96 opacity-100"
+                            : "max-h-0 opacity-0"
+                        }`}
+                      >
+                        <div className="py-2 pl-4 pr-2 space-y-1">
+                          {menu.subItems.map((subItem) => {
+                            const SubIcon = subItem.icon;
+                            const isSubActive = location.pathname === subItem.to;
+
+                            return (
+                              <NavLink
+                                key={subItem.to}
+                                to={subItem.to}
+                                onClick={handleLinkClick}
+                                className={({ isActive: navIsActive }) =>
+                                  `flex items-center gap-3 p-2 rounded-lg text-sm transition-all duration-200 group ${
+                                    navIsActive || isSubActive
+                                      ? "bg-secondary text-white shadow-md"
+                                      : "text-gray-600 hover:bg-gray-200 hover:text-secondary"
+                                  }`
+                                }
+                              >
+                                <SubIcon className="text-sm" />
+                                <span className="font-medium">
+                                  {subItem.label}
+                                </span>
+                              </NavLink>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })
+        )}
       </nav>
+
+      {/* Debug Info - Remova em produção */}
+      {currentUser && (
+        <div className="mt-4 p-3 bg-gray-100 rounded-lg border border-gray-300">
+          <p className="text-xs font-medium text-gray-700">Permissões Ativas:</p>
+          <div className="mt-1 flex flex-wrap gap-1">
+            {currentUser.isAdmin ? (
+              <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                Administrador
+              </span>
+            ) : (
+              Object.entries(currentUser.permissions || {}).map(([key, value]) => 
+                value && (
+                  <span key={key} className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                    {key.replace('manage', '').replace(/([A-Z])/g, ' $1').trim()}
+                  </span>
+                )
+              )
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Mobile Bottom Info */}
       <div className="sm:hidden mt-4 pt-4 border-t border-gray-200">

@@ -5,7 +5,7 @@ import { BiLogOutCircle } from "react-icons/bi";
 import axios from "axios";
 import { backend_url } from "../App";
 
-const Header = ({ token, setToken, onToggleSidebar, isSidebarOpen }) => {
+const Header = ({ token, setToken, currentUser, onToggleSidebar, isSidebarOpen }) => {
   const [userInfo, setUserInfo] = useState({
     name: "Carregando...",
     email: "carregando..."
@@ -15,46 +15,36 @@ const Header = ({ token, setToken, onToggleSidebar, isSidebarOpen }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // Buscar informações do usuário logado da API
-  const fetchUserInfo = async () => {
-    try {
-      if (!token) {
-        setUserInfo({
-          name: "Administrador",
-          email: "usuário@email.com"
-        });
-        setLoading(false);
-        return;
-      }
-
-      const response = await axios.get(`${backend_url}/api/user/current`, {
-        headers: { Authorization: `Bearer ${token}` }
+const fetchUserInfo = async () => {
+  try {
+    if (!token) {
+      setUserInfo({
+        name: "Administrador",
+        email: "usuário@email.com"
       });
-
-      if (response.data.success) {
-        setUserInfo({
-          name: response.data.user.name,
-          email: response.data.user.email
-        });
-      }
-    } catch (error) {
-      console.error("Erro ao carregar informações do usuário:", error);
-      // Fallback: tentar decodificar do token
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        setUserInfo({
-          name: payload.name || "Administrador",
-          email: payload.email || "admin@sistema.com"
-        });
-      } catch {
-        setUserInfo({
-          name: "Administrador",
-          email: "usuário@email.com"
-        });
-      }
-    } finally {
       setLoading(false);
+      return;
     }
-  };
+
+    const response = await axios.get(`${backend_url}/api/user/current`, {
+      headers: { 
+        Authorization: `Bearer ${token}` // ← MUDE PARA Authorization
+      }
+    });
+
+    if (response.data.success) {
+      setUserInfo({
+        name: response.data.user.name,
+        email: response.data.user.email
+      });
+    }
+  } catch (error) {
+    console.error("Erro ao carregar informações do usuário:", error);
+    // Fallback...
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchUserInfo();
@@ -113,7 +103,7 @@ const Header = ({ token, setToken, onToggleSidebar, isSidebarOpen }) => {
           {/** Botão Hamburguer para Mobile */}
           <button
             onClick={onToggleSidebar}
-            className="sm:hidden p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
+            className="sm:hidden p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-200 transition-colors"
           >
             <FaBars className="text-lg text-gray-600" />
           </button>
