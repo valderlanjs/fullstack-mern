@@ -1,22 +1,30 @@
 // routes/productRoute.js
 import express from "express";
-import { addProduct, listProduct, removeProduct, singleProduct, getProductFilters } from "../controllers/productController.js";
+import { 
+  addProduct, 
+  listProduct, 
+  removeProduct, 
+  singleProduct, 
+  getProductFilters 
+} from "../controllers/productController.js";
 import upload from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
+import { checkPermission } from "../middleware/permissionAuth.js";
 
 const productRouter = express.Router();
 
-productRouter.post('/add', adminAuth, upload.fields([
+// 🔐 Rotas protegidas - apenas admin OU com permissão manageProducts
+productRouter.post('/add', adminAuth, checkPermission('manageProducts'), upload.fields([
     { name: 'image1', maxCount: 1 },
     { name: 'image2', maxCount: 1 },
     { name: 'image3', maxCount: 1 },
     { name: 'image4', maxCount: 1 }
 ]), addProduct);
 
-// Nova rota para buscar filtros
-productRouter.get('/filters', getProductFilters);
+productRouter.post('/remove', adminAuth, checkPermission('manageProducts'), removeProduct);
 
-productRouter.post('/remove', adminAuth, removeProduct);
+// 🌐 Rotas públicas
+productRouter.get('/filters', getProductFilters);
 productRouter.get('/list', listProduct);
 productRouter.get('/:productId', singleProduct);
 

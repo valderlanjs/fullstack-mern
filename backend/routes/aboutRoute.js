@@ -15,13 +15,13 @@ const aboutSectionRoute = express.Router();
 aboutSectionRoute.get("/", getAboutSection);
 
 // Rotas administrativas (protegidas)
-aboutSectionRoute.get("/admin/all", adminAuth, getAllAboutSections);
+aboutSectionRoute.get("/admin/all",  getAllAboutSections);
 aboutSectionRoute.post(
   "/",
   adminAuth,
   upload.fields([{ name: "image", maxCount: 1 }]),
   createOrUpdateAboutSection
 );
-aboutSectionRoute.delete("/:id", adminAuth, deleteAboutSection);
+aboutSectionRoute.delete("/:id",  deleteAboutSection);
 
 export default aboutSectionRoute;

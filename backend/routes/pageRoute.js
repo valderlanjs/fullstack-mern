@@ -1,4 +1,4 @@
-// routes/pageRoutes.js
+// routes/pageRoute.js
 import express from 'express';
 import {
   getPageBySlug,
@@ -7,15 +7,16 @@ import {
   seedPages
 } from '../controllers/pageController.js';
 import adminAuth from '../middleware/adminAuth.js';
+import { checkPermission } from '../middleware/permissionAuth.js';
 
 const router = express.Router();
 
-// Rotas públicas
+// 🌐 Rotas públicas
 router.get('/:slug', getPageBySlug);
 
-// Rotas protegidas (admin)
-router.get('/', adminAuth, getPages);
-router.put('/:id', adminAuth, updatePage);
-router.post('/seed', adminAuth, seedPages);
+// 🔐 Rotas protegidas - apenas admin OU com permissão managePrivacyTerms
+router.get('/', adminAuth, checkPermission('managePrivacyTerms'), getPages);
+router.put('/:id', adminAuth, checkPermission('managePrivacyTerms'), updatePage);
+router.post('/seed', adminAuth, checkPermission('managePrivacyTerms'), seedPages);
 
 export default router;

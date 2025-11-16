@@ -6,6 +6,6 @@ import adminAuth from "../middleware/adminAuth.js";
 const bannerRouter = express.Router();
 
 bannerRouter.get('/image', getBannerImage);
-bannerRouter.post('/update', adminAuth, upload.fields([{ name: 'image', maxCount: 1 }]), updateBannerImage);
+bannerRouter.post('/update',  upload.fields([{ name: 'image', maxCount: 1 }]), updateBannerImage);
 
 export default bannerRouter;

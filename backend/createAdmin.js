@@ -1,61 +1,67 @@
-// createAdmin.js
-import { sequelize } from './config/postgres.js';
-import User from './models/userModel.js';
-import bcrypt from 'bcryptjs';
+// scripts/createAdmin.js
+import { sequelize } from "./config/postgres.js";
+import User from "./models/userModel.js";
+import bcrypt from "bcryptjs";
+import validator from "validator";
 
 const createAdminUser = async () => {
   try {
-    // Conectar ao banco de dados
     await sequelize.authenticate();
-    console.log('✅ Conectado ao banco de dados PostgreSQL');
+    console.log('✅ Conectado ao banco de dados');
 
-    // Sincronizar modelos (caso necessário)
-    await sequelize.sync();
-    console.log('✅ Modelos sincronizados');
+    const adminData = {
+      name: "Administrador",
+      email: "valderlanjosr@gmail.com", // Altere para o email desejado
+      password: "Val2110#", // Altere para uma senha forte
+      isAdmin: true,
+      permissions: {
+        managePrivacyTerms: true,
+        manageProducts: true,
+        manageVendors: true
+      }
+    };
 
-    // Verificar se já existe um usuário admin
-    const existingAdmin = await User.findOne({ 
-      where: { email: 'admin@dev-valderlan.com.br' } 
-    });
-    
-    if (existingAdmin) {
-      console.log('⚠️  Usuário admin já existe:');
-      console.log(`   📧 Email: ${existingAdmin.email}`);
-      console.log(`   👤 Nome: ${existingAdmin.name}`);
-      console.log(`   🔑 Admin: ${existingAdmin.isAdmin ? 'Sim' : 'Não'}`);
+    // Verifica se o email é válido
+    if (!validator.isEmail(adminData.email)) {
+      throw new Error("Email inválido");
+    }
+
+    // Verifica se a senha é forte o suficiente
+    if (adminData.password.length < 8) {
+      throw new Error("A senha deve ter pelo menos 8 caracteres");
+    }
+
+    // Verifica se já existe um usuário com este email
+    const existingUser = await User.findOne({ where: { email: adminData.email } });
+    if (existingUser) {
+      console.log('⚠️  Já existe um usuário com este email');
       return;
     }
 
-    // Criar hash da senha
-    const hashedPassword = await bcrypt.hash('admin123', 10);
+    // Criptografa a senha
+    const hashedPassword = await bcrypt.hash(adminData.password, 10);
 
-    // Criar usuário admin
+    // Cria o usuário admin
     const adminUser = await User.create({
-      name: 'Administrador Principal',
-      email: 'admin@gmail.com',
+      name: adminData.name,
+      email: adminData.email,
       password: hashedPassword,
-      isAdmin: true
+      isAdmin: true,
+      permissions: adminData.permissions
     });
 
-    console.log('✅ USUÁRIO ADMIN CRIADO COM SUCESSO!');
-    console.log('=====================================');
-    console.log(`📧 Email: ${adminUser.email}`);
-    console.log('🔑 Senha: admin123');
-    console.log(`👤 Nome: ${adminUser.name}`);
-    console.log(`🎯 Tipo: Administrador`);
-    console.log('=====================================');
-    console.log('⚠️  IMPORTANTE: Altere esta senha após o primeiro login!');
-    console.log('🔗 Acesse: https://dev-valderlan.com.br/admin');
+    console.log('✅ Administrador criado com sucesso!');
+    console.log('📧 Email:', adminData.email);
+    console.log('🔑 Senha:', adminData.password);
+    console.log('👑 Tipo: Administrador Total');
+    console.log('🔐 Permissões: Todas as permissões');
 
   } catch (error) {
-    console.error('❌ Erro ao criar usuário admin:', error.message);
-    console.error('Detalhes:', error);
+    console.error('❌ Erro ao criar administrador:', error.message);
   } finally {
-    // Fechar conexão
     await sequelize.close();
-    console.log('🔌 Conexão com o banco fechada');
   }
 };
 
-// Executar o script
+// Executa o script
 createAdminUser();

@@ -19,20 +19,19 @@ sectionRoute.get("/", getSections);
 sectionRoute.get("/:id", getSectionById);
 
 // Rotas administrativas (protegidas)
-sectionRoute.get("/admin/all", adminAuth, getAllSections);
+sectionRoute.get("/admin/all",  getAllSections);
 sectionRoute.post(
   "/",
-  adminAuth,
-  upload.fields([{ name: "image", maxCount: 1 }]),
+    upload.fields([{ name: "image", maxCount: 1 }]),
   createSection
 );
 sectionRoute.put(
   "/:id",
-  adminAuth,
+  
   upload.fields([{ name: "image", maxCount: 1 }]),
   updateSection
 );
-sectionRoute.delete("/:id", adminAuth, deleteSection);
-sectionRoute.put("/admin/reorder", adminAuth, reorderSections);
+sectionRoute.delete("/:id",  deleteSection);
+sectionRoute.put("/admin/reorder",  reorderSections);
 
 export default sectionRoute;

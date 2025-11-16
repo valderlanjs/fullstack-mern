@@ -11,15 +11,3 @@ const Vendor = sequelize.define('Vendor', {
 });
 
 export default Vendor;
-/*
-import mongoose from 'mongoose';
-
-const vendorSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  image: { type: String, required: true },
-  whatsapp: { type: String }
-});
-
-const Vendor = mongoose.model('Vendor', vendorSchema);
-export default Vendor;*/

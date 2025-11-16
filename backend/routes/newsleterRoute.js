@@ -5,7 +5,7 @@ import {
   getSubscribers,
   unsubscribe
 } from "../controllers/newsleterController.js";
-import adminAuth from "../middleware/adminAuth.js";
+
 
 const newsletterRoute = express.Router();
 
@@ -13,7 +13,7 @@ const newsletterRoute = express.Router();
 newsletterRoute.post("/subscribe", subscribeNewsletter);
 
 // Rotas administrativas
-newsletterRoute.get("/subscribers", adminAuth, getSubscribers);
-newsletterRoute.put("/unsubscribe/:id", adminAuth, unsubscribe);
+newsletterRoute.get("/subscribers",  getSubscribers);
+newsletterRoute.put("/unsubscribe/:id", unsubscribe);
 
 export default newsletterRoute;
