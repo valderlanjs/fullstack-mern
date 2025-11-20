@@ -21,7 +21,9 @@ import {
   FaChartBar,
   FaEnvelope,
   FaFileAlt,
-  FaQuestionCircle
+  FaQuestionCircle,
+  FaBullhorn,
+  FaHeadSideVirus
 } from "react-icons/fa";
 
 // Menu base - itens que aparecem para todos os usuários autenticados
@@ -97,6 +99,24 @@ const getMenuItems = (currentUser) => {
           to: "/certification-section",
           label: "Quinta Seção",
           icon: FaEdit,
+        },
+      ],
+    },
+    {
+      id: "marketing",
+      label: "Marketing",
+      icon: FaBullhorn,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/marketing-messages",
+          label: "Mensagens Promocionais",
+          icon: FaEdit,
+        },
+        {
+          to: "/tracking-codes",
+          label: "Códigos de Rastreamento",
+          icon: FaHeadSideVirus,
         },
       ],
     },
@@ -232,9 +252,12 @@ const Sidebar = ({ token, currentUser, isOpen, onClose }) => {
   useEffect(() => {
     const items = getMenuItems(currentUser);
     setMenuItems(items);
-    
-    console.log('🔐 Sidebar - Usuário atual:', currentUser);
-    console.log('📋 Menus disponíveis:', items.map(item => item.label));
+
+    console.log("🔐 Sidebar - Usuário atual:", currentUser);
+    console.log(
+      "📋 Menus disponíveis:",
+      items.map((item) => item.label)
+    );
   }, [currentUser]);
 
   // Inicializar menus abertos baseado na rota atual
@@ -278,11 +301,13 @@ const Sidebar = ({ token, currentUser, isOpen, onClose }) => {
   };
 
   // Informações do usuário para debug
-  const userInfo = currentUser ? {
-    name: currentUser.name,
-    isAdmin: currentUser.isAdmin,
-    permissions: currentUser.permissions
-  } : null;
+  const userInfo = currentUser
+    ? {
+        name: currentUser.name,
+        isAdmin: currentUser.isAdmin,
+        permissions: currentUser.permissions,
+      }
+    : null;
 
   return (
     <div
@@ -298,7 +323,7 @@ const Sidebar = ({ token, currentUser, isOpen, onClose }) => {
         <div>
           <h1 className="text-xl font-bold text-secondary">Grupo Madenobre</h1>
           <p className="text-xs text-gray-500 mt-1">Gerenciamento do site</p>
-          
+
           {/* Informações do usuário logado */}
           {currentUser && (
             <div className="mt-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
@@ -306,7 +331,7 @@ const Sidebar = ({ token, currentUser, isOpen, onClose }) => {
                 {currentUser.name}
               </p>
               <p className="text-xs text-blue-600">
-                {currentUser.isAdmin ? '👑 Administrador' : '👤 Usuário'}
+                {currentUser.isAdmin ? "👑 Administrador" : "👤 Usuário"}
               </p>
             </div>
           )}
@@ -413,7 +438,8 @@ const Sidebar = ({ token, currentUser, isOpen, onClose }) => {
                         <div className="py-2 pl-4 pr-2 space-y-1">
                           {menu.subItems.map((subItem) => {
                             const SubIcon = subItem.icon;
-                            const isSubActive = location.pathname === subItem.to;
+                            const isSubActive =
+                              location.pathname === subItem.to;
 
                             return (
                               <NavLink
@@ -449,19 +475,28 @@ const Sidebar = ({ token, currentUser, isOpen, onClose }) => {
       {/* Debug Info - Remova em produção */}
       {currentUser && (
         <div className="mt-4 p-3 bg-gray-100 rounded-lg border border-gray-300">
-          <p className="text-xs font-medium text-gray-700">Permissões Ativas:</p>
+          <p className="text-xs font-medium text-gray-700">
+            Permissões Ativas:
+          </p>
           <div className="mt-1 flex flex-wrap gap-1">
             {currentUser.isAdmin ? (
               <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
                 Administrador
               </span>
             ) : (
-              Object.entries(currentUser.permissions || {}).map(([key, value]) => 
-                value && (
-                  <span key={key} className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                    {key.replace('manage', '').replace(/([A-Z])/g, ' $1').trim()}
-                  </span>
-                )
+              Object.entries(currentUser.permissions || {}).map(
+                ([key, value]) =>
+                  value && (
+                    <span
+                      key={key}
+                      className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded"
+                    >
+                      {key
+                        .replace("manage", "")
+                        .replace(/([A-Z])/g, " $1")
+                        .trim()}
+                    </span>
+                  )
               )
             )}
           </div>

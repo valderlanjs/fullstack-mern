@@ -25,6 +25,7 @@ export const createOrUpdateFooter = async (req, res) => {
     const {
       description,
       copyright,
+      cnpj, // NOVO CAMPO
       aboutLink,
       productsLink,
       contactLink,
@@ -48,6 +49,7 @@ export const createOrUpdateFooter = async (req, res) => {
     const footerData = {
       description: description || null,
       copyright: copyright || null,
+      cnpj: cnpj || null, // NOVO CAMPO
       aboutLink: aboutLink || null,
       productsLink: productsLink || null,
       contactLink: contactLink || null,

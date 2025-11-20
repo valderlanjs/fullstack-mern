@@ -10,6 +10,7 @@ import {
   BsClock,
   BsArrowUpRight,
 } from "react-icons/bs";
+import { FaIdCard } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -26,11 +27,11 @@ const Footer = () => {
   const navigate = useNavigate();
 
   const handlePrivacyClick = () => {
-    navigate("/politica-privacidade"); // Use o slug correto
+    navigate("/politica-privacidade");
   };
 
   const handleTermsClick = () => {
-    navigate("/termos-uso"); // Use o slug correto
+    navigate("/termos-uso");
   };
 
   useEffect(() => {
@@ -154,20 +155,20 @@ const Footer = () => {
           {/* LOGO E DESCRIÇÃO */}
           <motion.div variants={itemVariants} className="space-y-6">
             <Link to="/" className="block">
-              <div className="flex items-center gap-3 group">
+              <div className="flex items-center gap-4 group">
                 {footerData?.logoUrl ? (
                   <img
                     src={footerData.logoUrl}
                     alt="Logo Madenobre"
-                    className="w-14 h-14 object-contain rounded-xl group-hover:scale-110 transition-transform duration-300"
+                    className="w-20 h-20 object-contain rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg"
                   />
                 ) : (
-                  <div className="w-14 h-14 bg-gradient-to-br from-[#206E34] to-[#70BD44] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-white font-bold text-lg">M</span>
+                  <div className="w-20 h-20 bg-gradient-to-br from-[#206E34] to-[#70BD44] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <span className="text-white font-bold text-2xl">M</span>
                   </div>
                 )}
                 <div>
-                  <h3 className="text-xl font-bold text-white">
+                  <h3 className="text-2xl font-bold text-white">
                     Grupo Madenobre
                   </h3>
                   <p className="text-sm text-gray-400">Desde 1998</p>
@@ -181,9 +182,9 @@ const Footer = () => {
             </p>
 
             {/* Horário de funcionamento */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center gap-2 text-gray-400">
-                <BsClock className="text-[#70BD44]" />
+                <BsClock className="text-[#70BD44] text-lg" />
                 <span className="text-sm font-medium">
                   Horário de Funcionamento
                 </span>
@@ -193,6 +194,17 @@ const Footer = () => {
                   "Seg - Sex: 7:00 - 18:00 | Sáb: 7:00 - 12:00"}
               </p>
             </div>
+
+            {/* CNPJ */}
+            {footerData?.cnpj && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-gray-400">
+                  <FaIdCard className="text-[#70BD44] text-sm" />
+                  <span className="text-sm font-medium">CNPJ</span>
+                </div>
+                <p className="text-gray-300 text-sm font-mono">{footerData.cnpj}</p>
+              </div>
+            )}
           </motion.div>
 
           {/* LINKS RÁPIDOS */}
@@ -209,6 +221,10 @@ const Footer = () => {
                   label: "Nossos Produtos",
                 },
                 {
+                  href: footerData?.contactLink || "/contact",
+                  label: "Contato",
+                },
+                {
                   href: footerData?.faqLink || "/faq",
                   label: "Perguntas Frequentes",
                 },
@@ -216,9 +232,9 @@ const Footer = () => {
                 <li key={index}>
                   <Link
                     to={link.href}
-                    className="text-gray-300 hover:text-white transition-all duration-300 flex items-center gap-2 group text-sm"
+                    className="text-gray-300 hover:text-white transition-all duration-300 flex items-center gap-2 group text-sm hover:translate-x-1"
                   >
-                    <BsArrowUpRight className="text-[#70BD44] text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <BsArrowUpRight className="text-[#70BD44] text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-0.5" />
                     {link.label}
                   </Link>
                 </li>
@@ -234,7 +250,7 @@ const Footer = () => {
             </h4>
             <div className="space-y-4">
               <div className="flex items-start gap-3 group">
-                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-[#206E34] transition-colors duration-300 mt-1">
+                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-[#206E34] transition-colors duration-300 mt-1 flex-shrink-0">
                   <BsTelephoneFill className="text-[#70BD44] text-sm" />
                 </div>
                 <div>
@@ -249,7 +265,7 @@ const Footer = () => {
               </div>
 
               <div className="flex items-start gap-3 group">
-                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-[#206E34] transition-colors duration-300 mt-1">
+                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-[#206E34] transition-colors duration-300 mt-1 flex-shrink-0">
                   <BsWhatsapp className="text-[#70BD44] text-sm" />
                 </div>
                 <div>
@@ -268,7 +284,7 @@ const Footer = () => {
               </div>
 
               <div className="flex items-start gap-3 group">
-                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-[#206E34] transition-colors duration-300 mt-1">
+                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-[#206E34] transition-colors duration-300 mt-1 flex-shrink-0">
                   <BsEnvelopeFill className="text-[#70BD44] text-sm" />
                 </div>
                 <div>
@@ -285,12 +301,12 @@ const Footer = () => {
               </div>
 
               <div className="flex items-start gap-3 group">
-                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-[#206E34] transition-colors duration-300 mt-1">
+                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-[#206E34] transition-colors duration-300 mt-1 flex-shrink-0">
                   <BsGeoAltFill className="text-[#70BD44] text-sm" />
                 </div>
                 <div>
                   <p className="text-gray-300 text-sm font-medium">Endereço</p>
-                  <p className="text-white text-sm">
+                  <p className="text-white text-sm leading-relaxed">
                     {footerData?.address ||
                       "Av. Juca Sampaio 2817 - Jacintinho, Maceió - AL, 57040-600"}
                   </p>
@@ -341,14 +357,14 @@ const Footer = () => {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3 bg-gray-800 rounded-xl hover:bg-gray-700 transition-all duration-300 group relative"
-                      whileHover={{ scale: 1.05 }}
+                      className="p-3 bg-gray-800 rounded-xl hover:bg-gray-700 transition-all duration-300 group relative flex-shrink-0"
+                      whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                     >
                       <Icon
                         className={`text-xl ${social.color} group-hover:scale-110 transition-transform duration-300`}
                       />
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
                         {social.name}
                       </div>
                     </motion.a>
@@ -368,19 +384,29 @@ const Footer = () => {
                   placeholder="Seu e-mail"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-400 focus:outline-none focus:border-[#70BD44] transition-colors duration-300"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-400 focus:outline-none focus:border-[#70BD44] transition-colors duration-300 focus:ring-1 focus:ring-[#70BD44]"
                   required
                 />
                 <motion.button
                   type="submit"
                   disabled={submitting}
-                  className="w-full px-4 py-2 bg-gradient-to-r from-[#206E34] to-[#70BD44] text-white rounded-lg font-medium text-sm hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2 bg-gradient-to-r from-[#206E34] to-[#70BD44] text-white rounded-lg font-medium text-sm hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:from-[#1a5a2a] hover:to-[#5da536] shadow-md hover:shadow-xl"
                   whileHover={{ scale: submitting ? 1 : 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  {submitting ? "Inscrevendo..." : "Inscrever"}
+                  {submitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Inscrevendo...
+                    </span>
+                  ) : (
+                    "Inscrever na Newsletter"
+                  )}
                 </motion.button>
               </form>
+              <p className="text-gray-400 text-xs">
+                Não compartilhamos seus dados. Respeitamos sua privacidade.
+              </p>
             </div>
           </motion.div>
         </motion.div>
@@ -402,17 +428,30 @@ const Footer = () => {
             <div className="flex gap-6 text-gray-400 text-sm">
               <button
                 onClick={handlePrivacyClick}
-                className="hover:text-white transition-colors duration-300"
+                className="hover:text-white transition-colors duration-300 hover:underline"
               >
                 Política de Privacidade
               </button>
               <button
                 onClick={handleTermsClick}
-                className="hover:text-white transition-colors duration-300"
+                className="hover:text-white transition-colors duration-300 hover:underline"
               >
                 Termos de Uso
               </button>
             </div>
+          </motion.div>
+
+          {/* Mensagem adicional */}
+          <motion.div
+            className="mt-4 text-center"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <p className="text-gray-500 text-xs">
+              Madeira de qualidade para Alagoas há mais de 25 anos
+            </p>
           </motion.div>
         </div>
       </div>

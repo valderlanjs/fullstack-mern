@@ -310,3 +310,46 @@
     @apply text-[5px]; /* Tamanho para telas menores que 640px */
   }
 }
+/* Efeito Marquee/Scroll para a barra de marketing */
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.marquee-content {
+  display: flex;
+  animation: marquee 10s linear infinite;
+  width: max-content;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+/* Para dispositivos móveis - velocidade mais lenta */
+@media (max-width: 768px) {
+  .marquee-content {
+    animation: marquee 35s linear infinite;
+  }
+}
+
+/* Garantir que cada cópia ocupe 33.333% da largura */
+.marquee-container .flex {
+  min-width: 33.333vw;
+}
+
+.marquee-container span {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}

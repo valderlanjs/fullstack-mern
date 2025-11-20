@@ -112,7 +112,7 @@ const Hero = () => {
         <Swiper
           modules={[Autoplay, Navigation, EffectFade]}
           autoplay={{ 
-            delay: 5000,
+            delay: 3000,
             disableOnInteraction: false 
           }}
           effect="fade"

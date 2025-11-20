@@ -30,6 +30,9 @@ import CertificationAdmin from "./pages/CertificationSection";
 import NewsletterManager from "./pages/NewsletterAdmin";
 import FaqAdmin from "./pages/FaqAdmin";
 import PagesAdmin from "./pages/PagesAdmin";
+import MarketingMessages from "./pages/MarketingMessages";
+import TrackingManager from "./pages/TrackingManager"
+
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -175,7 +178,12 @@ function App() {
               {/* pt-16 para compensar o header fixo */}
               <div className="w-full h-full p-4 sm:p-6 lg:p-8">
                 <Routes>
-                  <Route path="/" element={<Dashboard token={token} currentUser={currentUser}/>} />
+                  <Route
+                    path="/"
+                    element={
+                      <Dashboard token={token} currentUser={currentUser} />
+                    }
+                  />
                   <Route
                     path="/dashboard"
                     element={
@@ -293,6 +301,24 @@ function App() {
                     path="/edit-features"
                     element={
                       <AdminFeatures token={token} currentUser={currentUser} />
+                    }
+                  />
+                  <Route
+                    path="/marketing-messages"
+                    element={
+                      <MarketingMessages
+                        token={token}
+                        currentUser={currentUser}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/tracking-codes"
+                    element={
+                      <TrackingManager
+                        token={token}
+                        currentUser={currentUser}
+                      />
                     }
                   />
                   <Route

@@ -12,19 +12,20 @@ const Footer = sequelize.define("Footer", {
   logoUrl: { type: DataTypes.STRING, allowNull: true },
   description: { type: DataTypes.TEXT, allowNull: true },
   copyright: { type: DataTypes.STRING, allowNull: true },
+  cnpj: { type: DataTypes.STRING, allowNull: true }, // NOVO CAMPO
   
   // Links Rápidos
   aboutLink: { type: DataTypes.STRING, allowNull: true },
   productsLink: { type: DataTypes.STRING, allowNull: true },
   contactLink: { type: DataTypes.STRING, allowNull: true },
-  faqLink: { type: DataTypes.STRING, allowNull: true }, // NOVO CAMPO
+  faqLink: { type: DataTypes.STRING, allowNull: true },
   
   // Informações de Contato
   phone: { type: DataTypes.STRING, allowNull: true },
   email: { type: DataTypes.STRING, allowNull: true },
   address: { type: DataTypes.TEXT, allowNull: true },
-  whatsapp: { type: DataTypes.STRING, allowNull: true }, // NOVO CAMPO
-  businessHours: { type: DataTypes.STRING, allowNull: true }, // NOVO CAMPO
+  whatsapp: { type: DataTypes.STRING, allowNull: true },
+  businessHours: { type: DataTypes.STRING, allowNull: true },
   
   // Redes Sociais
   facebookUrl: { type: DataTypes.STRING, allowNull: true },
