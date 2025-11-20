@@ -1,4 +1,3 @@
-// middleware/authenticate.js
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
@@ -28,12 +27,31 @@ const authenticate = async (req, res, next) => {
     }
 
     req.user = user;
+    
+    // Adiciona informações do token para controle de tempo
+    req.tokenExpiry = decoded.exp;
+    
     next();
   } catch (error) {
     console.error("Erro de autenticação:", error);
+    
+    if (error.name === 'TokenExpiredError') {
+      return res
+        .status(401)
+        .json({ 
+          success: false, 
+          message: "Sessão expirada. Faça login novamente.",
+          code: "TOKEN_EXPIRED"
+        });
+    }
+    
     return res
       .status(401)
-      .json({ success: false, message: "Token inválido ou expirado." });
+      .json({ 
+        success: false, 
+        message: "Token inválido.",
+        code: "INVALID_TOKEN"
+      });
   }
 };
 

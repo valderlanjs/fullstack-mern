@@ -4,7 +4,11 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
 const createToken = (id, isAdmin = false) => {
-  return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET);
+  return jwt.sign(
+    { id, isAdmin }, 
+    process.env.JWT_SECRET, 
+    { expiresIn: process.env.JWT_EXPIRES_IN || '1h' } // Padrão 1 hora
+  );
 };
 
 // 🔐 Login comum
@@ -286,6 +290,7 @@ const deleteUser = async (req, res) => {
     });
   }
 };
+
 
 export {
   loginUser,

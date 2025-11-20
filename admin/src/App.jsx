@@ -8,6 +8,9 @@ import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import SessionWarningModal from "./components/SessionWarningModal";
+
+import useSessionTimeout from "./hooks/useSessionTimeout";
 
 import Add from "./pages/Add";
 import List from "./pages/List";
@@ -31,8 +34,7 @@ import NewsletterManager from "./pages/NewsletterAdmin";
 import FaqAdmin from "./pages/FaqAdmin";
 import PagesAdmin from "./pages/PagesAdmin";
 import MarketingMessages from "./pages/MarketingMessages";
-import TrackingManager from "./pages/TrackingManager"
-
+import TrackingManager from "./pages/TrackingManager";
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -41,6 +43,9 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const { isWarningVisible, timeLeft, extendSession, handleLogout } =
+    useSessionTimeout(token, setToken, currentUser);
 
   useEffect(() => {
     // Simular um loading inicial
@@ -125,6 +130,14 @@ function App() {
         pauseOnHover
         theme="light"
         className="mt-16"
+      />
+
+      {/* Modal de aviso de sessão */}
+      <SessionWarningModal
+        isVisible={isWarningVisible}
+        timeLeft={timeLeft}
+        onExtend={extendSession}
+        onLogout={handleLogout}
       />
 
       {token ? (

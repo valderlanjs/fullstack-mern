@@ -3,6 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import { connectAndSyncDB } from "./config/postgres.js";
 import connectCloudinary from "./config/cloudinary.js";
+import { checkSessionTimeout } from "./middleware/sessionTimeout.js";
 
 import userRoute from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
@@ -24,7 +25,7 @@ import newsletterRoute from "./routes/newsleterRoute.js";
 import faqRoutes from "./routes/faqRoute.js";
 import pageRoutes from "./routes/pageRoute.js";
 import messageRoute from "./routes/messageRoute.js";
-import trackingRoute from "./routes/trackingRoute.js"; 
+import trackingRoute from "./routes/trackingRoute.js";
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -63,8 +64,11 @@ const startServer = async () => {
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization", "token"],
         credentials: true,
+        exposedHeaders: ["New-Token"], // Expor o header New-Token
       })
     );
+
+    app.use(checkSessionTimeout);
 
     // Garante resposta para preflight
     app.options("*", cors());
