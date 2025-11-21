@@ -36,6 +36,7 @@ const allowedOrigins = [
   "http://dev-valderlan.com.br",
   "http://www.dev-valderlan.com.br",
   "https://www.dev-valderlan.com.br",
+  "https://admin.dev-valderlan.com.br",
 ];
 
 // Função para conectar ao banco de dados e iniciar o servidor

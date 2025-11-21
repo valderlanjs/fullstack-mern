@@ -11,7 +11,7 @@ const createAdminUser = async () => {
 
     const adminData = {
       name: "Administrador",
-      email: "valderlanjosr@gmail.com", // Altere para o email desejado
+      email: "valderlanjosr15@gmail.com", // Altere para o email desejado
       password: "Val2110#", // Altere para uma senha forte
       isAdmin: true,
       permissions: {
