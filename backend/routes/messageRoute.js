@@ -9,36 +9,37 @@ import {
 } from "../controllers/messageController.js";
 import adminAuth from "../middleware/adminAuth.js";
 import { checkPermission } from "../middleware/permissionAuth.js";
+import { authenticate } from "../middleware/authenticate.js";
 
 const messageRouter = express.Router();
 
 // 🔐 Rotas protegidas
 messageRouter.post('/create', 
-  adminAuth, 
+  authenticate, 
   checkPermission('manageMarketing'), 
   createMessage
 );
 
 messageRouter.post('/toggle', 
-  adminAuth, 
+  authenticate, 
   checkPermission('manageMarketing'), 
   toggleMessage
 );
 
 messageRouter.post('/update', 
-  adminAuth, 
+  authenticate, 
   checkPermission('manageMarketing'), 
   updateMessage
 );
 
 messageRouter.post('/delete', 
-  adminAuth, 
+  authenticate, 
   checkPermission('manageMarketing'), 
   deleteMessage
 );
 
 messageRouter.get('/all', 
-  adminAuth, 
+  authenticate, 
   checkPermission('manageMarketing'), 
   getAllMessages
 );

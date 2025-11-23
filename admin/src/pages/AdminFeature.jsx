@@ -1,6 +1,7 @@
 // components/admin/AdminFeatures.jsx
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import api from "../api/axios.js"
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import { 
@@ -95,7 +96,7 @@ const AdminFeatures = ({ token }) => {
     const fetchFeaturesData = async () => {
         try {
             setIsFetching(true);
-            const response = await axios.get(`${backend_url}/api/features`);
+            const response = await api.get(`${backend_url}/api/features`);
             if (response.data.success && response.data.features) {
                 setFeaturesData(response.data.features);
                 toast.success("Dados da features carregados com sucesso!");
@@ -133,7 +134,7 @@ const AdminFeatures = ({ token }) => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(
+            const response = await api.post(
                 `${backend_url}/api/features`,
                 featuresData,
                 { 
@@ -161,7 +162,7 @@ const AdminFeatures = ({ token }) => {
     const handleReset = async () => {
         if (window.confirm("Tem certeza que deseja resetar a features para os valores padrão? Esta ação não pode ser desfeita.")) {
             try {
-                const response = await axios.delete(
+                const response = await api.delete(
                     `${backend_url}/api/features`,
                     { headers: { token } }
                 );

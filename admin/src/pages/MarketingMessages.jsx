@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios.js"
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import {
@@ -34,7 +34,7 @@ const MarketingMessages = ({ token, currentUser }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(`${backend_url}/api/marketing-messages/all`, {
+      const response = await api.get("/api/marketing-messages/all", {
         headers: { token }
       });
       
@@ -56,7 +56,7 @@ const MarketingMessages = ({ token, currentUser }) => {
         ? `${backend_url}/api/marketing-messages/update`
         : `${backend_url}/api/marketing-messages/create`;
 
-      const response = await axios.post(url, 
+      const response = await api.post(url, 
         editingMessage ? { id: editingMessage.id, ...formData } : formData,
         { headers: { token } }
       );
@@ -84,7 +84,7 @@ const MarketingMessages = ({ token, currentUser }) => {
 
   const handleToggle = async (message) => {
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/marketing-messages/toggle`,
         { id: message.id, isActive: !message.isActive },
         { headers: { token } }
@@ -118,7 +118,7 @@ const MarketingMessages = ({ token, currentUser }) => {
     }
 
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/marketing-messages/delete`,
         { id: message.id },
         { headers: { token } }

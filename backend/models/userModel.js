@@ -12,7 +12,8 @@ const User = sequelize.define("User", {
     defaultValue: {
       managePrivacyTerms: false,
       manageProducts: false,
-      manageVendors: false
+      manageVendors: false,
+      manageMarketing: false,
     }
   }
 }, {

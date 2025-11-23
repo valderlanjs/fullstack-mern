@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Route, Routes, Navigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import api from "./api/axios.js"
 
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
@@ -64,11 +64,7 @@ function App() {
       }
 
       try {
-        const response = await axios.get(`${backend_url}/api/user/current`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // ← MUDE PARA Authorization
-          },
-        });
+        const response = await api.get("/api/user/current");
 
         if (response.data.success) {
           setCurrentUser(response.data.user);
@@ -89,10 +85,9 @@ function App() {
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      
     } else {
       localStorage.removeItem("token");
-      delete axios.defaults.headers.common["Authorization"];
       setCurrentUser(null);
     }
   }, [token]);

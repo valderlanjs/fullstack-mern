@@ -9,37 +9,38 @@ import {
 } from "../controllers/trackingControllers.js";
 import adminAuth from "../middleware/adminAuth.js";
 import { checkPermission } from "../middleware/permissionAuth.js";
+import { authenticate } from "../middleware/authenticate.js"
 
 const trackingRouter = express.Router();
 
 // 🔐 Rotas protegidas
 trackingRouter.post('/create', 
-  adminAuth, 
-  checkPermission('manageTracking'), 
+  authenticate, 
+  checkPermission('manageMarketing'), 
   createTrackingCode
 );
 
 trackingRouter.post('/toggle', 
-  adminAuth, 
-  checkPermission('manageTracking'), 
+  authenticate, 
+  checkPermission('manageMarketing'), 
   toggleTrackingCode
 );
 
 trackingRouter.post('/update', 
-  adminAuth, 
-  checkPermission('manageTracking'), 
+  authenticate, 
+  checkPermission('manageMarketing'), 
   updateTrackingCode
 );
 
 trackingRouter.post('/delete', 
-  adminAuth, 
-  checkPermission('manageTracking'), 
+  authenticate, 
+  checkPermission('manageMarketing'), 
   deleteTrackingCode
 );
 
 trackingRouter.get('/all', 
-  adminAuth, 
-  checkPermission('manageTracking'), 
+  authenticate, 
+  checkPermission('manageMarketing'), 
   getAllTrackingCodes
 );
 

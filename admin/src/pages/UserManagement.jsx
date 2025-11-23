@@ -1,6 +1,5 @@
-// components/admin/UserManagement.jsx - Versão Completa com Permissões
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios.js";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import {
@@ -14,11 +13,10 @@ import {
   FaEye,
   FaEyeSlash,
   FaUserPlus,
-  FaLock,
-  FaUnlock,
+  FaBullhorn,
   FaBox,
   FaFileContract,
-  FaStore
+  FaStore,
 } from "react-icons/fa";
 
 const UserManagement = ({ token, currentUser }) => {
@@ -40,8 +38,8 @@ const UserManagement = ({ token, currentUser }) => {
     permissions: {
       managePrivacyTerms: false,
       manageProducts: false,
-      manageVendors: false
-    }
+      manageVendors: false,
+    },
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -58,8 +56,9 @@ const UserManagement = ({ token, currentUser }) => {
     permissions: {
       managePrivacyTerms: false,
       manageProducts: false,
-      manageVendors: false
-    }
+      manageVendors: false,
+      manageMarketing: false,
+    },
   });
 
   const [showPassword, setShowPassword] = useState({
@@ -69,27 +68,35 @@ const UserManagement = ({ token, currentUser }) => {
 
   // Lista de permissões disponíveis
   const permissionsList = [
-    { 
-      key: 'manageVendors', 
-      label: 'Gerenciar Vendedores', 
-      description: 'Pode cadastrar, editar e excluir vendedores',
+    {
+      key: "manageVendors",
+      label: "Gerenciar Vendedores",
+      description: "Pode cadastrar, editar e excluir vendedores",
       icon: FaStore,
-      color: 'text-blue-600'
+      color: "text-blue-600",
     },
-    { 
-      key: 'manageProducts', 
-      label: 'Gerenciar Produtos', 
-      description: 'Pode cadastrar, editar e excluir produtos',
+    {
+      key: "manageProducts",
+      label: "Gerenciar Produtos",
+      description: "Pode cadastrar, editar e excluir produtos",
       icon: FaBox,
-      color: 'text-green-600'
+      color: "text-green-600",
     },
-    { 
-      key: 'managePrivacyTerms', 
-      label: 'Gerenciar Termos e Privacidade', 
-      description: 'Pode alterar políticas de privacidade e termos de uso',
+    {
+      key: "managePrivacyTerms",
+      label: "Gerenciar Termos e Privacidade",
+      description: "Pode alterar políticas de privacidade e termos de uso",
       icon: FaFileContract,
-      color: 'text-purple-600'
-    }
+      color: "text-purple-600",
+    },
+    {
+      key: "manageMarketing",
+      label: "Gerenciar Marketing",
+      description:
+        "Pode gerenciar mensagens promocionais e códigos de tracking",
+      icon: FaBullhorn,
+      color: "text-orange-600", 
+    },
   ];
 
   // Fetch users
@@ -97,7 +104,7 @@ const UserManagement = ({ token, currentUser }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`${backend_url}/api/user/admin/users`, {
+      const response = await api.get("/api/user/admin/users", {
         headers: { token },
       });
 
@@ -108,7 +115,8 @@ const UserManagement = ({ token, currentUser }) => {
       }
     } catch (error) {
       console.error("Erro ao buscar usuários:", error);
-      const errorMessage = error.response?.data?.message || "Erro de conexão com o servidor";
+      const errorMessage =
+        error.response?.data?.message || "Erro de conexão com o servidor";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -129,19 +137,24 @@ const UserManagement = ({ token, currentUser }) => {
       permissions: user.permissions || {
         managePrivacyTerms: false,
         manageProducts: false,
-        manageVendors: false
-      }
+        manageVendors: false,
+        manageMarketing: false,
+      },
     });
   };
 
   // 🗑️ Função para excluir usuário
   const handleDeleteUser = async (userId, userName) => {
-    if (!window.confirm(`Tem certeza que deseja excluir o usuário "${userName}"? Esta ação não pode ser desfeita.`)) {
+    if (
+      !window.confirm(
+        `Tem certeza que deseja excluir o usuário "${userName}"? Esta ação não pode ser desfeita.`
+      )
+    ) {
       return;
     }
 
     try {
-      const response = await axios.delete(
+      const response = await api.delete(
         `${backend_url}/api/user/admin/users/${userId}`,
         { headers: { token } }
       );
@@ -166,7 +179,7 @@ const UserManagement = ({ token, currentUser }) => {
     }
 
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/user/register`,
         addUserForm,
         { headers: { token } }
@@ -184,8 +197,9 @@ const UserManagement = ({ token, currentUser }) => {
           permissions: {
             managePrivacyTerms: false,
             manageProducts: false,
-            manageVendors: false
-          }
+            manageVendors: false,
+            manageMarketing: false,
+          },
         });
         fetchUsers();
       }
@@ -199,7 +213,7 @@ const UserManagement = ({ token, currentUser }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.put(
+      const response = await api.put(
         `${backend_url}/api/user/admin/users/${editingUser.id}`,
         editForm,
         { headers: { token } }
@@ -239,7 +253,7 @@ const UserManagement = ({ token, currentUser }) => {
     }
 
     try {
-      const response = await axios.put(
+      const response = await api.put(
         `${backend_url}/api/user/admin/users/${editingPassword.id}/password`,
         { newPassword: passwordForm.newPassword },
         { headers: { token } }
@@ -260,22 +274,22 @@ const UserManagement = ({ token, currentUser }) => {
   const hasAnyPermission = (user) => {
     if (user.isAdmin) return true;
     if (!user.permissions) return false;
-    return Object.values(user.permissions).some(perm => perm === true);
+    return Object.values(user.permissions).some((perm) => perm === true);
   };
 
   // Função para obter permissões ativas do usuário
   const getActivePermissions = (user) => {
     if (user.isAdmin) return ["Administrador"];
-    
+
     const activePerms = [];
     if (user.permissions) {
-      permissionsList.forEach(perm => {
+      permissionsList.forEach((perm) => {
         if (user.permissions[perm.key]) {
           activePerms.push(perm.label);
         }
       });
     }
-    
+
     return activePerms.length > 0 ? activePerms : ["Nenhuma permissão"];
   };
 
@@ -370,21 +384,32 @@ const UserManagement = ({ token, currentUser }) => {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Nome *</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Nome *
+                    </label>
                     <input
                       type="text"
                       value={addUserForm.name}
-                      onChange={(e) => setAddUserForm({ ...addUserForm, name: e.target.value })}
+                      onChange={(e) =>
+                        setAddUserForm({ ...addUserForm, name: e.target.value })
+                      }
                       className="w-full p-2 border border-gray-300 rounded"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Email *</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Email *
+                    </label>
                     <input
                       type="email"
                       value={addUserForm.email}
-                      onChange={(e) => setAddUserForm({ ...addUserForm, email: e.target.value })}
+                      onChange={(e) =>
+                        setAddUserForm({
+                          ...addUserForm,
+                          email: e.target.value,
+                        })
+                      }
                       className="w-full p-2 border border-gray-300 rounded"
                       required
                     />
@@ -393,19 +418,31 @@ const UserManagement = ({ token, currentUser }) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Senha *</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Senha *
+                    </label>
                     <div className="relative">
                       <input
                         type={showPassword.add ? "text" : "password"}
                         value={addUserForm.password}
-                        onChange={(e) => setAddUserForm({ ...addUserForm, password: e.target.value })}
+                        onChange={(e) =>
+                          setAddUserForm({
+                            ...addUserForm,
+                            password: e.target.value,
+                          })
+                        }
                         className="w-full p-2 border border-gray-300 rounded pr-10"
                         placeholder="Mínimo 8 caracteres"
                         required
                       />
                       <button
                         type="button"
-                        onClick={() => setShowPassword({ ...showPassword, add: !showPassword.add })}
+                        onClick={() =>
+                          setShowPassword({
+                            ...showPassword,
+                            add: !showPassword.add,
+                          })
+                        }
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                       >
                         {showPassword.add ? <FaEyeSlash /> : <FaEye />}
@@ -413,11 +450,18 @@ const UserManagement = ({ token, currentUser }) => {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Confirmar Senha *</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Confirmar Senha *
+                    </label>
                     <input
                       type={showPassword.add ? "text" : "password"}
                       value={addUserForm.confirmPassword}
-                      onChange={(e) => setAddUserForm({ ...addUserForm, confirmPassword: e.target.value })}
+                      onChange={(e) =>
+                        setAddUserForm({
+                          ...addUserForm,
+                          confirmPassword: e.target.value,
+                        })
+                      }
                       className="w-full p-2 border border-gray-300 rounded"
                       placeholder="Digite a senha novamente"
                       required
@@ -427,8 +471,10 @@ const UserManagement = ({ token, currentUser }) => {
 
                 {/* Seção de Permissões */}
                 <div className="border-t pt-4">
-                  <h4 className="font-semibold mb-3 text-gray-700">Permissões de Acesso</h4>
-                  
+                  <h4 className="font-semibold mb-3 text-gray-700">
+                    Permissões de Acesso
+                  </h4>
+
                   {/* Checkbox Administrador */}
                   {currentUser?.isAdmin && (
                     <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -442,22 +488,29 @@ const UserManagement = ({ token, currentUser }) => {
                               ...addUserForm,
                               isAdmin,
                               // Se for admin, desmarca todas as permissões específicas
-                              permissions: isAdmin ? {
-                                managePrivacyTerms: false,
-                                manageProducts: false,
-                                manageVendors: false
-                              } : addUserForm.permissions
+                              permissions: isAdmin
+                                ? {
+                                    managePrivacyTerms: false,
+                                    manageProducts: false,
+                                    manageVendors: false,
+                                    manageMarketing: false,
+                                  }
+                                : addUserForm.permissions,
                             });
                           }}
                           className="mr-2"
                           id="isAdminNew"
                         />
-                        <label htmlFor="isAdminNew" className="text-sm font-medium text-yellow-800">
+                        <label
+                          htmlFor="isAdminNew"
+                          className="text-sm font-medium text-yellow-800"
+                        >
                           Usuário Administrador (Acesso Total)
                         </label>
                       </div>
                       <p className="text-xs text-yellow-600 mt-1">
-                        Administradores têm acesso a todas as funcionalidades do sistema.
+                        Administradores têm acesso a todas as funcionalidades do
+                        sistema.
                       </p>
                     </div>
                   )}
@@ -471,28 +524,40 @@ const UserManagement = ({ token, currentUser }) => {
                       {permissionsList.map((permission) => {
                         const IconComponent = permission.icon;
                         return (
-                          <div key={permission.key} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-200">
+                          <div
+                            key={permission.key}
+                            className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-200"
+                          >
                             <input
                               type="checkbox"
                               checked={addUserForm.permissions[permission.key]}
-                              onChange={(e) => setAddUserForm({
-                                ...addUserForm,
-                                permissions: {
-                                  ...addUserForm.permissions,
-                                  [permission.key]: e.target.checked
-                                }
-                              })}
+                              onChange={(e) =>
+                                setAddUserForm({
+                                  ...addUserForm,
+                                  permissions: {
+                                    ...addUserForm.permissions,
+                                    [permission.key]: e.target.checked,
+                                  },
+                                })
+                              }
                               className="mt-1"
                               id={`perm-${permission.key}`}
                             />
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <IconComponent className={`${permission.color} text-sm`} />
-                                <label htmlFor={`perm-${permission.key}`} className="font-medium text-gray-800">
+                                <IconComponent
+                                  className={`${permission.color} text-sm`}
+                                />
+                                <label
+                                  htmlFor={`perm-${permission.key}`}
+                                  className="font-medium text-gray-800"
+                                >
                                   {permission.label}
                                 </label>
                               </div>
-                              <p className="text-sm text-gray-600 mt-1">{permission.description}</p>
+                              <p className="text-sm text-gray-600 mt-1">
+                                {permission.description}
+                              </p>
                             </div>
                           </div>
                         );
@@ -501,7 +566,9 @@ const UserManagement = ({ token, currentUser }) => {
                   )}
                 </div>
 
-                <div className="text-xs text-gray-600">* Campos obrigatórios</div>
+                <div className="text-xs text-gray-600">
+                  * Campos obrigatórios
+                </div>
               </div>
               <div className="flex gap-2 mt-6">
                 <button
@@ -532,21 +599,29 @@ const UserManagement = ({ token, currentUser }) => {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Nome</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Nome
+                    </label>
                     <input
                       type="text"
                       value={editForm.name}
-                      onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, name: e.target.value })
+                      }
                       className="w-full p-2 border border-gray-300 rounded"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Email</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Email
+                    </label>
                     <input
                       type="email"
                       value={editForm.email}
-                      onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, email: e.target.value })
+                      }
                       className="w-full p-2 border border-gray-300 rounded"
                       required
                     />
@@ -555,8 +630,10 @@ const UserManagement = ({ token, currentUser }) => {
 
                 {/* Seção de Permissões no Edit */}
                 <div className="border-t pt-4">
-                  <h4 className="font-semibold mb-3 text-gray-700">Permissões de Acesso</h4>
-                  
+                  <h4 className="font-semibold mb-3 text-gray-700">
+                    Permissões de Acesso
+                  </h4>
+
                   {/* Checkbox Administrador - Só admin pode editar */}
                   {currentUser?.isAdmin && (
                     <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -569,22 +646,28 @@ const UserManagement = ({ token, currentUser }) => {
                             setEditForm({
                               ...editForm,
                               isAdmin,
-                              permissions: isAdmin ? {
-                                managePrivacyTerms: false,
-                                manageProducts: false,
-                                manageVendors: false
-                              } : editForm.permissions
+                              permissions: isAdmin
+                                ? {
+                                    managePrivacyTerms: false,
+                                    manageProducts: false,
+                                    manageVendors: false,
+                                  }
+                                : editForm.permissions,
                             });
                           }}
                           className="mr-2"
                           id="isAdminEdit"
                         />
-                        <label htmlFor="isAdminEdit" className="text-sm font-medium text-yellow-800">
+                        <label
+                          htmlFor="isAdminEdit"
+                          className="text-sm font-medium text-yellow-800"
+                        >
                           Usuário Administrador (Acesso Total)
                         </label>
                       </div>
                       <p className="text-xs text-yellow-600 mt-1">
-                        Administradores têm acesso a todas as funcionalidades do sistema.
+                        Administradores têm acesso a todas as funcionalidades do
+                        sistema.
                       </p>
                     </div>
                   )}
@@ -598,28 +681,40 @@ const UserManagement = ({ token, currentUser }) => {
                       {permissionsList.map((permission) => {
                         const IconComponent = permission.icon;
                         return (
-                          <div key={permission.key} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-green-200">
+                          <div
+                            key={permission.key}
+                            className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-green-200"
+                          >
                             <input
                               type="checkbox"
                               checked={editForm.permissions[permission.key]}
-                              onChange={(e) => setEditForm({
-                                ...editForm,
-                                permissions: {
-                                  ...editForm.permissions,
-                                  [permission.key]: e.target.checked
-                                }
-                              })}
+                              onChange={(e) =>
+                                setEditForm({
+                                  ...editForm,
+                                  permissions: {
+                                    ...editForm.permissions,
+                                    [permission.key]: e.target.checked,
+                                  },
+                                })
+                              }
                               className="mt-1"
                               id={`perm-edit-${permission.key}`}
                             />
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <IconComponent className={`${permission.color} text-sm`} />
-                                <label htmlFor={`perm-edit-${permission.key}`} className="font-medium text-gray-800">
+                                <IconComponent
+                                  className={`${permission.color} text-sm`}
+                                />
+                                <label
+                                  htmlFor={`perm-edit-${permission.key}`}
+                                  className="font-medium text-gray-800"
+                                >
                                   {permission.label}
                                 </label>
                               </div>
-                              <p className="text-sm text-gray-600 mt-1">{permission.description}</p>
+                              <p className="text-sm text-gray-600 mt-1">
+                                {permission.description}
+                              </p>
                             </div>
                           </div>
                         );
@@ -809,8 +904,11 @@ const UserManagement = ({ token, currentUser }) => {
                             : "bg-gray-100 text-gray-800"
                         }`}
                       >
-                        {user.isAdmin ? "Administrador" : 
-                         hasAnyPermission(user) ? "Usuário com Permissões" : "Usuário Básico"}
+                        {user.isAdmin
+                          ? "Administrador"
+                          : hasAnyPermission(user)
+                          ? "Usuário com Permissões"
+                          : "Usuário Básico"}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -834,7 +932,9 @@ const UserManagement = ({ token, currentUser }) => {
                           onClick={() => handleEditUser(user)}
                           className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
                           title="Editar usuário"
-                          disabled={!currentUser?.isAdmin && user.id !== currentUser?.id}
+                          disabled={
+                            !currentUser?.isAdmin && user.id !== currentUser?.id
+                          }
                         >
                           <FaEdit />
                           <span className="hidden sm:inline">Editar</span>
@@ -843,21 +943,26 @@ const UserManagement = ({ token, currentUser }) => {
                           onClick={() => handleEditPassword(user)}
                           className="text-green-600 hover:text-green-900 flex items-center gap-1"
                           title="Alterar senha"
-                          disabled={!currentUser?.isAdmin && user.id !== currentUser?.id}
+                          disabled={
+                            !currentUser?.isAdmin && user.id !== currentUser?.id
+                          }
                         >
                           <FaKey />
                           <span className="hidden sm:inline">Senha</span>
                         </button>
-                        {currentUser?.isAdmin && user.id !== currentUser?.id && (
-                          <button
-                            onClick={() => handleDeleteUser(user.id, user.name)}
-                            className="text-red-600 hover:text-red-900 flex items-center gap-1"
-                            title="Excluir usuário"
-                          >
-                            <FaTrash />
-                            <span className="hidden sm:inline">Excluir</span>
-                          </button>
-                        )}
+                        {currentUser?.isAdmin &&
+                          user.id !== currentUser?.id && (
+                            <button
+                              onClick={() =>
+                                handleDeleteUser(user.id, user.name)
+                              }
+                              className="text-red-600 hover:text-red-900 flex items-center gap-1"
+                              title="Excluir usuário"
+                            >
+                              <FaTrash />
+                              <span className="hidden sm:inline">Excluir</span>
+                            </button>
+                          )}
                       </div>
                     </td>
                   </tr>
@@ -882,13 +987,19 @@ const UserManagement = ({ token, currentUser }) => {
         </div>
         <div className="bg-green-50 p-4 rounded-lg">
           <div className="text-2xl font-bold text-green-600">
-            {users.filter((user) => !user.isAdmin && hasAnyPermission(user)).length}
+            {
+              users.filter((user) => !user.isAdmin && hasAnyPermission(user))
+                .length
+            }
           </div>
           <div className="text-sm text-green-800">Com Permissões</div>
         </div>
         <div className="bg-gray-200 p-4 rounded-lg">
           <div className="text-2xl font-bold text-gray-600">
-            {users.filter((user) => !user.isAdmin && !hasAnyPermission(user)).length}
+            {
+              users.filter((user) => !user.isAdmin && !hasAnyPermission(user))
+                .length
+            }
           </div>
           <div className="text-sm text-gray-800">Básicos</div>
         </div>

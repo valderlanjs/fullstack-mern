@@ -1,13 +1,60 @@
-// Collection.jsx - CORRIGIDO E SIMPLIFICADO
-import React, { useContext, useEffect, useState } from "react";
+// Collection.jsx - COM BOTÃO APLICAR NO MOBILE
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Item from "../components/Item";
 import Footer from "../components/Footer";
 import axios from "axios";
 import ScrollToTopButton from "../components/ScrollTopButton"
 
-
 const backend_url = import.meta.env.VITE_BACKEND_URL;
+
+// Componente separado para a Barra de Busca
+const SearchInput = React.memo(({ value, onChange, onClear, placeholder }) => (
+  <div className="relative">
+    <input
+      type="text"
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      className="w-full px-4 py-3 pl-10 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white"
+    />
+    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <svg
+        className="h-5 w-5 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
+      </svg>
+    </div>
+    {value && (
+      <button
+        onClick={onClear}
+        className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-700 transition-colors"
+      >
+        <svg
+          className="h-5 w-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    )}
+  </div>
+));
 
 const Collection = () => {
   const { products, search, showSearch } = useContext(ShopContext);
@@ -18,6 +65,7 @@ const Collection = () => {
   const [selectedSubCategories, setSelectedSubCategories] = useState([]);
   const [localSearch, setLocalSearch] = useState("");
   const [loadingFilters, setLoadingFilters] = useState(true);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   // Cores do tema verde
   const greenGradient = "linear-gradient(135deg, #206E34, #70BD44)";
@@ -43,26 +91,39 @@ const Collection = () => {
     fetchFilters();
   }, []);
 
-  const toggleFilter = (value, filterState, setFilterState) => {
+  // Handlers otimizados
+  const handleSearchChange = useCallback((e) => {
+    setLocalSearch(e.target.value);
+  }, []);
+
+  const clearSearch = useCallback(() => {
+    setLocalSearch("");
+  }, []);
+
+  const toggleFilter = useCallback((value, filterState, setFilterState) => {
     setFilterState((prev) =>
       prev.includes(value)
         ? prev.filter((item) => item !== value)
         : [...prev, value]
     );
-  };
+  }, []);
 
-  const clearAllFilters = () => {
+  const clearAllFilters = useCallback(() => {
     setSelectedCategories([]);
     setSelectedSubCategories([]);
     setLocalSearch("");
-  };
+  }, []);
 
-  const clearSearch = () => {
-    setLocalSearch("");
-  };
+  // Botão Aplicar Filtros (mobile)
+  const applyFilters = useCallback(() => {
+    setMobileFilterOpen(false);
+  }, []);
 
-  // CORREÇÃO: Lógica de filtragem simplificada
-  const getFilteredProducts = () => {
+  // Fechar filtro mobile quando selecionar um filtro (removido o fechamento automático)
+  // Agora só fecha quando clicar em "Aplicar"
+
+  // Lógica de filtragem
+  const getFilteredProducts = useCallback(() => {
     if (!products || !Array.isArray(products)) return [];
 
     let filtered = products;
@@ -103,10 +164,127 @@ const Collection = () => {
     }
 
     return filtered;
-  };
+  }, [products, localSearch, search, showSearch, selectedCategories, selectedSubCategories]);
 
   // Produtos filtrados calculados em tempo real
   const filteredProducts = getFilteredProducts();
+
+  // Componente dos Filtros (reutilizável) - AGORA SEM O INPUT
+  const FilterContent = React.memo(() => (
+    <>
+      {/* Seção de Categorias */}
+      <div className="bg-gray-200 rounded-xl p-4 mb-6 border border-gray-200">
+        <div className="flex justify-between items-center mb-4">
+          <h5 className="font-semibold text-gray-800 flex items-center gap-2">
+            <div
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: primaryGreen }}
+            ></div>
+            Categoria
+          </h5>
+          {selectedCategories.length > 0 && (
+            <span
+              className="text-xs text-white px-2 py-1 rounded-full font-medium"
+              style={{ background: greenGradient }}
+            >
+              {selectedCategories.length}
+            </span>
+          )}
+        </div>
+        {loadingFilters ? (
+          <div className="text-sm text-gray-500">
+            Carregando categorias...
+          </div>
+        ) : categories.length > 0 ? (
+          <div className="space-y-2 max-h-60 overflow-y-auto">
+            {categories.map((cat) => (
+              <label
+                key={cat}
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white transition-colors duration-200 cursor-pointer group"
+              >
+                <input
+                  type="checkbox"
+                  value={cat}
+                  checked={selectedCategories.includes(cat)}
+                  onChange={(e) =>
+                    toggleFilter(
+                      e.target.value,
+                      selectedCategories,
+                      setSelectedCategories
+                    )
+                  }
+                  className="w-4 h-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700 group-hover:text-gray-900 flex-1">
+                  {cat}
+                </span>
+              </label>
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-gray-500 text-center py-4">
+            Nenhuma categoria disponível
+          </div>
+        )}
+      </div>
+
+      {/* Seção de Tipos de Produto */}
+      <div className="bg-gray-200 rounded-xl p-4 mb-6 border border-gray-200">
+        <div className="flex justify-between items-center mb-4">
+          <h5 className="font-semibold text-gray-800 flex items-center gap-2">
+            <div
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: secondaryGreen }}
+            ></div>
+            Tipos de Produto
+          </h5>
+          {selectedSubCategories.length > 0 && (
+            <span
+              className="text-xs text-white px-2 py-1 rounded-full font-medium"
+              style={{ background: greenGradient }}
+            >
+              {selectedSubCategories.length}
+            </span>
+          )}
+        </div>
+        {loadingFilters ? (
+          <div className="text-sm text-gray-500">
+            Carregando tipos...
+          </div>
+        ) : subCategories.length > 0 ? (
+          <div className="space-y-2 max-h-60 overflow-y-auto">
+            {subCategories.map((subCat) => (
+              <label
+                key={subCat}
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white transition-colors duration-200 cursor-pointer group"
+              >
+                <input
+                  type="checkbox"
+                  value={subCat}
+                  checked={selectedSubCategories.includes(subCat)}
+                  onChange={(e) =>
+                    toggleFilter(
+                      e.target.value,
+                      selectedSubCategories,
+                      setSelectedSubCategories
+                    )
+                  }
+                  className="w-4 h-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700 group-hover:text-gray-900 flex-1">
+                  {subCat}
+                </span>
+              </label>
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-gray-500 text-center py-4">
+            Nenhum tipo disponível
+          </div>
+        )}
+      </div>
+    </>
+  ));
 
   return (
     <>
@@ -130,9 +308,53 @@ const Collection = () => {
         ></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header Mobile com Busca e Botão Filtro */}
+          <div className="md:hidden mb-6">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
+              <div className="flex items-center gap-3">
+                {/* Barra de Busca Mobile */}
+                <div className="flex-1">
+                  <SearchInput
+                    value={localSearch}
+                    onChange={handleSearchChange}
+                    onClear={clearSearch}
+                    placeholder="Buscar produtos..."
+                  />
+                </div>
+
+                {/* Botão Filtro */}
+                <button
+                  onClick={() => setMobileFilterOpen(true)}
+                  className="px-4 py-3 text-white rounded-xl hover:opacity-90 transition-all duration-300 font-medium flex items-center gap-2 shadow-lg"
+                  style={{ background: greenGradient }}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"
+                    />
+                  </svg>
+                  <span className="hidden xs:inline">Filtros</span>
+                  {(selectedCategories.length > 0 || selectedSubCategories.length > 0) && (
+                    <span className="bg-white text-green-600 text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                      {selectedCategories.length + selectedSubCategories.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar de Filtros */}
-            <div className="lg:w-72 xl:w-80 flex-shrink-0">
+            {/* Sidebar de Filtros - Desktop */}
+            <div className="hidden md:block lg:w-72 xl:w-80 flex-shrink-0">
               <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sticky top-24">
                 {/* Badge de Categoria */}
                 <div className="inline-flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full mb-6 w-full justify-center">
@@ -145,7 +367,7 @@ const Collection = () => {
                   </span>
                 </div>
 
-                {/* Barra de Busca Local */}
+                {/* Barra de Busca Local - DESKTOP */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
                     <svg
@@ -163,171 +385,24 @@ const Collection = () => {
                     </svg>
                     Buscar Produtos
                   </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Buscar por nome, categoria..."
-                      value={localSearch}
-                      onChange={(e) => setLocalSearch(e.target.value)}
-                      className="w-full px-4 py-3 pl-10 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white"
-                    />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg
-                        className="h-5 w-5 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
-                      </svg>
-                    </div>
-                    {localSearch && (
-                      <button
-                        onClick={clearSearch}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-700 transition-colors"
-                      >
-                        <svg
-                          className="h-5 w-5 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
+                  <SearchInput
+                    value={localSearch}
+                    onChange={handleSearchChange}
+                    onClear={clearSearch}
+                    placeholder="Buscar por nome, categoria..."
+                  />
                 </div>
 
-                {/* Seção de Categorias */}
-                <div className="bg-gray-200 rounded-xl p-4 mb-6 border border-gray-200">
-                  <div className="flex justify-between items-center mb-4">
-                    <h5 className="font-semibold text-gray-800 flex items-center gap-2">
-                      <div
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{ backgroundColor: primaryGreen }}
-                      ></div>
-                      Categoria
-                    </h5>
-                    {selectedCategories.length > 0 && (
-                      <span
-                        className="text-xs text-white px-2 py-1 rounded-full font-medium"
-                        style={{ background: greenGradient }}
-                      >
-                        {selectedCategories.length}
-                      </span>
-                    )}
-                  </div>
-                  {loadingFilters ? (
-                    <div className="text-sm text-gray-500">
-                      Carregando categorias...
-                    </div>
-                  ) : categories.length > 0 ? (
-                    <div className="space-y-2 max-h-60 overflow-y-auto">
-                      {categories.map((cat) => (
-                        <label
-                          key={cat}
-                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-white transition-colors duration-200 cursor-pointer group"
-                        >
-                          <input
-                            type="checkbox"
-                            value={cat}
-                            checked={selectedCategories.includes(cat)}
-                            onChange={(e) =>
-                              toggleFilter(
-                                e.target.value,
-                                selectedCategories,
-                                setSelectedCategories
-                              )
-                            }
-                            className="w-4 h-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700 group-hover:text-gray-900 flex-1">
-                            {cat}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-sm text-gray-500 text-center py-4">
-                      Nenhuma categoria disponível
-                    </div>
-                  )}
-                </div>
+                {/* Conteúdo dos Filtros */}
+                <FilterContent />
 
-                {/* Seção de Tipos de Produto */}
-                <div className="bg-gray-200 rounded-xl p-4 mb-6 border border-gray-200">
-                  <div className="flex justify-between items-center mb-4">
-                    <h5 className="font-semibold text-gray-800 flex items-center gap-2">
-                      <div
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{ backgroundColor: secondaryGreen }}
-                      ></div>
-                      Tipos de Produto
-                    </h5>
-                    {selectedSubCategories.length > 0 && (
-                      <span
-                        className="text-xs text-white px-2 py-1 rounded-full font-medium"
-                        style={{ background: greenGradient }}
-                      >
-                        {selectedSubCategories.length}
-                      </span>
-                    )}
-                  </div>
-                  {loadingFilters ? (
-                    <div className="text-sm text-gray-500">
-                      Carregando tipos...
-                    </div>
-                  ) : subCategories.length > 0 ? (
-                    <div className="space-y-2 max-h-60 overflow-y-auto">
-                      {subCategories.map((subCat) => (
-                        <label
-                          key={subCat}
-                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-white transition-colors duration-200 cursor-pointer group"
-                        >
-                          <input
-                            type="checkbox"
-                            value={subCat}
-                            checked={selectedSubCategories.includes(subCat)}
-                            onChange={(e) =>
-                              toggleFilter(
-                                e.target.value,
-                                selectedSubCategories,
-                                setSelectedSubCategories
-                              )
-                            }
-                            className="w-4 h-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                          />
-                          <span className="text-sm text-gray-700 group-hover:text-gray-900 flex-1">
-                            {subCat}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-sm text-gray-500 text-center py-4">
-                      Nenhum tipo disponível
-                    </div>
-                  )}
-                </div>
-
-                {/* Botão Limpar Filtros */}
+                {/* Botão Limpar Filtros - DESKTOP */}
                 {(selectedCategories.length > 0 ||
                   selectedSubCategories.length > 0 ||
                   localSearch) && (
                   <button
                     onClick={clearAllFilters}
-                    className="w-full px-4 py-3 text-white rounded-xl hover:opacity-90 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+                    className="w-full px-4 py-3 text-white rounded-xl hover:opacity-90 transition-all duration-300 font-medium shadow-lg hover:shadow-xl mt-4"
                     style={{ background: greenGradient }}
                   >
                     <div className="flex items-center justify-center gap-2">
@@ -488,7 +563,7 @@ const Collection = () => {
                   </div>
                 )}
 
-                {/* Grid de Produtos - CORREÇÃO PRINCIPAL */}
+                {/* Grid de Produtos */}
                 {filteredProducts.length > 0 ? (
                   <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 lg:gap-6">
                     {filteredProducts.map((product) => (
@@ -555,6 +630,156 @@ const Collection = () => {
           </div>
         </div>
       </section>
+
+      {/* Modal de Filtros Mobile */}
+      {mobileFilterOpen && (
+        <>
+          {/* Overlay */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            onClick={() => setMobileFilterOpen(false)}
+          ></div>
+          
+          {/* Sidebar Mobile */}
+          <div className="fixed inset-y-0 left-0 w-80 max-w-full bg-white z-50 md:hidden transform transition-transform duration-300 ease-in-out shadow-2xl">
+            <div className="h-full flex flex-col">
+              {/* Header do Modal */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-emerald-50">
+                <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"
+                    />
+                  </svg>
+                  Filtros
+                </h2>
+                <button
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="p-2 hover:bg-white rounded-lg transition-colors"
+                >
+                  <svg
+                    className="w-6 h-6 text-gray-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Conteúdo dos Filtros */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="bg-white rounded-2xl">
+                  {/* Barra de Busca no Modal Mobile */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                      Buscar Produtos
+                    </label>
+                    <SearchInput
+                      value={localSearch}
+                      onChange={handleSearchChange}
+                      onClear={clearSearch}
+                      placeholder="Buscar por nome, categoria..."
+                    />
+                  </div>
+                  
+                  <FilterContent />
+                </div>
+              </div>
+
+              {/* Footer do Modal - COM BOTÕES APLICAR E LIMPAR */}
+              <div className="p-4 border-t border-gray-200 bg-white space-y-3">
+                {/* Botão Aplicar */}
+                <button
+                  onClick={applyFilters}
+                  className="w-full px-4 py-3 text-white rounded-xl hover:opacity-90 transition-all duration-300 font-medium shadow-lg"
+                  style={{ background: greenGradient }}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Aplicar Filtros
+                  </div>
+                </button>
+
+                {/* Botão Limpar Filtros - MOBILE */}
+                {(selectedCategories.length > 0 ||
+                  selectedSubCategories.length > 0 ||
+                  localSearch) && (
+                  <button
+                    onClick={clearAllFilters}
+                    className="w-full px-4 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-300 font-medium"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18-6M6 6l12 12"
+                        />
+                      </svg>
+                      Limpar Todos os Filtros
+                    </div>
+                  </button>
+                )}
+
+                {/* Botão Fechar */}
+                <button
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="w-full px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-300 font-medium"
+                >
+                  Fechar
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <Footer />
       <ScrollToTopButton />
     </>

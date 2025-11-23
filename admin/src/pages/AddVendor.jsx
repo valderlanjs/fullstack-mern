@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "../api/axios.js"
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import { 
@@ -72,7 +73,7 @@ const AddVendor = ({ token }) => {
       
       formData.append("image", image);
 
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/vendor/add`,
         formData,
         { headers: { token } }

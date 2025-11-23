@@ -1,5 +1,3 @@
-// components/SafeMarkdown.jsx
-import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
 const SafeMarkdown = ({ children, ...props }) => {

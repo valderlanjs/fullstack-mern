@@ -1,6 +1,6 @@
-// pages/admin/ManageSections.jsx - VERSÃO MELHORADA
+// pages/admin/ManageSections.jsx - VERSÃO MELHORADA COM VALIDAÇÃO 1MB
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios.js"
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import { 
@@ -13,11 +13,13 @@ import {
   FaSave,
   FaUpload,
   FaSpinner,
-    FaExclamationTriangle,
+  FaExclamationTriangle,
   FaTimes,
   FaArrowsAltV,
   FaAlignLeft,
-  FaAlignRight
+  FaAlignRight,
+  FaCheckCircle,
+  FaTimesCircle
 } from "react-icons/fa";
 
 import {FaCircleExclamation} from "react-icons/fa6";
@@ -43,11 +45,12 @@ const ManageSections = ({ token }) => {
     section: null
   });
   const [previewImage, setPreviewImage] = useState(null);
+  const [imageError, setImageError] = useState(""); // NOVO: estado para erro de imagem
 
   // Buscar seções
   const fetchSections = async () => {
     try {
-      const response = await axios.get(`${backend_url}/api/sections/admin/all`, {
+      const response = await api.get(`${backend_url}/api/sections/admin/all`, {
         headers: { token }
       });
       if (response.data.success) {
@@ -58,9 +61,25 @@ const ManageSections = ({ token }) => {
     }
   };
 
+  // Função para calcular e formatar o tamanho
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   // Salvar/Atualizar seção
   const handleSaveSection = async (e) => {
     e.preventDefault();
+    
+    // Verifica se há erro na imagem
+    if (imageError) {
+      toast.error("Por favor, corrija o erro na imagem antes de enviar.");
+      return;
+    }
+
     setIsLoading(true);
     
     try {
@@ -80,7 +99,7 @@ const ManageSections = ({ token }) => {
 
       if (editingSection) {
         // Atualizar
-        await axios.put(`${backend_url}/api/sections/${editingSection.id}`, formDataToSend, {
+        await api.put(`${backend_url}/api/sections/${editingSection.id}`, formDataToSend, {
           headers: { 
             token,
             'Content-Type': 'multipart/form-data'
@@ -89,7 +108,7 @@ const ManageSections = ({ token }) => {
         toast.success("Seção atualizada com sucesso! 🎉");
       } else {
         // Criar nova
-        await axios.post(`${backend_url}/api/sections`, formDataToSend, {
+        await api.post(`${backend_url}/api/sections`, formDataToSend, {
           headers: { 
             token,
             'Content-Type': 'multipart/form-data'
@@ -107,6 +126,7 @@ const ManageSections = ({ token }) => {
       });
       setImageFile(null);
       setPreviewImage(null);
+      setImageError(""); // Limpa o erro
       fetchSections();
     } catch (error) {
       toast.error("Erro ao salvar seção");
@@ -137,7 +157,7 @@ const ManageSections = ({ token }) => {
 
     setIsDeleting(deleteModal.section.id);
     try {
-      await axios.delete(`${backend_url}/api/sections/${deleteModal.section.id}`, {
+      await api.delete(`${backend_url}/api/sections/${deleteModal.section.id}`, {
         headers: { token }
       });
       toast.success("Seção excluída com sucesso!");
@@ -153,7 +173,7 @@ const ManageSections = ({ token }) => {
   // Toggle ativo/inativo
   const toggleSectionActive = async (section) => {
     try {
-      await axios.put(`${backend_url}/api/sections/${section.id}`, {
+      await api.put(`${backend_url}/api/sections/${section.id}`, {
         ...section,
         isActive: !section.isActive
       }, {
@@ -166,12 +186,31 @@ const ManageSections = ({ token }) => {
     }
   };
 
-  // Handler para upload de imagem
+  // NOVA FUNÇÃO: Validação de imagem
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setImageError(""); // Limpa erros anteriores
+
     if (file) {
+      // Validação de tamanho (1MB)
+      if (file.size > 1 * 1024 * 1024) {
+        setImageError("A imagem deve ter no máximo 1MB");
+        setImageFile(null);
+        setPreviewImage(null);
+        return;
+      }
+
+      // Validação do tipo de arquivo
+      if (!file.type.startsWith('image/')) {
+        setImageError("Por favor, selecione um arquivo de imagem válido");
+        setImageFile(null);
+        setPreviewImage(null);
+        return;
+      }
+
       setImageFile(file);
       setPreviewImage(URL.createObjectURL(file));
+      setImageError("");
     }
   };
 
@@ -189,6 +228,7 @@ const ManageSections = ({ token }) => {
     });
     setPreviewImage(null);
     setImageFile(null);
+    setImageError(""); // Limpa erros
     setShowForm(true);
   };
 
@@ -197,6 +237,7 @@ const ManageSections = ({ token }) => {
     setEditingSection(section);
     setFormData(section);
     setPreviewImage(section.imageUrl);
+    setImageError(""); // Limpa erros ao carregar seção existente
     setShowForm(true);
   };
 
@@ -236,10 +277,8 @@ const ManageSections = ({ token }) => {
             <div className="text-sm text-orange-800">Seções Inativas</div>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 card-hover">
-            <div className="text-2xl font-bold text-purple-600">
-              {sections.length}/20
-            </div>
-            <div className="text-sm text-purple-800">Limite de Seções</div>
+            <div className="text-2xl font-bold text-purple-600">1MB</div>
+            <div className="text-sm text-purple-800">Tamanho Máximo</div>
           </div>
         </div>
 
@@ -370,6 +409,7 @@ const ManageSections = ({ token }) => {
                   setShowForm(false);
                   setEditingSection(null);
                   setPreviewImage(null);
+                  setImageError("");
                 }}
                 className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
                 disabled={isLoading}
@@ -381,17 +421,36 @@ const ManageSections = ({ token }) => {
             {/* Formulário */}
             <form onSubmit={handleSaveSection} className="p-6 space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Coluna da Imagem */}
+                {/* Coluna da Imagem ATUALIZADA */}
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-3">Imagem da Seção</label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-secondary transition-colors duration-300 bg-gray-200 aspect-video flex items-center justify-center card-hover">
+                    <div className={`border-2 border-dashed rounded-xl overflow-hidden transition-colors duration-300 bg-gray-200 aspect-video flex items-center justify-center card-hover ${
+                      imageError 
+                        ? 'border-red-300 bg-red-50' 
+                        : previewImage 
+                          ? 'border-green-300 bg-green-50' 
+                          : 'border-gray-300 hover:border-secondary'
+                    }`}>
                       {previewImage ? (
-                        <img
-                          src={previewImage}
-                          alt="Preview"
-                          className="w-full h-full object-cover fade-in"
-                        />
+                        <div className="relative w-full h-full">
+                          <img
+                            src={previewImage}
+                            alt="Preview"
+                            className="w-full h-full object-cover fade-in"
+                          />
+                          {/* Indicador de sucesso */}
+                          <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1">
+                            <FaCheckCircle size={16} />
+                          </div>
+                        </div>
+                      ) : imageError ? (
+                        <div className="text-center p-6">
+                          <FaTimesCircle className="text-red-400 text-3xl mx-auto mb-3" />
+                          <p className="text-red-600 font-medium">Erro na Imagem</p>
+                          <p className="text-red-500 text-sm mt-1">{imageError}</p>
+                          <p className="text-red-400 text-xs mt-2">Clique para tentar novamente</p>
+                        </div>
                       ) : (
                         <div className="text-center p-6 gentle-pulse">
                           <FaUpload className="text-gray-400 text-3xl mx-auto mb-3" />
@@ -408,14 +467,39 @@ const ManageSections = ({ token }) => {
                       className="w-full p-2 border rounded-lg mt-3"
                     />
                     
-                    {imageFile && (
+                    {/* Informações da Imagem ATUALIZADA */}
+                    {imageFile && !imageError && (
                       <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3 fade-in">
-                        <p className="text-green-700 text-sm font-medium">
-                          ✅ Nova imagem selecionada: {imageFile.name}
-                        </p>
-                        <p className="text-green-600 text-xs mt-1">
-                          Tamanho: {(imageFile.size / 1024 / 1024).toFixed(2)} MB
-                        </p>
+                        <div className="flex items-start gap-3">
+                          <FaCheckCircle className="text-green-600 text-lg mt-0.5 flex-shrink-0" />
+                          <div>
+                            <h4 className="font-semibold text-green-800 mb-2">
+                              Imagem Válida ✓
+                            </h4>
+                            <div className="text-green-700 text-sm space-y-1">
+                              <p><strong>Arquivo:</strong> {imageFile.name}</p>
+                              <p><strong>Tamanho:</strong> {formatFileSize(imageFile.size)}</p>
+                              <p><strong>Status:</strong> <span className="text-green-600">Pronta para upload</span></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Mensagem de Erro */}
+                    {imageError && (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-3 fade-in">
+                        <div className="flex items-start gap-3">
+                          <FaTimesCircle className="text-red-600 text-lg mt-0.5 flex-shrink-0" />
+                          <div>
+                            <h4 className="font-semibold text-red-800 mb-2">
+                              Problema na Imagem
+                            </h4>
+                            <div className="text-red-700 text-sm">
+                              <p>{imageError}</p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -516,13 +600,16 @@ const ManageSections = ({ token }) => {
                     </div>
                   </div>
 
-                  {/* Dicas */}
+                  {/* Dicas ATUALIZADA */}
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 card-hover">
                     <div className="flex items-start gap-3">
-                      <FaCircleExclamation className="text-blue-600 text-lg mt-0.5 flex-shrink-0" />
+                      <FaCircleExclamation className="text-blue-600 text-lg mt-0.5 flex-shrink-0 gentle-bounce" />
                       <div>
-                        <h4 className="font-semibold text-blue-800 mb-2">Dicas para uma boa seção</h4>
+                        <h4 className="font-semibold text-blue-800 mb-2">Recomendações Técnicas</h4>
                         <ul className="text-blue-700 text-sm space-y-1">
+                          <li>• <strong>Tamanho máximo da imagem: 1MB</strong></li>
+                          <li>• Formatos suportados: JPG, PNG, WebP</li>
+                          <li>• Dimensões recomendadas: 600x400px</li>
                           <li>• Títulos curtos e objetivos</li>
                           <li>• Conteúdo bem estruturado em parágrafos</li>
                           <li>• Imagens de alta qualidade</li>
@@ -538,7 +625,7 @@ const ManageSections = ({ token }) => {
               <div className="flex gap-3 pt-4 border-t border-gray-200">
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || imageError}
                   className="flex-1 bg-secondary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 btn-hover-lift"
                 >
                   {isLoading ? (
@@ -559,6 +646,7 @@ const ManageSections = ({ token }) => {
                     setShowForm(false);
                     setEditingSection(null);
                     setPreviewImage(null);
+                    setImageError("");
                   }}
                   className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300 font-medium btn-hover-lift"
                   disabled={isLoading}

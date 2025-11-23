@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "../api/axios.js"
 import React, { useEffect, useState } from "react";
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
@@ -27,7 +28,7 @@ const ListVendor = ({ token }) => {
   const fetchList = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${backend_url}/api/vendor/list`);
+      const response = await api.get(`${backend_url}/api/vendor/list`);
 
       if (response.data.success) {
         setList(response.data.vendors);
@@ -62,7 +63,7 @@ const ListVendor = ({ token }) => {
 
     setIsDeleting(deleteModal.vendor.id);
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/vendor/remove`,
         { id: deleteModal.vendor.id },
         { headers: { token, "Content-Type": "application/json" } }

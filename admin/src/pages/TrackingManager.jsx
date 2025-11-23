@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios.js"
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import {
@@ -58,7 +58,7 @@ const TrackingManager = ({ token, currentUser }) => {
 
   const fetchTrackingCodes = async () => {
     try {
-      const response = await axios.get(`${backend_url}/api/tracking/all`, {
+      const response = await api.get(`${backend_url}/api/tracking/all`, {
         headers: { token }
       });
       
@@ -84,7 +84,7 @@ const TrackingManager = ({ token, currentUser }) => {
         ? { id: editingCode.id, ...formData }
         : formData;
 
-      const response = await axios.post(url, payload, { headers: { token } });
+      const response = await api.post(url, payload, { headers: { token } });
 
       if (response.data.success) {
         toast.success(response.data.message);
@@ -101,7 +101,7 @@ const TrackingManager = ({ token, currentUser }) => {
 
   const handleToggle = async (code) => {
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/tracking/toggle`,
         { id: code.id, isActive: !code.isActive },
         { headers: { token } }
@@ -136,7 +136,7 @@ const TrackingManager = ({ token, currentUser }) => {
     }
 
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/tracking/delete`,
         { id: code.id },
         { headers: { token } }

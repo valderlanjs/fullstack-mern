@@ -10,10 +10,10 @@ const Item = ({ product }) => {
       whileInView="animate"
       variants={animationVariants.fadeUp}
       viewport={{ once: true, amount: 0.2 }}
-      className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100"
+      className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col h-full"
     >
       {/* Container da imagem com efeito hover */}
-      <Link to={`/product/${product.id}`} className="block relative overflow-hidden">
+      <Link to={`/product/${product.id}`} className="block relative overflow-hidden flex-shrink-0">
         <div className="h-64 w-full relative overflow-hidden">
           <img
             src={product.image[0]}
@@ -41,10 +41,10 @@ const Item = ({ product }) => {
         </div>
       </Link>
 
-      {/* Conteúdo do card */}
-      <div className="p-6">
+      {/* Conteúdo do card - AGORA COM ALTURA CONSISTENTE */}
+      <div className="p-6 flex-1 flex flex-col">
         {/* Categoria */}
-        <div className="mb-3">
+        <div className="mb-3 flex-shrink-0">
           <span 
             className="inline-block px-3 py-1 text-xs font-medium rounded-full uppercase tracking-wide"
             style={{
@@ -57,14 +57,16 @@ const Item = ({ product }) => {
           </span>
         </div>
 
-        {/* Nome do produto */}
-        <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2 leading-tight group-hover:text-green-700 transition-colors duration-300">
-          {product.name}
-        </h3>
+        {/* Nome do produto - ALTURA FIXA COM OVERFLOW CONTROLADO */}
+        <div className="mb-3 flex-1 min-h-[60px] flex items-start">
+          <h3 className="text-xl font-semibold text-gray-900 leading-tight group-hover:text-green-700 transition-colors duration-300 line-clamp-3 break-words">
+            {product.name}
+          </h3>
+        </div>
 
         {/* Preço (se disponível) */}
         {product.price && (
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-4 flex-shrink-0">
             <span 
               className="text-2xl font-bold"
               style={{
@@ -83,18 +85,20 @@ const Item = ({ product }) => {
         )}
 
         {/* Botão de ação */}
-        <Link 
-          to={`/product/${product.id}`}
-          className="w-full inline-flex items-center justify-center px-6 py-3 text-white rounded-lg hover:opacity-90 transition-all duration-300 font-medium group/btn overflow-hidden relative"
-          style={{
-            background: "linear-gradient(135deg, #206E34, #70BD44)",
-          }}
-        >
-          <span className="relative z-10">Ver Detalhes</span>
-          
-          {/* Efeito de brilho no hover */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-1000"></div>
-        </Link>
+        <div className="flex-shrink-0">
+          <Link 
+            to={`/product/${product.id}`}
+            className="w-full inline-flex items-center justify-center px-6 py-3 text-white rounded-lg hover:opacity-90 transition-all duration-300 font-medium group/btn overflow-hidden relative"
+            style={{
+              background: "linear-gradient(135deg, #206E34, #70BD44)",
+            }}
+          >
+            <span className="relative z-10">Ver Detalhes</span>
+            
+            {/* Efeito de brilho no hover */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-1000"></div>
+          </Link>
+        </div>
       </div>
 
       {/* Efeito de borda gradiente no hover */}
@@ -102,7 +106,6 @@ const Item = ({ product }) => {
         <div 
           className="w-full h-full rounded-2xl"
           style={{
-            background: "linear-gradient(135deg, #206E34, #70BD44)",
             filter: "blur(8px)",
             transform: "scale(1.02)"
           }}

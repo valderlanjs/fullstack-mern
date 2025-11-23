@@ -1,147 +1,99 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
 
-const useSessionTimeout = (token, setToken, currentUser) => {
+const useSessionTimeout = (token, setToken) => {
   const navigate = useNavigate();
+
   const [isWarningVisible, setIsWarningVisible] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
 
-  // Tempo em milissegundos
-  const WARNING_TIME = 10 * 60 * 1000; // 5 minutos para aviso
-  const LOGOUT_TIME = 60 * 60 * 1000; // 1 hora para logout total
+  const warningTimer = useRef(null);
+  const logoutTimer = useRef(null);
+  const countdownInterval = useRef(null);
 
-  let inactivityTimer;
-  let warningTimer;
+  // Configurações
+  const WARNING_TIME = 5 * 60 * 1000; // 5 minutos antes
+  const LOGOUT_TIME = 60 * 60 * 1000; // 1h total
 
-  const resetTimers = useCallback(() => {
-    console.log("🔄 Timers resetados - usuário ativo");
-    // Limpa timers existentes
-    clearTimeout(inactivityTimer);
-    clearTimeout(warningTimer);
+  const clearAllTimers = () => {
+    clearTimeout(warningTimer.current);
+    clearTimeout(logoutTimer.current);
+    clearInterval(countdownInterval.current);
+  };
 
-    // Esconde aviso se estiver visível
-    if (isWarningVisible) {
-      console.log("⚠️ Aviso escondido");
-      setIsWarningVisible(false);
-    }
+  const handleLogout = useCallback(() => {
+    clearAllTimers();
+    setIsWarningVisible(false);
 
-    if (token) {
-      // Configura timer de aviso
-      warningTimer = setTimeout(() => {
-        console.log("🚨 Aviso de sessão mostrado");
-        setIsWarningVisible(true);
-        setTimeLeft(5 * 60); // 5 minutos em segundos
-
-        // Inicia contagem regressiva
-        const countdown = setInterval(() => {
-          setTimeLeft((prev) => {
-            console.log("⏰ Tempo restante:", prev, "segundos");
-            if (prev <= 1) {
-              clearInterval(countdown);
-              handleLogout();
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
-      }, WARNING_TIME);
-
-      // Configura timer de logout total
-      inactivityTimer = setTimeout(() => {
-        console.log('🔐 Logout automático por inatividade');
-        handleLogout();
-      }, LOGOUT_TIME);
-    }
-  }, [token, isWarningVisible]);
-
-  const handleLogout = () => {
-    console.log('🚪 Executando logout...');
     setToken("");
     localStorage.removeItem("token");
-    setIsWarningVisible(false);
-    toast.info("Sessão expirada por inatividade. Faça login novamente.");
+
+    toast.info("Sessão expirada. Faça login novamente.");
     navigate("/login");
+  }, [navigate, setToken]);
+
+  const startCountdown = () => {
+    setTimeLeft(5 * 60);
+
+    countdownInterval.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval.current);
+          handleLogout();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
-  const extendSession = () => {
-    console.log('✅ Sessão estendida pelo usuário');
+  const resetTimers = useCallback(() => {
+    if (!token) return;
+
+    clearAllTimers();
+
     setIsWarningVisible(false);
-    resetTimers();
-    toast.success("Sessão estendida com sucesso!");
-  };
 
-  // Eventos que resetam o timer
+    // Timer para aviso
+    warningTimer.current = setTimeout(() => {
+      setIsWarningVisible(true);
+      startCountdown();
+    }, LOGOUT_TIME - WARNING_TIME);
+
+    // Timer para logout total
+    logoutTimer.current = setTimeout(() => {
+      handleLogout();
+    }, LOGOUT_TIME);
+  }, [token, handleLogout]);
+
+  // Eventos do usuário
   useEffect(() => {
     if (!token) return;
 
-    const events = [
-      "mousedown",
-      "mousemove",
-      "keypress",
-      "scroll",
-      "touchstart",
-    ];
+    const events = ["mousedown", "mousemove", "keypress", "scroll", "touchstart"];
 
-    const resetTimer = () => {
-      resetTimers();
-    };
+    const reset = () => resetTimers();
 
-    events.forEach((event) => {
-      document.addEventListener(event, resetTimer);
-    });
+    events.forEach((ev) => document.addEventListener(ev, reset));
 
     return () => {
-      events.forEach((event) => {
-        document.removeEventListener(event, resetTimer);
-      });
+      events.forEach((ev) => document.removeEventListener(ev, reset));
     };
   }, [token, resetTimers]);
 
-  // Reset timers quando o token mudar
+  // Reset timers quando token muda
   useEffect(() => {
-    resetTimers();
+    if (token) resetTimers();
+    else clearAllTimers();
 
-    return () => {
-      clearTimeout(inactivityTimer);
-      clearTimeout(warningTimer);
-    };
+    return () => clearAllTimers();
   }, [token, resetTimers]);
-
-  // Interceptor do axios para verificar token expirado
-  useEffect(() => {
-    const responseInterceptor = axios.interceptors.response.use(
-      (response) => {
-        // Verifica se há um novo token no header
-        const newToken = response.headers["new-token"];
-        if (newToken) {
-          setToken(newToken);
-          localStorage.setItem("token", newToken);
-        }
-        return response;
-      },
-      (error) => {
-        if (error.response?.status === 401) {
-          const errorCode = error.response.data?.code;
-
-          if (errorCode === "TOKEN_EXPIRED") {
-            handleLogout();
-          }
-        }
-        return Promise.reject(error);
-      }
-    );
-
-    return () => {
-      axios.interceptors.response.eject(responseInterceptor);
-    };
-  }, [setToken]);
 
   return {
     isWarningVisible,
     timeLeft,
-    extendSession,
+    extendSession: resetTimers,
     handleLogout,
   };
 };

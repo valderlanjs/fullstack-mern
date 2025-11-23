@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { backend_url } from "../App";
+import api from "../api/axios";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash, FaShieldAlt, FaUser } from "react-icons/fa";
 
@@ -19,15 +18,21 @@ const Login = ({ setToken }) => {
     }
 
     setLoading(true);
+
     try {
-      // 🔥 CORREÇÃO: Use a rota de login comum, não a de admin
-      const response = await axios.post(`${backend_url}/api/user/login`, {
+      // ✅ Use somente a rota relativa, pois api já tem baseURL
+      const response = await api.post("/api/user/login", {
         email: email.trim().toLowerCase(),
         password,
       });
 
       if (response.data.success) {
-        setToken(response.data.token);
+        const token = response.data.token;
+
+        // Grava token (interceptor usa daqui)
+        localStorage.setItem("token", token);
+        setToken(token);
+
         toast.success("Login realizado com sucesso!");
       } else {
         toast.error(response.data.message || "Erro no login");
@@ -47,7 +52,6 @@ const Login = ({ setToken }) => {
   return (
     <section className="absolute top-0 left-0 h-full w-full z-50 bg-white">
       <div className="flex h-full w-full">
-        {/* Lado do formulário */}
         <div className="flex w-full sm:w-1/2 items-center justify-center">
           <form
             onSubmit={onSubmitHandler}
@@ -89,7 +93,7 @@ const Login = ({ setToken }) => {
                 required
                 type={showPassword ? "text" : "password"}
                 placeholder="Digite sua senha"
-                className="w-full px-3 py-2.5 ring-1 ring-slate-900/10 rounded-lg bg-white mt-1 focus:outline-none focus:ring-2 focus:ring-secondary pr-10"
+                className="w-full px-3 py-2.5 ring-1 ring-slate-900/10 rounded-lg bg-white mt-1 focus:outline-none focus:ring-secondary pr-10"
                 disabled={loading}
               />
               <div
@@ -130,14 +134,11 @@ const Login = ({ setToken }) => {
           </form>
         </div>
 
-        {/* Lado da imagem */}
         <div className="w-1/2 hidden sm:block bg-gradient-to-br from-gray-900 to-secondary">
           <div className="flex flex-col items-center justify-center h-full text-white p-8">
             <div className="text-center max-w-md">
               <FaUser className="text-6xl opacity-20 mx-auto mb-6" />
-              <h2 className="text-2xl font-bold mb-4">
-                Sistema de Gestão
-              </h2>
+              <h2 className="text-2xl font-bold mb-4">Sistema de Gestão</h2>
               <p className="text-gray-300">
                 Área para usuários autorizados. Acesso personalizado baseado em permissões específicas.
               </p>

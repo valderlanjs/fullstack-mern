@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import ReactMarkdown from 'react-markdown';
+import api from "../api/axios.js"
 import SafeMarkdown from "./SafeMarkdown"
 
 const backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -17,7 +16,7 @@ const PagesAdmin = ({ token }) => {
 
   const fetchPages = async () => {
     try {
-      const response = await axios.get(`${backend_url}/api/pages`, {
+      const response = await api.get(`${backend_url}/api/pages`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {
@@ -33,7 +32,7 @@ const PagesAdmin = ({ token }) => {
 
   const seedPages = async () => {
     try {
-      const response = await axios.post(`${backend_url}/api/pages/seed`, {}, {
+      const response = await api.post(`${backend_url}/api/pages/seed`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {
@@ -54,7 +53,7 @@ const PagesAdmin = ({ token }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
+      const response = await api.put(
         `${backend_url}/api/pages/${editingPage.id}`,
         formData,
         {

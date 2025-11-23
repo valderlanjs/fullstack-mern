@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import upload_icon from "../assets/upload_icon.png";
-import axios from "axios";
-import { backend_url } from "../App";
+import api from "../api/axios.js"
 import { toast } from "react-toastify";
 import { FaCircleExclamation } from "react-icons/fa6";
 import {
@@ -19,6 +17,8 @@ import {
   FaEye,
   FaEyeSlash,
   FaMapMarkerAlt,
+  FaCheckCircle,
+  FaTimesCircle
 } from "react-icons/fa";
 import "../index.css";
 
@@ -33,10 +33,11 @@ const UpdateHero = ({ token }) => {
     isOpen: false,
     banner: null,
   });
+  const [imageError, setImageError] = useState("");
 
   const fetchBanners = async () => {
     try {
-      const response = await axios.get(`${backend_url}/api/hero/image`);
+      const response = await api.get("/api/hero/image");
       if (response.data.success && response.data.images) {
         setBanners(response.data.images);
       }
@@ -50,10 +51,25 @@ const UpdateHero = ({ token }) => {
     fetchBanners();
   }, []);
 
+  // Função para calcular e formatar o tamanho
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   const handleAddBanner = async (e) => {
     e.preventDefault();
     if (!newImage) {
       toast.error("Selecione uma imagem para adicionar.");
+      return;
+    }
+
+    // Verifica se há erro na imagem
+    if (imageError) {
+      toast.error("Por favor, corrija o erro na imagem antes de enviar.");
       return;
     }
 
@@ -62,8 +78,8 @@ const UpdateHero = ({ token }) => {
       const formData = new FormData();
       formData.append("image", newImage);
 
-      const response = await axios.post(
-        `${backend_url}/api/hero/add`,
+      const response = await api.post(
+        "/api/hero/add",
         formData,
         {
           headers: { token },
@@ -73,6 +89,7 @@ const UpdateHero = ({ token }) => {
       if (response.data.success) {
         toast.success("Banner adicionado com sucesso! 🎉");
         setNewImage(null);
+        setImageError("");
         document.getElementById("image").value = "";
         fetchBanners();
       } else {
@@ -80,9 +97,38 @@ const UpdateHero = ({ token }) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao adicionar o banner.");
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Erro ao adicionar o banner.");
+      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // NOVA FUNÇÃO: Validação de imagem
+  const handleImageChange = (e) => {
+    const selectedImage = e.target.files[0];
+    setImageError("");
+
+    if (selectedImage) {
+      // Validação de tamanho (1MB)
+      if (selectedImage.size > 1 * 1024 * 1024) {
+        setImageError("A imagem deve ter no máximo 1MB");
+        setNewImage(false);
+        return;
+      }
+
+      // Validação do tipo de arquivo
+      if (!selectedImage.type.startsWith('image/')) {
+        setImageError("Por favor, selecione um arquivo de imagem válido");
+        setNewImage(false);
+        return;
+      }
+
+      setNewImage(selectedImage);
+      setImageError("");
     }
   };
 
@@ -105,8 +151,8 @@ const UpdateHero = ({ token }) => {
 
     setIsDeleting(deleteModal.banner.id);
     try {
-      const response = await axios.delete(
-        `${backend_url}/api/hero/${deleteModal.banner.id}`,
+      const response = await api.delete(
+        `/api/hero/${deleteModal.banner.id}`,
         {
           headers: { token },
         }
@@ -184,8 +230,8 @@ const UpdateHero = ({ token }) => {
 
     setIsLoading(true);
     try {
-      const response = await axios.put(
-        `${backend_url}/api/hero/${editingBanner.id}/texts`,
+      const response = await api.put(
+        `/api/hero/${editingBanner.id}/texts`,
         {
           badgeText: editingBanner.badgeText,
           title: editingBanner.title,
@@ -854,13 +900,32 @@ const UpdateHero = ({ token }) => {
             <div className="flex flex-col lg:flex-row gap-6 items-start">
               <div className="flex-shrink-0">
                 <label htmlFor="image" className="cursor-pointer block">
-                  <div className="w-80 h-48 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-secondary transition-colors duration-300 bg-gray-200 flex items-center justify-center card-hover">
+                  <div className={`w-80 h-48 border-2 border-dashed rounded-xl overflow-hidden transition-colors duration-300 flex items-center justify-center card-hover ${
+                    imageError 
+                      ? 'border-red-300 bg-red-50' 
+                      : newImage 
+                        ? 'border-green-300 bg-green-50' 
+                        : 'border-gray-300 hover:border-secondary bg-gray-200'
+                  }`}>
                     {newImage ? (
-                      <img
-                        src={URL.createObjectURL(newImage)}
-                        alt="Preview"
-                        className="w-full h-full object-cover fade-in"
-                      />
+                      <div className="relative w-full h-full">
+                        <img
+                          src={URL.createObjectURL(newImage)}
+                          alt="Preview"
+                          className="w-full h-full object-cover fade-in"
+                        />
+                        {/* Indicador de sucesso */}
+                        <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1">
+                          <FaCheckCircle size={16} />
+                        </div>
+                      </div>
+                    ) : imageError ? (
+                      <div className="text-center p-6">
+                        <FaTimesCircle className="text-red-400 text-3xl mx-auto mb-3" />
+                        <p className="text-red-600 font-medium">Erro na Imagem</p>
+                        <p className="text-red-500 text-sm mt-1">{imageError}</p>
+                        <p className="text-red-400 text-xs mt-2">Clique para tentar novamente</p>
+                      </div>
                     ) : (
                       <div className="text-center p-6 gentle-pulse">
                         <FaUpload className="text-gray-400 text-3xl mx-auto mb-3" />
@@ -874,7 +939,7 @@ const UpdateHero = ({ token }) => {
                     )}
                   </div>
                   <input
-                    onChange={(e) => setNewImage(e.target.files[0])}
+                    onChange={handleImageChange}
                     type="file"
                     name="image"
                     id="image"
@@ -885,6 +950,42 @@ const UpdateHero = ({ token }) => {
               </div>
 
               <div className="flex-1 space-y-4 slide-in-right">
+                {/* Informações da Imagem */}
+                {newImage && !imageError && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 fade-in">
+                    <div className="flex items-start gap-3">
+                      <FaCheckCircle className="text-green-600 text-lg mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-green-800 mb-2">
+                          Imagem Válida ✓
+                        </h4>
+                        <div className="text-green-700 text-sm space-y-1">
+                          <p><strong>Arquivo:</strong> {newImage.name}</p>
+                          <p><strong>Tamanho:</strong> {formatFileSize(newImage.size)}</p>
+                          <p><strong>Status:</strong> <span className="text-green-600">Pronta para upload</span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Mensagem de Erro */}
+                {imageError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 fade-in">
+                    <div className="flex items-start gap-3">
+                      <FaTimesCircle className="text-red-600 text-lg mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-red-800 mb-2">
+                          Problema na Imagem
+                        </h4>
+                        <div className="text-red-700 text-sm">
+                          <p>{imageError}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 card-hover">
                   <div className="flex items-start gap-3">
                     <FaCircleExclamation className="text-blue-600 text-lg mt-0.5 flex-shrink-0 gentle-bounce" />
@@ -893,7 +994,7 @@ const UpdateHero = ({ token }) => {
                         Recomendações Técnicas
                       </h4>
                       <ul className="text-blue-700 text-sm space-y-1">
-                        <li>• Tamanho máximo: 9MB</li>
+                        <li>• <strong>Tamanho máximo: 1MB</strong></li>
                         <li>• Largura ideal: 3150px - 3350px</li>
                         <li>• Altura ideal: 2000px - 2100px</li>
                         <li>• Formatos: JPG, PNG, WebP</li>
@@ -902,24 +1003,13 @@ const UpdateHero = ({ token }) => {
                     </div>
                   </div>
                 </div>
-
-                {newImage && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 fade-in">
-                    <p className="text-green-700 text-sm font-medium">
-                      ✅ Imagem selecionada: {newImage.name}
-                    </p>
-                    <p className="text-green-600 text-xs mt-1">
-                      Tamanho: {(newImage.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
 
             <div className="flex gap-3 pt-4">
               <button
                 type="submit"
-                disabled={!newImage || isLoading}
+                disabled={!newImage || isLoading || imageError}
                 className="btn-hover-lift bg-secondary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isLoading ? (
@@ -940,6 +1030,7 @@ const UpdateHero = ({ token }) => {
                   type="button"
                   onClick={() => {
                     setNewImage(null);
+                    setImageError("");
                     document.getElementById("image").value = "";
                   }}
                   className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300 font-medium btn-hover-lift"
@@ -960,21 +1051,8 @@ const UpdateHero = ({ token }) => {
             <div className="text-sm text-blue-800">Total de Banners</div>
           </div>
           <div className="bg-green-50 p-4 rounded-lg border border-green-200 card-hover">
-            <div className="text-2xl font-bold text-green-600">
-              {
-                banners.filter(
-                  (b) =>
-                    b.badgeText ||
-                    b.title ||
-                    b.description ||
-                    b.button1Text ||
-                    b.button2Text
-                ).length
-              }
-            </div>
-            <div className="text-sm text-green-800">
-              Com Textos Personalizados
-            </div>
+            <div className="text-2xl font-bold text-green-600">1MB</div>
+            <div className="text-sm text-green-800">Tamanho Máximo</div>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 card-hover">
             <div className="text-2xl font-bold text-purple-600">

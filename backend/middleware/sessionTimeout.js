@@ -1,40 +1,35 @@
 import jwt from "jsonwebtoken";
 
-// Middleware para verificar e renovar token se necessário
-const checkSessionTimeout = (req, res, next) => {
+export const checkSessionTimeout = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) return next();
+
   try {
-    const authHeader = req.headers["authorization"];
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return next();
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const timeLeft = decoded.exp * 1000 - Date.now();
+
+    // Renova se faltar menos de 5 minutos
+    if (timeLeft < 5 * 60 * 1000) {
+      const newToken = jwt.sign(
+        {
+          id: decoded.id,
+          isAdmin: decoded.isAdmin,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      res.setHeader("new-token", newToken);
     }
 
-    const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Verifica se o token está perto de expirar (últimos 5 minutos)
-    const currentTime = Math.floor(Date.now() / 1000);
-    const timeUntilExpiry = decoded.exp - currentTime;
-    
-    // Se o token expirar em menos de 5 minutos, renova
-    if (timeUntilExpiry < 300) { // 5 minutos em segundos
-      const newToken = jwt.sign(
-        { 
-          id: decoded.id, 
-          isAdmin: decoded.isAdmin 
-        }, 
-        process.env.JWT_SECRET, 
-        { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
-      );
-      
-      // Adiciona o novo token no header da resposta
-      res.set('New-Token', newToken);
-    }
-    
     next();
-  } catch (error) {
-    // Se houver erro na verificação, continua sem renovar
-    next();
+  } catch (err) {
+    return res.status(401).json({
+      success: false,
+      code: "TOKEN_EXPIRED",
+      message: "Sessão expirada",
+    });
   }
 };
-
-export { checkSessionTimeout };

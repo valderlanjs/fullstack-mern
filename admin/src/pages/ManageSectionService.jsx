@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../api/axios.js"
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import {
@@ -15,7 +16,15 @@ import {
   FaEye,
   FaChartLine,
   FaCog,
+  FaCheckCircle,
+  FaTimesCircle,
+  
 } from "react-icons/fa";
+
+import {
+FaCircleExclamation
+} from "react-icons/fa6";
+
 
 const ManageServicesSection = ({ token }) => {
   const [servicesSections, setServicesSections] = useState([]);
@@ -51,11 +60,13 @@ const ManageServicesSection = ({ token }) => {
   });
   const [previewImage1, setPreviewImage1] = useState(null);
   const [previewImage2, setPreviewImage2] = useState(null);
+  const [image1Error, setImage1Error] = useState("");
+  const [image2Error, setImage2Error] = useState("");
 
   // Buscar seções de serviços
   const fetchServicesSections = async () => {
     try {
-      const response = await axios.get(
+      const response = await api.get(
         `${backend_url}/api/services-section/admin/all`,
         {
           headers: { token },
@@ -67,6 +78,15 @@ const ManageServicesSection = ({ token }) => {
     } catch (error) {
       toast.error("Erro ao carregar seções de serviços");
     }
+  };
+
+  // Função para calcular e formatar o tamanho
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   // Salvar/Atualizar seção
@@ -91,7 +111,6 @@ const ManageServicesSection = ({ token }) => {
       basicFields.forEach((key) => {
         if (formData[key] !== null && formData[key] !== undefined) {
           formDataToSend.append(key, formData[key]);
-          console.log(`🔸 Campo ${key}:`, formData[key]); // DEBUG
         }
       });
 
@@ -102,26 +121,15 @@ const ManageServicesSection = ({ token }) => {
       formDataToSend.append("services", servicesJSON);
       formDataToSend.append("features", featuresJSON);
 
-      console.log("🔸 Services:", servicesJSON); // DEBUG
-      console.log("🔸 Features:", featuresJSON); // DEBUG
-
       // Adicionar arquivos de imagem
       if (image1File) {
         formDataToSend.append("section1Image", image1File);
-        console.log("🔸 Image1 File:", image1File.name); // DEBUG
       }
       if (image2File) {
         formDataToSend.append("section2Image", image2File);
-        console.log("🔸 Image2 File:", image2File.name); // DEBUG
       }
 
-      // DEBUG: Verificar todos os campos do FormData
-      console.log("📤 Dados sendo enviados:");
-      for (let [key, value] of formDataToSend.entries()) {
-        console.log(`   ${key}:`, value);
-      }
-
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/services-section`,
         formDataToSend,
         {
@@ -132,17 +140,13 @@ const ManageServicesSection = ({ token }) => {
         }
       );
 
-      console.log("✅ Resposta do servidor:", response.data); // DEBUG
-
       toast.success("Seção de serviços atualizada com sucesso! 🎉");
       setShowForm(false);
       setEditingSection(null);
       resetForm();
       fetchServicesSections();
     } catch (error) {
-      console.error("❌ Erro detalhado:", error); // DEBUG
-      console.error("❌ Resposta de erro:", error.response?.data); // DEBUG
-
+      console.error("❌ Erro detalhado:", error);
       if (error.response?.data?.message) {
         toast.error(`Erro: ${error.response.data.message}`);
       } else {
@@ -179,6 +183,8 @@ const ManageServicesSection = ({ token }) => {
     setImage2File(null);
     setPreviewImage1(null);
     setPreviewImage2(null);
+    setImage1Error("");
+    setImage2Error("");
   };
 
   // Abrir modal de exclusão
@@ -203,7 +209,7 @@ const ManageServicesSection = ({ token }) => {
 
     setIsDeleting(deleteModal.section.id);
     try {
-      await axios.delete(
+      await api.delete(
         `${backend_url}/api/services-section/${deleteModal.section.id}`,
         {
           headers: { token },
@@ -222,7 +228,7 @@ const ManageServicesSection = ({ token }) => {
   // Carregar dados atuais para edição
   const loadCurrentSection = async () => {
     try {
-      const response = await axios.get(`${backend_url}/api/services-section`);
+      const response = await api.get(`${backend_url}/api/services-section`);
       if (response.data.success) {
         const currentSection = response.data.servicesSection;
         setFormData({
@@ -260,20 +266,58 @@ const ManageServicesSection = ({ token }) => {
     setShowForm(true);
   };
 
-  // Handlers para upload de imagens
+  // NOVAS FUNÇÕES: Validação de imagens
   const handleImage1Change = (e) => {
     const file = e.target.files[0];
+    setImage1Error("");
+
     if (file) {
+      // Validação de tamanho (1MB)
+      if (file.size > 1 * 1024 * 1024) {
+        setImage1Error("A imagem deve ter no máximo 1MB");
+        setImage1File(null);
+        setPreviewImage1(null);
+        return;
+      }
+
+      // Validação do tipo de arquivo
+      if (!file.type.startsWith('image/')) {
+        setImage1Error("Por favor, selecione um arquivo de imagem válido");
+        setImage1File(null);
+        setPreviewImage1(null);
+        return;
+      }
+
       setImage1File(file);
       setPreviewImage1(URL.createObjectURL(file));
+      setImage1Error("");
     }
   };
 
   const handleImage2Change = (e) => {
     const file = e.target.files[0];
+    setImage2Error("");
+
     if (file) {
+      // Validação de tamanho (1MB)
+      if (file.size > 1 * 1024 * 1024) {
+        setImage2Error("A imagem deve ter no máximo 1MB");
+        setImage2File(null);
+        setPreviewImage2(null);
+        return;
+      }
+
+      // Validação do tipo de arquivo
+      if (!file.type.startsWith('image/')) {
+        setImage2Error("Por favor, selecione um arquivo de imagem válido");
+        setImage2File(null);
+        setPreviewImage2(null);
+        return;
+      }
+
       setImage2File(file);
       setPreviewImage2(URL.createObjectURL(file));
+      setImage2Error("");
     }
   };
 
@@ -397,7 +441,7 @@ const ManageServicesSection = ({ token }) => {
         </div>
       </div>
 
-      {/* Modal do Formulário - MUITO EXTENSO, VOU CONTINUAR NA PRÓXIMA RESPOSTA */}
+      {/* Modal do Formulário */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 modal-enter-active">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100">
@@ -426,7 +470,6 @@ const ManageServicesSection = ({ token }) => {
               </button>
             </div>
 
-            {/* Formulário - CONTINUA NA PRÓXIMA RESPOSTA */}
             <form onSubmit={handleSaveSection} className="p-6 space-y-8">
               {/* Seção 1 */}
               <div className="border-b border-gray-200 pb-8">
@@ -436,27 +479,40 @@ const ManageServicesSection = ({ token }) => {
                 </h3>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Imagem da Seção 1 */}
+                  {/* Imagem da Seção 1 ATUALIZADA */}
                   <div>
                     <label className="block text-sm font-medium mb-3">
-                      Imagem da Seção 1
+                      Imagem da Seção 1 *
                     </label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-secondary transition-colors duration-300 bg-gray-200 aspect-video flex items-center justify-center card-hover">
+                    <div className={`border-2 border-dashed rounded-xl overflow-hidden transition-colors duration-300 aspect-video flex items-center justify-center card-hover ${
+                      image1Error 
+                        ? 'border-red-300 bg-red-50' 
+                        : previewImage1 
+                          ? 'border-green-300 bg-green-50' 
+                          : 'border-gray-300 hover:border-secondary bg-gray-200'
+                    }`}>
                       {previewImage1 ? (
-                        <img
-                          src={previewImage1}
-                          alt="Preview Seção 1"
-                          className="w-full h-full object-cover fade-in"
-                        />
+                        <div className="relative w-full h-full">
+                          <img
+                            src={previewImage1}
+                            alt="Preview Seção 1"
+                            className="w-full h-full object-cover fade-in"
+                          />
+                          <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1">
+                            <FaCheckCircle size={14} />
+                          </div>
+                        </div>
+                      ) : image1Error ? (
+                        <div className="text-center p-6">
+                          <FaTimesCircle className="text-red-400 text-3xl mx-auto mb-3" />
+                          <p className="text-red-600 font-medium">Erro na Imagem</p>
+                          <p className="text-red-500 text-sm mt-1">{image1Error}</p>
+                        </div>
                       ) : (
                         <div className="text-center p-6 gentle-pulse">
                           <FaUpload className="text-gray-400 text-3xl mx-auto mb-3" />
-                          <p className="text-gray-600 font-medium">
-                            Selecione uma imagem
-                          </p>
-                          <p className="text-gray-400 text-sm mt-1">
-                            ou arraste aqui
-                          </p>
+                          <p className="text-gray-600 font-medium">Selecione uma imagem</p>
+                          <p className="text-gray-400 text-sm mt-1">ou arraste aqui</p>
                         </div>
                       )}
                     </div>
@@ -468,12 +524,15 @@ const ManageServicesSection = ({ token }) => {
                       className="w-full p-2 border rounded-lg mt-3"
                     />
 
-                    {image1File && (
+                    {image1File && !image1Error && (
                       <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3 fade-in">
                         <p className="text-green-700 text-sm font-medium">
-                          ✅ Nova imagem selecionada: {image1File.name}
+                          ✅ Imagem válida: {image1File.name} ({formatFileSize(image1File.size)})
                         </p>
                       </div>
+                    )}
+                    {image1Error && (
+                      <p className="text-red-500 text-sm mt-2">{image1Error}</p>
                     )}
                   </div>
 
@@ -587,27 +646,40 @@ const ManageServicesSection = ({ token }) => {
                     </div>
                   </div>
 
-                  {/* Imagem da Seção 2 */}
+                  {/* Imagem da Seção 2 ATUALIZADA */}
                   <div>
                     <label className="block text-sm font-medium mb-3">
-                      Imagem da Seção 2
+                      Imagem da Seção 2 *
                     </label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-secondary transition-colors duration-300 bg-gray-200 aspect-video flex items-center justify-center card-hover">
+                    <div className={`border-2 border-dashed rounded-xl overflow-hidden transition-colors duration-300 aspect-video flex items-center justify-center card-hover ${
+                      image2Error 
+                        ? 'border-red-300 bg-red-50' 
+                        : previewImage2 
+                          ? 'border-green-300 bg-green-50' 
+                          : 'border-gray-300 hover:border-secondary bg-gray-200'
+                    }`}>
                       {previewImage2 ? (
-                        <img
-                          src={previewImage2}
-                          alt="Preview Seção 2"
-                          className="w-full h-full object-cover fade-in"
-                        />
+                        <div className="relative w-full h-full">
+                          <img
+                            src={previewImage2}
+                            alt="Preview Seção 2"
+                            className="w-full h-full object-cover fade-in"
+                          />
+                          <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1">
+                            <FaCheckCircle size={14} />
+                          </div>
+                        </div>
+                      ) : image2Error ? (
+                        <div className="text-center p-6">
+                          <FaTimesCircle className="text-red-400 text-3xl mx-auto mb-3" />
+                          <p className="text-red-600 font-medium">Erro na Imagem</p>
+                          <p className="text-red-500 text-sm mt-1">{image2Error}</p>
+                        </div>
                       ) : (
                         <div className="text-center p-6 gentle-pulse">
                           <FaUpload className="text-gray-400 text-3xl mx-auto mb-3" />
-                          <p className="text-gray-600 font-medium">
-                            Selecione uma imagem
-                          </p>
-                          <p className="text-gray-400 text-sm mt-1">
-                            ou arraste aqui
-                          </p>
+                          <p className="text-gray-600 font-medium">Selecione uma imagem</p>
+                          <p className="text-gray-400 text-sm mt-1">ou arraste aqui</p>
                         </div>
                       )}
                     </div>
@@ -619,12 +691,15 @@ const ManageServicesSection = ({ token }) => {
                       className="w-full p-2 border rounded-lg mt-3"
                     />
 
-                    {image2File && (
+                    {image2File && !image2Error && (
                       <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3 fade-in">
                         <p className="text-green-700 text-sm font-medium">
-                          ✅ Nova imagem selecionada: {image2File.name}
+                          ✅ Imagem válida: {image2File.name} ({formatFileSize(image2File.size)})
                         </p>
                       </div>
+                    )}
+                    {image2Error && (
+                      <p className="text-red-500 text-sm mt-2">{image2Error}</p>
                     )}
                   </div>
                 </div>
@@ -791,11 +866,30 @@ const ManageServicesSection = ({ token }) => {
                 </div>
               </div>
 
+              {/* Informações de Imagens ATUALIZADA */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 card-hover">
+                <div className="flex items-start gap-3">
+                  <FaCircleExclamation className="text-blue-600 text-lg mt-0.5 flex-shrink-0 gentle-bounce" />
+                  <div>
+                    <h4 className="font-semibold text-blue-800 mb-2">
+                      Recomendações de Imagens
+                    </h4>
+                    <ul className="text-blue-700 text-sm space-y-1">
+                      <li>• <strong>Tamanho máximo por imagem: 1MB</strong></li>
+                      <li>• Formatos suportados: JPG, PNG, WebP</li>
+                      <li>• Dimensões recomendadas para Seção 1: 600x400px</li>
+                      <li>• Dimensões recomendadas para Seção 2: 500x300px</li>
+                      <li>• Imagens de alta qualidade com boa iluminação</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
               {/* Botões de Ação */}
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || image1Error || image2Error}
                   className="flex-1 bg-secondary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 btn-hover-lift"
                 >
                   {isLoading ? (

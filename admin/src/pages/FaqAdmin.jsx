@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios.js"
 
 const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -17,7 +17,7 @@ const FaqAdmin = ({ token }) => {
 
   const fetchFaqs = async () => {
     try {
-      const response = await axios.get(`${backend_url}/api/faqs`);
+      const response = await api.get(`${backend_url}/api/faqs`);
       if (response.data.success) {
         setFaqs(response.data.faqs);
       }
@@ -45,7 +45,7 @@ const FaqAdmin = ({ token }) => {
 
       if (editingFaq) {
         // Editar FAQ existente
-        const response = await axios.put(
+        const response = await api.put(
           `${backend_url}/api/faqs/${editingFaq.id}`,
           formData,
           config
@@ -58,7 +58,7 @@ const FaqAdmin = ({ token }) => {
         }
       } else {
         // Criar novo FAQ
-        const response = await axios.post(
+        const response = await api.post(
           `${backend_url}/api/faqs`,
           formData,
           config
@@ -98,7 +98,7 @@ const FaqAdmin = ({ token }) => {
         }
       };
 
-      const response = await axios.delete(
+      const response = await api.delete(
         `${backend_url}/api/faqs/${faqId}`,
         config
       );
@@ -130,7 +130,7 @@ const FaqAdmin = ({ token }) => {
         }
       };
 
-      const response = await axios.put(
+      const response = await api.put(
         `${backend_url}/api/faqs/${faqId}/move`,
         { direction },
         config

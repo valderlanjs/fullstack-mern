@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../api/axios.js"
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -42,7 +43,7 @@ const ChangeCredentials = ({ token, setToken }) => {
     }
 
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/user/change-credentials`,
         {
           currentPassword: formData.currentPassword,

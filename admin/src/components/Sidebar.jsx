@@ -23,7 +23,7 @@ import {
   FaFileAlt,
   FaQuestionCircle,
   FaBullhorn,
-  FaHeadSideVirus
+  FaHeadSideVirus,
 } from "react-icons/fa";
 
 // Menu base - itens que aparecem para todos os usuários autenticados
@@ -102,24 +102,7 @@ const getMenuItems = (currentUser) => {
         },
       ],
     },
-    {
-      id: "marketing",
-      label: "Marketing",
-      icon: FaBullhorn,
-      type: "submenu",
-      subItems: [
-        {
-          to: "/marketing-messages",
-          label: "Mensagens Promocionais",
-          icon: FaEdit,
-        },
-        {
-          to: "/tracking-codes",
-          label: "Códigos de Rastreamento",
-          icon: FaHeadSideVirus,
-        },
-      ],
-    },
+
     {
       id: "footer",
       label: "Rodapé",
@@ -235,6 +218,27 @@ const getMenuItems = (currentUser) => {
           to: "/users",
           label: "Gerenciar Usuários",
           icon: FaUserCog,
+        },
+      ],
+    });
+  }
+
+  if (currentUser?.isAdmin || currentUser?.permissions?.manageMarketing) {
+    baseMenuItems.push({
+      id: "marketing",
+      label: "Marketing",
+      icon: FaBullhorn,
+      type: "submenu",
+      subItems: [
+        {
+          to: "/marketing-messages",
+          label: "Mensagens Promocionais",
+          icon: FaEdit,
+        },
+        {
+          to: "/tracking-codes",
+          label: "Códigos de Rastreamento",
+          icon: FaHeadSideVirus,
         },
       ],
     });

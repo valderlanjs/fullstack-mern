@@ -225,7 +225,7 @@ const Footer = () => {
                   label: "Contato",
                 },
                 {
-                  href: footerData?.faqLink || "/faq",
+                  href: footerData?.faqLink || "/faqs",
                   label: "Perguntas Frequentes",
                 },
               ].map((link, index) => (

@@ -1,6 +1,6 @@
 // components/admin/NewsletterManager.jsx
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios.js"
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import { 
@@ -24,7 +24,7 @@ const NewsletterManager = ({ token }) => {
   const fetchSubscribers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${backend_url}/api/newsletter/subscribers`, {
+      const response = await api.get(`${backend_url}/api/newsletter/subscribers`, {
         headers: { token }
       });
 
@@ -42,7 +42,7 @@ const NewsletterManager = ({ token }) => {
   const handleUnsubscribe = async (id, email) => {
     if (window.confirm(`Tem certeza que deseja remover o email ${email} da newsletter?`)) {
       try {
-        const response = await axios.put(
+        const response = await api.put(
           `${backend_url}/api/newsletter/unsubscribe/${id}`,
           {},
           { headers: { token } }

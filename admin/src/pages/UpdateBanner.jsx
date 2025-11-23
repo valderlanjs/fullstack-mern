@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import upload_icon from "../assets/upload_icon.png";
-import axios from "axios";
+import api from "../api/axios.js"
 import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import { 
@@ -25,7 +24,7 @@ const UpdateBanner = ({ token }) => {
 
   const fetchBannerImage = async () => {
     try {
-      const response = await axios.get(`${backend_url}/api/banner/image`);
+      const response = await api.get(`${backend_url}/api/banner/image`);
       if (response.data.success && response.data.banner) {
         setCurrentBanner(response.data.banner);
         setImage(response.data.banner.imageUrl);
@@ -58,7 +57,7 @@ const UpdateBanner = ({ token }) => {
       const formData = new FormData();
       formData.append("image", image);
 
-      const response = await axios.post(
+      const response = await api.post(
         `${backend_url}/api/banner/update`,
         formData,
         { headers: { token } }

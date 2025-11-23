@@ -8,12 +8,13 @@ import {
 import { upload, handleMulterError } from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 import { checkPermission } from "../middleware/permissionAuth.js";
+import { authenticate } from "../middleware/authenticate.js"
 
 const vendorRouter = express.Router();
 
 // 🔐 Rotas protegidas - apenas admin OU com permissão manageVendors
 vendorRouter.post('/add', 
-  adminAuth, 
+  authenticate, 
   checkPermission('manageVendors'), 
   upload.fields([{ name: 'image', maxCount: 1 }]),
   handleMulterError, // Adicione este middleware após o upload
@@ -21,7 +22,7 @@ vendorRouter.post('/add',
 );
 
 vendorRouter.post('/update', 
-  adminAuth, 
+  authenticate, 
   checkPermission('manageVendors'), 
   upload.fields([{ name: 'image', maxCount: 1 }]),
   handleMulterError, // Adicione este middleware após o upload
@@ -29,7 +30,7 @@ vendorRouter.post('/update',
 );
 
 vendorRouter.post('/remove', 
-  adminAuth, 
+  authenticate, 
   checkPermission('manageVendors'), 
   removeVendor
 );
