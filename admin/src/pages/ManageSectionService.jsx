@@ -18,13 +18,13 @@ import {
   FaCog,
   FaCheckCircle,
   FaTimesCircle,
-  
+  FaQuestionCircle
 } from "react-icons/fa";
 
 import {
-FaCircleExclamation
-} from "react-icons/fa6";
+  FaCircleExclamation,
 
+} from "react-icons/fa6";
 
 const ManageServicesSection = ({ token }) => {
   const [servicesSections, setServicesSections] = useState([]);
@@ -62,6 +62,8 @@ const ManageServicesSection = ({ token }) => {
   const [previewImage2, setPreviewImage2] = useState(null);
   const [image1Error, setImage1Error] = useState("");
   const [image2Error, setImage2Error] = useState("");
+  // NOVO STATE: Modal de instruções
+  const [instructionsModal, setInstructionsModal] = useState(false);
 
   // Buscar seções de serviços
   const fetchServicesSections = async () => {
@@ -78,6 +80,15 @@ const ManageServicesSection = ({ token }) => {
     } catch (error) {
       toast.error("Erro ao carregar seções de serviços");
     }
+  };
+
+  // NOVAS FUNÇÕES: Modal de instruções
+  const openInstructionsModal = () => {
+    setInstructionsModal(true);
+  };
+
+  const closeInstructionsModal = () => {
+    setInstructionsModal(false);
   };
 
   // Função para calcular e formatar o tamanho
@@ -266,7 +277,7 @@ const ManageServicesSection = ({ token }) => {
     setShowForm(true);
   };
 
-  // NOVAS FUNÇÕES: Validação de imagens
+  // Validação de imagens
   const handleImage1Change = (e) => {
     const file = e.target.files[0];
     setImage1Error("");
@@ -346,83 +357,216 @@ const ManageServicesSection = ({ token }) => {
       <div className="p-6 max-w-6xl mx-auto fade-in">
         {/* Header */}
         <div className="mb-8 slide-in-left">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-            <FaCog className="text-secondary" />
-            Gerenciar Seção de Serviços
-          </h1>
-          <p className="text-gray-600">
-            Edite o conteúdo, imagens e informações da seção "Serviços" da
-            empresa
-          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                <FaCog className="text-purple-600" />
+                Gerenciar Seção de Serviços
+              </h1>
+              <p className="text-gray-600">
+                Edite o conteúdo, imagens e informações da seção "Serviços" da empresa
+              </p>
+            </div>
+            {/* BOTÃO DE INSTRUÇÕES */}
+            <button
+              onClick={openInstructionsModal}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 btn-hover-lift shadow-md"
+              title="Ver instruções de uso"
+            >
+              <FaQuestionCircle />
+              Instruções
+            </button>
+          </div>
         </div>
 
-        {/* Preview da Seção Atual */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 slide-in-right flex items-center gap-2">
+        {/* MODAL DE INSTRUÇÕES - NOVO */}
+        {instructionsModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 modal-enter-active">
+            <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100">
+              {/* Header do Modal de Instruções */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg">
+                    <FaQuestionCircle className="text-purple-600 text-xl" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Instruções - Seção de Serviços
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Guia completo para gerenciar a seção de serviços do site
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={closeInstructionsModal}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <FaTimes className="text-gray-400 hover:text-gray-600" />
+                </button>
+              </div>
+
+              {/* Conteúdo das Instruções */}
+              <div className="p-6 space-y-6">
+                {/* Seção 1: Visão Geral */}
+                <section className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
+                  <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <FaCog className="text-purple-600" />
+                    1. Visão Geral da Seção
+                  </h4>
+                  <div className="space-y-2 text-sm text-gray-700">
+                    <p>Esta seção é dividida em duas partes principais com diferentes propósitos:</p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li><strong>Seção 1:</strong> Apresentação dos serviços principais</li>
+                      <li><strong>Seção 2:</strong> Diferenciais e vantagens competitivas</li>
+                      <li><strong>Serviços:</strong> 2 serviços principais com descrição</li>
+                      <li><strong>Diferenciais:</strong> 3 características que destacam sua empresa</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* Seção 2: Conteúdo das Seções */}
+                <section className="bg-green-50 rounded-lg p-4 border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
+                    <FaEdit className="text-green-600" />
+                    2. Conteúdo Recomendado
+                  </h4>
+                  <div className="space-y-3 text-sm text-green-700">
+                    <p><strong>Para Seção 1 (O que oferecemos):</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Título claro sobre seus serviços</li>
+                      <li>Descrição geral dos benefícios</li>
+                      <li>Imagem ilustrativa dos serviços</li>
+                    </ul>
+                    
+                    <p><strong>Para Seção 2 (Diferenciais):</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Título sobre qualidade/experiência</li>
+                      <li>Imagem de detalhes ou processo</li>
+                      <li>Foque no que torna único</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* Seção 3: Serviços e Diferenciais */}
+                <section className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                  <h4 className="font-semibold text-purple-800 mb-3 flex items-center gap-2">
+                    <FaChartLine className="text-purple-600" />
+                    3. Serviços e Diferenciais
+                  </h4>
+                  <div className="space-y-2 text-sm text-purple-700">
+                    <p><strong>Serviços (2 obrigatórios):</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Título curto e direto</li>
+                      <li>Descrição com benefícios claros</li>
+                      <li>Ex: "Corte sob medida" + "Precisão milimétrica..."</li>
+                    </ul>
+                    
+                    <p><strong>Diferenciais (3 obrigatórios):</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Características únicas da empresa</li>
+                      <li>Vantagens competitivas</li>
+                      <li>Ex: "Atendimento Personalizado" + "Consultoria especializada..."</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* Seção 4: Requisitos Técnicos */}
+                <section className="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                  <h4 className="font-semibold text-orange-800 mb-3 flex items-center gap-2">
+                    <FaImage className="text-orange-600" />
+                    4. Requisitos Técnicos
+                  </h4>
+                  <div className="space-y-2 text-sm text-orange-700">
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li><strong>Tamanho máximo:</strong> 1MB por imagem</li>
+                      <li><strong>Formatos:</strong> JPG, PNG, WebP</li>
+                      <li><strong>Seção 1:</strong> 600x400px (paisagem)</li>
+                      <li><strong>Seção 2:</strong> 500x300px (paisagem)</li>
+                      <li><strong>Textos alternativos:</strong> Descrevam as imagens para SEO</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* Seção 5: Dicas de Conteúdo */}
+                <section className="bg-red-50 rounded-lg p-4 border border-red-200">
+                  <h4 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
+                    <FaCircleExclamation className="text-red-600" />
+                    5. Dicas para Conteúdo Eficaz
+                  </h4>
+                  <div className="space-y-2 text-sm text-red-700">
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Use linguagem clara e direta</li>
+                      <li>Destaque benefícios, não apenas características</li>
+                      <li>Mantenha a consistência da marca</li>
+                      <li>Use call-to-action persuasivo</li>
+                      <li>Revise todos os textos antes de salvar</li>
+                    </ul>
+                  </div>
+                </section>
+              </div>
+
+              {/* Rodapé do Modal */}
+              <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+                <button
+                  onClick={closeInstructionsModal}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 font-medium flex items-center justify-center gap-2 shadow-md"
+                >
+                  <FaCheckCircle />
+                  Entendi, Obrigado!
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Preview da Seção Atual - COMPACTADO */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-3 slide-in-right flex items-center gap-2">
             <FaEye className="text-blue-600" />
             Preview da Seção Atual
           </h2>
 
           {activeSection ? (
-            <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden card-hover">
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-green-600">
-                    ATIVO
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                  {activeSection.section1Title}
-                </h3>
-                <p className="text-gray-600 line-clamp-2 mb-4">
-                  {activeSection.section1Description}
-                </p>
-
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-700 mb-2">
-                      Serviços:
-                    </p>
-                    <div className="space-y-2">
-                      {activeSection.services
-                        ?.slice(0, 2)
-                        .map((service, index) => (
-                          <div key={index} className="text-sm text-gray-600">
-                            • {service.title}
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-700 mb-2">
-                      Diferenciais:
-                    </p>
-                    <div className="space-y-2">
-                      {activeSection.features
-                        ?.slice(0, 2)
-                        .map((feature, index) => (
-                          <div key={index} className="text-sm text-gray-600">
-                            • {feature.title}
-                          </div>
-                        ))}
-                    </div>
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-200 p-4 card-hover hover:shadow-md transition-shadow duration-300">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs font-medium text-green-600">
+                  ATIVO
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1">
+                {activeSection.section1Title}
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <p className="font-medium text-gray-700 mb-1">Serviços:</p>
+                  <div className="space-y-1">
+                    {activeSection.services?.slice(0, 2).map((service, index) => (
+                      <div key={index} className="text-gray-600">• {service.title}</div>
+                    ))}
                   </div>
                 </div>
-
-                <div className="mt-4 text-sm text-gray-500">
-                  Atualizado em:{" "}
-                  {new Date(activeSection.updatedAt).toLocaleDateString(
-                    "pt-BR"
-                  )}
+                <div>
+                  <p className="font-medium text-gray-700 mb-1">Diferenciais:</p>
+                  <div className="space-y-1">
+                    {activeSection.features?.slice(0, 2).map((feature, index) => (
+                      <div key={index} className="text-gray-600">• {feature.title}</div>
+                    ))}
+                  </div>
                 </div>
+              </div>
+
+              <div className="mt-2 text-xs text-gray-500">
+                Atualizado em: {new Date(activeSection.updatedAt).toLocaleDateString("pt-BR")}
               </div>
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-200 rounded-xl border-2 border-dashed border-gray-300 gentle-pulse">
-              <FaCog className="text-gray-400 text-4xl mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">Nenhuma seção ativa</p>
-              <p className="text-gray-400 text-sm mt-1">
+            <div className="text-center py-8 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl border-2 border-dashed border-gray-300 gentle-pulse">
+              <FaCog className="text-gray-400 text-3xl mx-auto mb-2" />
+              <p className="text-gray-500 text-sm">Nenhuma seção ativa</p>
+              <p className="text-gray-400 text-xs mt-1">
                 Crie a primeira seção usando o botão abaixo
               </p>
             </div>
@@ -430,10 +574,10 @@ const ManageServicesSection = ({ token }) => {
         </div>
 
         {/* Botão de Ação Principal */}
-        <div className="flex justify-center">
+        <div className="flex justify-center mb-6">
           <button
             onClick={openEditForm}
-            className="bg-secondary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium flex items-center gap-2 btn-hover-lift"
+            className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-2 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300 font-medium flex items-center gap-2 btn-hover-lift shadow-md text-sm"
           >
             <FaEdit />{" "}
             {activeSection ? "Editar Seção Atual" : "Criar Seção de Serviços"}
@@ -441,20 +585,18 @@ const ManageServicesSection = ({ token }) => {
         </div>
       </div>
 
-      {/* Modal do Formulário */}
+      {/* Modal do Formulário - COMPACTADO */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 modal-enter-active">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100">
             {/* Header do Modal */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-secondary rounded-lg">
-                  <FaCog className="text-white text-xl" />
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white">
+              <div className="flex items-center gap-2">
+                <div className="p-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg">
+                  <FaCog className="text-white text-lg" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">
-                  {editingSection
-                    ? "Editar Seção de Serviços"
-                    : "Criar Seção de Serviços"}
+                <h2 className="text-lg font-bold text-gray-900">
+                  {editingSection ? "Editar Seção" : "Criar Seção"}
                 </h2>
               </div>
               <button
@@ -463,33 +605,31 @@ const ManageServicesSection = ({ token }) => {
                   setEditingSection(null);
                   resetForm();
                 }}
-                className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+                className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
                 disabled={isLoading}
               >
-                <FaTimes className="text-gray-400 hover:text-gray-600" />
+                <FaTimes className="text-gray-400 hover:text-gray-600 text-sm" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveSection} className="p-6 space-y-8">
-              {/* Seção 1 */}
-              <div className="border-b border-gray-200 pb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-                  <FaImage className="text-green-600" />
+            <form onSubmit={handleSaveSection} className="p-4 space-y-6">
+              {/* Seção 1 - COMPACTADO */}
+              <div className="border-b border-gray-200 pb-6">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-sm">
+                  <FaImage className="text-green-500" />
                   Seção 1 - O que oferecemos
                 </h3>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Imagem da Seção 1 ATUALIZADA */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Imagem da Seção 1 COMPACTADA */}
                   <div>
-                    <label className="block text-sm font-medium mb-3">
-                      Imagem da Seção 1 *
-                    </label>
-                    <div className={`border-2 border-dashed rounded-xl overflow-hidden transition-colors duration-300 aspect-video flex items-center justify-center card-hover ${
+                    <label className="block text-xs font-medium mb-2">Imagem 1 *</label>
+                    <div className={`border-2 border-dashed rounded-lg overflow-hidden transition-all duration-300 aspect-video flex items-center justify-center card-hover transform hover:scale-[1.02] ${
                       image1Error 
                         ? 'border-red-300 bg-red-50' 
                         : previewImage1 
                           ? 'border-green-300 bg-green-50' 
-                          : 'border-gray-300 hover:border-secondary bg-gray-200'
+                          : 'border-gray-300 hover:border-purple-400 bg-gray-50'
                     }`}>
                       {previewImage1 ? (
                         <div className="relative w-full h-full">
@@ -498,21 +638,20 @@ const ManageServicesSection = ({ token }) => {
                             alt="Preview Seção 1"
                             className="w-full h-full object-cover fade-in"
                           />
-                          <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1">
-                            <FaCheckCircle size={14} />
+                          <div className="absolute top-1 right-1 bg-green-500 text-white rounded-full p-1 shadow-md">
+                            <FaCheckCircle size={12} />
                           </div>
                         </div>
                       ) : image1Error ? (
-                        <div className="text-center p-6">
-                          <FaTimesCircle className="text-red-400 text-3xl mx-auto mb-3" />
-                          <p className="text-red-600 font-medium">Erro na Imagem</p>
-                          <p className="text-red-500 text-sm mt-1">{image1Error}</p>
+                        <div className="text-center p-3">
+                          <FaTimesCircle className="text-red-400 text-xl mx-auto mb-1" />
+                          <p className="text-red-600 text-xs font-medium">Erro</p>
+                          <p className="text-red-500 text-xs mt-1">{image1Error}</p>
                         </div>
                       ) : (
-                        <div className="text-center p-6 gentle-pulse">
-                          <FaUpload className="text-gray-400 text-3xl mx-auto mb-3" />
-                          <p className="text-gray-600 font-medium">Selecione uma imagem</p>
-                          <p className="text-gray-400 text-sm mt-1">ou arraste aqui</p>
+                        <div className="text-center p-4">
+                          <FaUpload className="text-gray-400 text-xl mx-auto mb-1" />
+                          <p className="text-gray-600 font-medium text-xs">Selecione imagem</p>
                         </div>
                       )}
                     </div>
@@ -521,74 +660,50 @@ const ManageServicesSection = ({ token }) => {
                       type="file"
                       accept="image/*"
                       onChange={handleImage1Change}
-                      className="w-full p-2 border rounded-lg mt-3"
+                      className="w-full p-1 border rounded-lg mt-2 text-xs"
                     />
 
                     {image1File && !image1Error && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3 fade-in">
-                        <p className="text-green-700 text-sm font-medium">
-                          ✅ Imagem válida: {image1File.name} ({formatFileSize(image1File.size)})
+                      <div className="bg-green-50 border border-green-200 rounded p-2 mt-2 fade-in">
+                        <p className="text-green-700 text-xs">
+                          ✅ {image1File.name.length > 20 ? image1File.name.substring(0, 20) + "..." : image1File.name} ({formatFileSize(image1File.size)})
                         </p>
                       </div>
                     )}
-                    {image1Error && (
-                      <p className="text-red-500 text-sm mt-2">{image1Error}</p>
-                    )}
                   </div>
 
-                  {/* Conteúdo da Seção 1 */}
-                  <div className="space-y-4">
+                  {/* Conteúdo da Seção 1 COMPACTADO */}
+                  <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Título da Seção 1 *
-                      </label>
+                      <label className="block text-xs font-medium mb-1">Título 1 *</label>
                       <input
                         type="text"
                         value={formData.section1Title}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            section1Title: e.target.value,
-                          })
-                        }
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
+                        onChange={(e) => setFormData({ ...formData, section1Title: e.target.value })}
+                        className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                         placeholder="Ex: O que nós oferecemos"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Descrição da Seção 1 *
-                      </label>
+                      <label className="block text-xs font-medium mb-1">Descrição 1 *</label>
                       <textarea
                         value={formData.section1Description}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            section1Description: e.target.value,
-                          })
-                        }
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent h-24"
-                        placeholder="Descreva os serviços oferecidos..."
+                        onChange={(e) => setFormData({ ...formData, section1Description: e.target.value })}
+                        className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 h-16"
+                        placeholder="Descreva os serviços..."
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Alt da Imagem 1 *
-                      </label>
+                      <label className="block text-xs font-medium mb-1">Alt da Imagem 1 *</label>
                       <input
                         type="text"
                         value={formData.section1ImageAlt}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            section1ImageAlt: e.target.value,
-                          })
-                        }
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
+                        onChange={(e) => setFormData({ ...formData, section1ImageAlt: e.target.value })}
+                        className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                         placeholder="Ex: Serviços oferecidos"
                         required
                       />
@@ -597,66 +712,50 @@ const ManageServicesSection = ({ token }) => {
                 </div>
               </div>
 
-              {/* Seção 2 */}
-              <div className="border-b border-gray-200 pb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-                  <FaImage className="text-green-600" />
-                  Seção 2 - Nossos diferenciais
+              {/* Seção 2 - COMPACTADO */}
+              <div className="border-b border-gray-200 pb-6">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-sm">
+                  <FaImage className="text-green-500" />
+                  Seção 2 - Diferenciais
                 </h3>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Conteúdo da Seção 2 */}
-                  <div className="space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Conteúdo da Seção 2 COMPACTADO */}
+                  <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Título da Seção 2 *
-                      </label>
+                      <label className="block text-xs font-medium mb-1">Título 2 *</label>
                       <input
                         type="text"
                         value={formData.section2Title}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            section2Title: e.target.value,
-                          })
-                        }
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
-                        placeholder="Ex: Nós nos concentramos em todos os detalhes"
+                        onChange={(e) => setFormData({ ...formData, section2Title: e.target.value })}
+                        className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder="Ex: Nossos diferenciais"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Alt da Imagem 2 *
-                      </label>
+                      <label className="block text-xs font-medium mb-1">Alt da Imagem 2 *</label>
                       <input
                         type="text"
                         value={formData.section2ImageAlt}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            section2ImageAlt: e.target.value,
-                          })
-                        }
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
+                        onChange={(e) => setFormData({ ...formData, section2ImageAlt: e.target.value })}
+                        className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                         placeholder="Ex: Detalhes e qualidade"
                         required
                       />
                     </div>
                   </div>
 
-                  {/* Imagem da Seção 2 ATUALIZADA */}
+                  {/* Imagem da Seção 2 COMPACTADA */}
                   <div>
-                    <label className="block text-sm font-medium mb-3">
-                      Imagem da Seção 2 *
-                    </label>
-                    <div className={`border-2 border-dashed rounded-xl overflow-hidden transition-colors duration-300 aspect-video flex items-center justify-center card-hover ${
+                    <label className="block text-xs font-medium mb-2">Imagem 2 *</label>
+                    <div className={`border-2 border-dashed rounded-lg overflow-hidden transition-all duration-300 aspect-video flex items-center justify-center card-hover transform hover:scale-[1.02] ${
                       image2Error 
                         ? 'border-red-300 bg-red-50' 
                         : previewImage2 
                           ? 'border-green-300 bg-green-50' 
-                          : 'border-gray-300 hover:border-secondary bg-gray-200'
+                          : 'border-gray-300 hover:border-purple-400 bg-gray-50'
                     }`}>
                       {previewImage2 ? (
                         <div className="relative w-full h-full">
@@ -665,21 +764,20 @@ const ManageServicesSection = ({ token }) => {
                             alt="Preview Seção 2"
                             className="w-full h-full object-cover fade-in"
                           />
-                          <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1">
-                            <FaCheckCircle size={14} />
+                          <div className="absolute top-1 right-1 bg-green-500 text-white rounded-full p-1 shadow-md">
+                            <FaCheckCircle size={12} />
                           </div>
                         </div>
                       ) : image2Error ? (
-                        <div className="text-center p-6">
-                          <FaTimesCircle className="text-red-400 text-3xl mx-auto mb-3" />
-                          <p className="text-red-600 font-medium">Erro na Imagem</p>
-                          <p className="text-red-500 text-sm mt-1">{image2Error}</p>
+                        <div className="text-center p-3">
+                          <FaTimesCircle className="text-red-400 text-xl mx-auto mb-1" />
+                          <p className="text-red-600 text-xs font-medium">Erro</p>
+                          <p className="text-red-500 text-xs mt-1">{image2Error}</p>
                         </div>
                       ) : (
-                        <div className="text-center p-6 gentle-pulse">
-                          <FaUpload className="text-gray-400 text-3xl mx-auto mb-3" />
-                          <p className="text-gray-600 font-medium">Selecione uma imagem</p>
-                          <p className="text-gray-400 text-sm mt-1">ou arraste aqui</p>
+                        <div className="text-center p-4">
+                          <FaUpload className="text-gray-400 text-xl mx-auto mb-1" />
+                          <p className="text-gray-600 font-medium text-xs">Selecione imagem</p>
                         </div>
                       )}
                     </div>
@@ -688,73 +786,49 @@ const ManageServicesSection = ({ token }) => {
                       type="file"
                       accept="image/*"
                       onChange={handleImage2Change}
-                      className="w-full p-2 border rounded-lg mt-3"
+                      className="w-full p-1 border rounded-lg mt-2 text-xs"
                     />
 
                     {image2File && !image2Error && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3 fade-in">
-                        <p className="text-green-700 text-sm font-medium">
-                          ✅ Imagem válida: {image2File.name} ({formatFileSize(image2File.size)})
+                      <div className="bg-green-50 border border-green-200 rounded p-2 mt-2 fade-in">
+                        <p className="text-green-700 text-xs">
+                          ✅ {image2File.name.length > 20 ? image2File.name.substring(0, 20) + "..." : image2File.name} ({formatFileSize(image2File.size)})
                         </p>
                       </div>
-                    )}
-                    {image2Error && (
-                      <p className="text-red-500 text-sm mt-2">{image2Error}</p>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Serviços */}
-              <div className="border-b border-gray-200 pb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-                  <FaCog className="text-green-600" />
-                  Serviços Oferecidos
+              {/* Serviços - COMPACTADO */}
+              <div className="border-b border-gray-200 pb-6">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-sm">
+                  <FaCog className="text-green-500" />
+                  Serviços (2)
                 </h3>
 
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {formData.services.map((service, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 p-4 rounded-lg border border-gray-200"
-                    >
-                      <h4 className="font-medium text-gray-900 mb-4">
-                        Serviço {index + 1}
-                      </h4>
-                      <div className="grid grid-cols-1 gap-4">
+                    <div key={index} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                      <h4 className="font-medium text-gray-900 mb-2 text-xs">Serviço {index + 1}</h4>
+                      <div className="space-y-2">
                         <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Título do Serviço *
-                          </label>
+                          <label className="block text-xs font-medium mb-1">Título *</label>
                           <input
                             type="text"
                             value={service.title}
-                            onChange={(e) =>
-                              handleServiceChange(
-                                index,
-                                "title",
-                                e.target.value
-                              )
-                            }
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
+                            onChange={(e) => handleServiceChange(index, "title", e.target.value)}
+                            className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                             placeholder="Ex: Corte sob medida"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Descrição do Serviço *
-                          </label>
+                          <label className="block text-xs font-medium mb-1">Descrição *</label>
                           <textarea
                             value={service.description}
-                            onChange={(e) =>
-                              handleServiceChange(
-                                index,
-                                "description",
-                                e.target.value
-                              )
-                            }
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent h-20"
+                            onChange={(e) => handleServiceChange(index, "description", e.target.value)}
+                            className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 h-12"
                             placeholder="Descreva o serviço..."
                             required
                           />
@@ -765,56 +839,35 @@ const ManageServicesSection = ({ token }) => {
                 </div>
               </div>
 
-              {/* Diferenciais */}
-              <div className="border-b border-gray-200 pb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-                  <FaChartLine className="text-green-600" />
-                  Nossos Diferenciais
+              {/* Diferenciais - COMPACTADO */}
+              <div className="border-b border-gray-200 pb-6">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-sm">
+                  <FaChartLine className="text-green-500" />
+                  Diferenciais (3)
                 </h3>
 
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {formData.features.map((feature, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 p-4 rounded-lg border border-gray-200"
-                    >
-                      <h4 className="font-medium text-gray-900 mb-4">
-                        Diferencial {index + 1}
-                      </h4>
-                      <div className="grid grid-cols-1 gap-4">
+                    <div key={index} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                      <h4 className="font-medium text-gray-900 mb-2 text-xs">Diferencial {index + 1}</h4>
+                      <div className="space-y-2">
                         <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Título do Diferencial *
-                          </label>
+                          <label className="block text-xs font-medium mb-1">Título *</label>
                           <input
                             type="text"
                             value={feature.title}
-                            onChange={(e) =>
-                              handleFeatureChange(
-                                index,
-                                "title",
-                                e.target.value
-                              )
-                            }
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
+                            onChange={(e) => handleFeatureChange(index, "title", e.target.value)}
+                            className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                             placeholder="Ex: Atendimento"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-2">
-                            Descrição do Diferencial *
-                          </label>
+                          <label className="block text-xs font-medium mb-1">Descrição *</label>
                           <textarea
                             value={feature.description}
-                            onChange={(e) =>
-                              handleFeatureChange(
-                                index,
-                                "description",
-                                e.target.value
-                              )
-                            }
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent h-20"
+                            onChange={(e) => handleFeatureChange(index, "description", e.target.value)}
+                            className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 h-12"
                             placeholder="Descreva o diferencial..."
                             required
                           />
@@ -825,40 +878,32 @@ const ManageServicesSection = ({ token }) => {
                 </div>
               </div>
 
-              {/* CTA */}
-              <div className="border-b border-gray-200 pb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-                  <FaPlus className="text-green-600" />
-                  Botão de Ação (CTA)
+              {/* CTA - COMPACTADO */}
+              <div className="border-b border-gray-200 pb-6">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-sm">
+                  <FaPlus className="text-green-500" />
+                  Botão de Ação
                 </h3>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Texto do Botão *
-                    </label>
+                    <label className="block text-xs font-medium mb-1">Texto *</label>
                     <input
                       type="text"
                       value={formData.ctaText}
-                      onChange={(e) =>
-                        setFormData({ ...formData, ctaText: e.target.value })
-                      }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
+                      onChange={(e) => setFormData({ ...formData, ctaText: e.target.value })}
+                      className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                       placeholder="Ex: Faça um orçamento"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Link do Botão *
-                    </label>
+                    <label className="block text-xs font-medium mb-1">Link *</label>
                     <input
                       type="text"
                       value={formData.ctaLink}
-                      onChange={(e) =>
-                        setFormData({ ...formData, ctaLink: e.target.value })
-                      }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
+                      onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })}
+                      className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                       placeholder="Ex: /contato"
                       required
                     />
@@ -866,31 +911,27 @@ const ManageServicesSection = ({ token }) => {
                 </div>
               </div>
 
-              {/* Informações de Imagens ATUALIZADA */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 card-hover">
-                <div className="flex items-start gap-3">
-                  <FaCircleExclamation className="text-blue-600 text-lg mt-0.5 flex-shrink-0 gentle-bounce" />
+              {/* Informações de Imagens COMPACTADA */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <FaCircleExclamation className="text-purple-600 text-sm mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-blue-800 mb-2">
-                      Recomendações de Imagens
-                    </h4>
-                    <ul className="text-blue-700 text-sm space-y-1">
-                      <li>• <strong>Tamanho máximo por imagem: 1MB</strong></li>
-                      <li>• Formatos suportados: JPG, PNG, WebP</li>
-                      <li>• Dimensões recomendadas para Seção 1: 600x400px</li>
-                      <li>• Dimensões recomendadas para Seção 2: 500x300px</li>
-                      <li>• Imagens de alta qualidade com boa iluminação</li>
+                    <h4 className="font-semibold text-gray-800 text-sm mb-1">Recomendações</h4>
+                    <ul className="text-gray-700 text-xs space-y-0.5">
+                      <li>• <strong>Tamanho máximo: 1MB</strong> por imagem</li>
+                      <li>• Formatos: JPG, PNG, WebP</li>
+                      <li>• Dimensões: 600x400px (Seção 1) e 500x300px (Seção 2)</li>
                     </ul>
                   </div>
                 </div>
               </div>
 
-              {/* Botões de Ação */}
-              <div className="flex gap-3 pt-4">
+              {/* Botões de Ação COMPACTADOS */}
+              <div className="flex gap-2 pt-4">
                 <button
                   type="submit"
                   disabled={isLoading || image1Error || image2Error}
-                  className="flex-1 bg-secondary text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 btn-hover-lift"
+                  className="flex-1 bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-2 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 btn-hover-lift shadow-md text-sm"
                 >
                   {isLoading ? (
                     <>
@@ -911,7 +952,7 @@ const ManageServicesSection = ({ token }) => {
                     setEditingSection(null);
                     resetForm();
                   }}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300 font-medium btn-hover-lift"
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300 font-medium btn-hover-lift text-sm"
                   disabled={isLoading}
                 >
                   Cancelar
@@ -922,66 +963,54 @@ const ManageServicesSection = ({ token }) => {
         </div>
       )}
 
-      {/* Modal de Confirmação de Exclusão */}
+      {/* Modal de Confirmação de Exclusão COMPACTADO */}
       {deleteModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 modal-enter-active">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">
+          <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full transform transition-all duration-300 scale-100">
             {/* Header do Modal */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <FaExclamationTriangle className="text-red-600 text-xl" />
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <div className="flex items-center gap-2">
+                <div className="p-1 bg-red-100 rounded-lg">
+                  <FaExclamationTriangle className="text-red-600 text-lg" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Excluir Seção
-                </h3>
+                <h3 className="text-base font-semibold text-gray-900">Excluir Seção</h3>
               </div>
               <button
                 onClick={closeDeleteModal}
-                className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+                className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
                 disabled={isDeleting}
               >
-                <FaTimes className="text-gray-400 hover:text-gray-600" />
+                <FaTimes className="text-gray-400 hover:text-gray-600 text-sm" />
               </button>
             </div>
 
             {/* Conteúdo do Modal */}
-            <div className="p-6">
-              <p className="text-gray-700 mb-4">
-                Tem certeza que deseja excluir esta seção de serviços?
-              </p>
-              <p className="text-sm text-gray-500 mb-4">
-                Esta ação não pode ser desfeita. A seção será removida
-                permanentemente do sistema.
-              </p>
+            <div className="p-4">
+              <p className="text-gray-700 text-sm mb-3">Tem certeza que deseja excluir esta seção?</p>
+              <p className="text-xs text-gray-500 mb-3">Esta ação não pode ser desfeita.</p>
 
               {deleteModal.section && (
-                <div className="p-3 bg-gray-100 rounded-lg border border-gray-200">
-                  <div className="text-sm text-gray-600">
-                    <p className="font-medium">
-                      {deleteModal.section.section1Title}
-                    </p>
-                    <p className="text-xs text-red-500 mt-1">
-                      Será removida permanentemente
-                    </p>
+                <div className="p-2 bg-gray-100 rounded border border-gray-200">
+                  <div className="text-xs text-gray-600">
+                    <p className="font-medium">{deleteModal.section.section1Title}</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Ações do Modal */}
-            <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-200 rounded-b-xl">
+            <div className="flex gap-2 p-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
               <button
                 onClick={closeDeleteModal}
                 disabled={isDeleting}
-                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleDeleteSection}
                 disabled={isDeleting}
-                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 px-3 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-md"
               >
                 {isDeleting ? (
                   <>
@@ -991,7 +1020,7 @@ const ManageServicesSection = ({ token }) => {
                 ) : (
                   <>
                     <FaTrash />
-                    Excluir Seção
+                    Excluir
                   </>
                 )}
               </button>

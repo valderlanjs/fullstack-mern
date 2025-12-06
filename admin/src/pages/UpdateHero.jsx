@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios.js"
 import { toast } from "react-toastify";
-import { FaCircleExclamation } from "react-icons/fa6";
+import { FaCircleExclamation,  } from "react-icons/fa6";
 import {
   FaExclamationTriangle,
   FaTrash,
@@ -18,7 +18,8 @@ import {
   FaEyeSlash,
   FaMapMarkerAlt,
   FaCheckCircle,
-  FaTimesCircle
+  FaTimesCircle,
+  FaQuestionCircle
 } from "react-icons/fa";
 import "../index.css";
 
@@ -34,6 +35,8 @@ const UpdateHero = ({ token }) => {
     banner: null,
   });
   const [imageError, setImageError] = useState("");
+  // NOVO STATE: Modal de instruções
+  const [instructionsModal, setInstructionsModal] = useState(false);
 
   const fetchBanners = async () => {
     try {
@@ -58,6 +61,16 @@ const UpdateHero = ({ token }) => {
     const sizes = ['Bytes', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  // NOVA FUNÇÃO: Abrir modal de instruções
+  const openInstructionsModal = () => {
+    setInstructionsModal(true);
+  };
+
+  // NOVA FUNÇÃO: Fechar modal de instruções
+  const closeInstructionsModal = () => {
+    setInstructionsModal(false);
   };
 
   const handleAddBanner = async (e) => {
@@ -302,16 +315,212 @@ const UpdateHero = ({ token }) => {
   return (
     <>
       <div className="p-6 max-w-7xl mx-auto fade-in">
-        {/* Header */}
+        {/* Header - ATUALIZADO COM BOTÃO DE INSTRUÇÕES */}
         <div className="mb-8 slide-in-left">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-            <FaImage className="text-secondary" />
-            Gerenciar Banners da Home
-          </h1>
-          <p className="text-gray-600">
-            Adicione, edite textos e gerencie os banners exibidos na página inicial
-          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                <FaImage className="text-secondary" />
+                Gerenciar Banners da Home
+              </h1>
+              <p className="text-gray-600">
+                Adicione, edite textos e gerencie os banners exibidos na página inicial
+              </p>
+            </div>
+            {/* BOTÃO DE INSTRUÇÕES */}
+            <button
+              onClick={openInstructionsModal}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 btn-hover-lift"
+              title="Ver instruções de uso"
+            >
+              <FaQuestionCircle />
+              Instruções
+            </button>
+          </div>
         </div>
+
+        {/* MODAL DE INSTRUÇÕES - NOVO */}
+        {instructionsModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 modal-enter-active">
+            <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100">
+              {/* Header do Modal de Instruções */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <FaQuestionCircle className="text-blue-600 text-xl" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Instruções - Gerenciamento de Banners
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Guia completo de como usar todas as funcionalidades do sistema de banners
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={closeInstructionsModal}
+                  className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  <FaTimes className="text-gray-400 hover:text-gray-600" />
+                </button>
+              </div>
+
+              {/* Conteúdo das Instruções */}
+              <div className="p-6 space-y-6">
+                {/* Seção 1: Adicionar Banner */}
+                <section className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                  <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                    <FaPlus className="text-blue-600" />
+                    1. Como Adicionar um Novo Banner
+                  </h4>
+                  <div className="space-y-2 text-sm text-blue-700">
+                    <p><strong>Passo 1:</strong> Na seção "Adicionar Novo Banner", clique na área de upload</p>
+                    <p><strong>Passo 2:</strong> Selecione uma imagem do seu computador</p>
+                    <p><strong>Requisitos da imagem:</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li><strong>Tamanho máximo:</strong> 1MB</li>
+                      <li><strong>Formatos aceitos:</strong> JPG, PNG, WebP</li>
+                      <li><strong>Dimensões ideais:</strong> 3150-3350px de largura × 2000-2100px de altura</li>
+                      <li><strong>Proporção recomendada:</strong> 16:9</li>
+                    </ul>
+                    <p><strong>Passo 3:</strong> Clique em "Adicionar Banner" para enviar</p>
+                  </div>
+                </section>
+
+                {/* Seção 2: Editar Conteúdo */}
+                <section className="bg-green-50 rounded-lg p-4 border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
+                    <FaEdit className="text-green-600" />
+                    2. Como Editar Textos e Configurações
+                  </h4>
+                  <div className="space-y-3 text-sm text-green-700">
+                    <p><strong>Para editar um banner existente:</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Passe o mouse sobre o banner que deseja editar</li>
+                      <li>Clique no ícone <FaEdit className="inline" /> (lápis)</li>
+                      <li>Isso abrirá o modal de edição completo</li>
+                    </ul>
+                    
+                    <p><strong>Funcionalidades disponíveis no editor:</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li><strong>Badge:</strong> Texto pequeno que aparece no topo</li>
+                      <li><strong>Título Principal:</strong> Texto grande e destacado</li>
+                      <li><strong>Descrição:</strong> Texto explicativo abaixo do título</li>
+                      <li><strong>Efeito Gradiente:</strong> Selecione uma palavra do título para aplicar cor gradiente</li>
+                      <li><strong>Botões:</strong> Até 2 botões com textos e links personalizáveis</li>
+                      <li><strong>Controles de Visibilidade:</strong> Mostrar/ocultar textos e botões</li>
+                      <li><strong>Posição dos Botões:</strong> Esquerda, centro ou direita</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* Seção 3: Efeito Gradiente */}
+                <section className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                  <h4 className="font-semibold text-purple-800 mb-3 flex items-center gap-2">
+                    <FaPalette className="text-purple-600" />
+                    3. Usando o Efeito Gradiente no Título
+                  </h4>
+                  <div className="space-y-2 text-sm text-purple-700">
+                    <p><strong>Como funciona:</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Primeiro, digite o título principal</li>
+                      <li>As palavras com mais de 2 caracteres aparecerão no seletor</li>
+                      <li>Selecione a palavra que deseja colorir</li>
+                      <li>Escolha uma cor entre as opções disponíveis</li>
+                      <li>A palavra selecionada terá um efeito gradiente aplicado</li>
+                    </ul>
+                    <p><strong>Dica:</strong> Use este efeito para destacar palavras-chave como "Promoção", "Novo", "Exclusivo"</p>
+                  </div>
+                </section>
+
+                {/* Seção 4: Configuração de Botões */}
+                <section className="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                  <h4 className="font-semibold text-orange-800 mb-3 flex items-center gap-2">
+                    <FaLink className="text-orange-600" />
+                    4. Configurando Botões e Links
+                  </h4>
+                  <div className="space-y-2 text-sm text-orange-700">
+                    <p><strong>Botão Principal (Verde):</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Use para ações principais como "Fazer Orçamento", "Comprar Agora"</li>
+                      <li>Texto máximo: 25 caracteres</li>
+                      <li>Links pré-definidos disponíveis ou digite um link personalizado</li>
+                    </ul>
+                    
+                    <p><strong>Botão Secundário (Transparente):</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Use para ações secundárias como "Ver Produtos", "Saiba Mais"</li>
+                      <li>Texto máximo: 25 caracteres</li>
+                      <li>Mesmas opções de link do botão principal</li>
+                    </ul>
+                    
+                    <p><strong>Posicionamento:</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li><strong>Inferior Esquerdo:</strong> Alinha os botões à esquerda</li>
+                      <li><strong>Inferior Central:</strong> Centraliza os botões</li>
+                      <li><strong>Inferior Direito:</strong> Alinha os botões à direita</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* Seção 5: Gerenciamento */}
+                <section className="bg-red-50 rounded-lg p-4 border border-red-200">
+                  <h4 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
+                    <FaTrash className="text-red-600" />
+                    5. Gerenciando Banners Existentes
+                  </h4>
+                  <div className="space-y-2 text-sm text-red-700">
+                    <p><strong>Visualizar todos os banners:</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Os banners são exibidos em cards com preview</li>
+                      <li>Cada card mostra as configurações ativas</li>
+                      <li>Ícones indicam se textos e botões estão visíveis</li>
+                      <li>Badge "Personalizado" indica banners com conteúdo customizado</li>
+                    </ul>
+                    
+                    <p><strong>Excluir um banner:</strong></p>
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li>Passe o mouse sobre o banner</li>
+                      <li>Clique no ícone <FaTrash className="inline" /> (lixeira)</li>
+                      <li>Confirme a exclusão no modal de confirmação</li>
+                      <li><strong>Atenção:</strong> Esta ação não pode ser desfeita!</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* Seção 6: Dicas e Boas Práticas */}
+                <section className="bg-gray-100 rounded-lg p-4 border border-gray-300">
+                  <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <FaCircleExclamation className="text-gray-600" />
+                    6. Dicas e Boas Práticas
+                  </h4>
+                  <div className="space-y-2 text-sm text-gray-700">
+                    <ul className="list-disc list-inside ml-4 space-y-1">
+                      <li><strong>Otimize suas imagens</strong> antes do upload para melhor performance</li>
+                      <li><strong>Mantenha os textos curtos</strong> e objetivos para melhor legibilidade</li>
+                      <li><strong>Use o efeito gradiente</strong> com moderação para destacar apenas palavras importantes</li>
+                      <li><strong>Teste diferentes posições</strong> dos botões para ver o que funciona melhor</li>
+                      <li><strong>Verifique os links</strong> após salvar as alterações</li>
+                      <li><strong>Limite máximo:</strong> O sistema suporta até 10 banners</li>
+                    </ul>
+                  </div>
+                </section>
+              </div>
+
+              {/* Rodapé do Modal */}
+              <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-200 rounded-b-xl">
+                <button
+                  onClick={closeInstructionsModal}
+                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center gap-2"
+                >
+                  <FaCheckCircle />
+                  Entendi, Obrigado!
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Modal de Edição */}
         {isEditing && editingBanner && (
