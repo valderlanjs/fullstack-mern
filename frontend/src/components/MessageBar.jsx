@@ -47,7 +47,7 @@ const MarketingBar = () => {
             {/* Primeira cópia */}
             <div className="flex items-center justify-center min-w-full">
               <span className="text-lg font-bold whitespace-nowrap px-4">
-                🚚 {marketingMessage.message} 🚚
+                {marketingMessage.message}
               </span>
               {marketingMessage.buttonText && marketingMessage.buttonLink && (
                 <a
@@ -62,7 +62,7 @@ const MarketingBar = () => {
             {/* Segunda cópia */}
             <div className="flex items-center justify-center min-w-full">
               <span className="text-lg font-bold whitespace-nowrap px-4">
-                🚚 {marketingMessage.message} 🚚
+                {marketingMessage.message}
               </span>
               {marketingMessage.buttonText && marketingMessage.buttonLink && (
                 <a
