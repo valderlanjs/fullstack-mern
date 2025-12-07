@@ -243,7 +243,7 @@ const ManageCards = ({ token }) => {
                 ? "border-red-300 bg-red-50"
                 : card.image
                 ? "border-green-300 bg-green-50 shadow-sm"
-                : "border-gray-300 hover:border-purple-400 bg-gray-50"
+                : "border-gray-300 hover:border-purple-400 bg-gray-200"
             }`}
           >
             {card.image ? (
@@ -414,7 +414,7 @@ const ManageCards = ({ token }) => {
               </div>
 
               {/* Rodapé do Modal */}
-              <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+              <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-200 rounded-b-xl">
                 <button
                   onClick={closeInstructionsModal}
                   className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 font-medium flex items-center justify-center gap-2 shadow-md"
@@ -428,7 +428,7 @@ const ManageCards = ({ token }) => {
         )}
 
         {/* Título da Seção */}
-        <div className="bg-gradient-to-r from-white to-gray-50 rounded-xl shadow-sm border border-gray-200 p-6 mb-8 scale-in hover:shadow-md transition-shadow duration-300">
+        <div className="bg-gradient-to-r from-white to-gray-200 rounded-xl shadow-sm border border-gray-200 p-6 mb-8 scale-in hover:shadow-md transition-shadow duration-300">
           <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <FaEdit className="text-purple-600" />
             Título da Seção de Produtos
@@ -533,7 +533,7 @@ const ManageCards = ({ token }) => {
         </div>
 
         {/* Adicionar Novos Cards - COMPACTADO */}
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-200 p-6 scale-in hover:shadow-md transition-shadow duration-300">
+        <div className="bg-gradient-to-r from-blue-200 to-green-700 rounded-xl shadow-sm border border-gray-200 p-6 scale-in hover:shadow-md transition-shadow duration-300">
           <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
             <FaPlus className="text-green-500" />
             Adicionar Novos Cards
@@ -706,7 +706,7 @@ const ManageCards = ({ token }) => {
 
               {/* Preview do card que será excluído */}
               {deleteModal.card && (
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="mt-4 p-3 bg-gray-200 rounded-lg border border-gray-200">
                   <div className="flex items-center gap-3">
                     <img
                       src={deleteModal.card.image}
@@ -725,7 +725,7 @@ const ManageCards = ({ token }) => {
             </div>
 
             {/* Ações do Modal */}
-            <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+            <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-200 rounded-b-xl">
               <button
                 onClick={closeDeleteModal}
                 disabled={isDeleting}

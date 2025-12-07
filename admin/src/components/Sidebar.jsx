@@ -29,6 +29,7 @@ import {
 // Menu base - itens que aparecem para todos os usuários autenticados
 const getMenuItems = (currentUser) => {
   const baseMenuItems = [
+    // 1 - Dashboard
     {
       id: "dashboard",
       label: "Dashboard",
@@ -36,118 +37,24 @@ const getMenuItems = (currentUser) => {
       to: "/dashboard",
       type: "direct",
     },
+
+    // 2 - Home
     {
       id: "home",
       label: "Home",
       icon: FaHome,
       type: "submenu",
       subItems: [
-        {
-          to: "/update-hero",
-          label: "Banner Principal",
-          icon: FaImage,
-        },
-        {
-          to: "/manage-cards",
-          label: "Gerenciar Cards",
-          icon: FaIdCard,
-        },
-        {
-          to: "/manage-logo",
-          label: "Gerenciar Logo",
-          icon: FaStore,
-        },
-        {
-          to: "/edit-home-section",
-          label: "Informações",
-          icon: FaInfoCircle,
-        },
-        {
-          to: "/edit-features",
-          label: "Certificações",
-          icon: FaCertificate,
-        },
+        { to: "/update-hero", label: "Banner Principal", icon: FaImage },
+        { to: "/manage-cards", label: "Gerenciar Cards", icon: FaIdCard },
+        { to: "/manage-logo", label: "Gerenciar Logo", icon: FaStore },
+        { to: "/edit-home-section", label: "Informações", icon: FaInfoCircle },
+        { to: "/edit-features", label: "Certificações", icon: FaCertificate },
       ],
-    },
-    {
-      id: "secoes",
-      label: "Página Sobre",
-      icon: FaColumns,
-      type: "submenu",
-      subItems: [
-        {
-          to: "/manage-about",
-          label: "Primeira Seção",
-          icon: FaEdit,
-        },
-        {
-          to: "/manage-sections",
-          label: "Segunda Seção",
-          icon: FaEdit,
-        },
-        {
-          to: "/manage-section-two",
-          label: "Terceira Seção",
-          icon: FaEdit,
-        },
-        {
-          to: "/manage-banner-section",
-          label: "Quarta Seção",
-          icon: FaEdit,
-        },
-        {
-          to: "/certification-section",
-          label: "Quinta Seção",
-          icon: FaEdit,
-        },
-      ],
-    },
-
-    {
-      id: "footer",
-      label: "Rodapé",
-      icon: FaEdit,
-      type: "submenu",
-      subItems: [
-        {
-          to: "/edit-footer",
-          label: "Editar Rodapé",
-          icon: FaColumns,
-        },
-      ],
-    },
-    {
-      id: "faq",
-      label: "FAQ",
-      icon: FaQuestionCircle,
-      type: "submenu",
-      subItems: [
-        {
-          to: "/faq",
-          label: "Editar FAQ",
-          icon: FaEdit,
-        },
-      ],
-    },
-    {
-      id: "newsletter",
-      label: "Newsletter",
-      icon: FaEnvelope,
-      to: "/newsletter",
-      type: "direct",
-    },
-    {
-      id: "whatsapp",
-      label: "WhatsApp",
-      icon: FaEnvelope,
-      to: "/whatsapp",
-      type: "direct",
     },
   ];
 
-  // 🔐 MENUS COM PERMISSÕES ESPECÍFICAS
-
-  // Menu de Produtos - apenas para admin OU com permissão manageProducts
+  // 3 - Produtos (somente admin ou permissão)
   if (currentUser?.isAdmin || currentUser?.permissions?.manageProducts) {
     baseMenuItems.push({
       id: "produtos",
@@ -155,21 +62,13 @@ const getMenuItems = (currentUser) => {
       icon: FaBoxOpen,
       type: "submenu",
       subItems: [
-        {
-          to: "/add-product",
-          label: "Adicionar Produto",
-          icon: FaPlusSquare,
-        },
-        {
-          to: "/list",
-          label: "Lista de Produtos",
-          icon: FaListAlt,
-        },
+        { to: "/add-product", label: "Adicionar Produto", icon: FaPlusSquare },
+        { to: "/list", label: "Lista de Produtos", icon: FaListAlt },
       ],
     });
   }
 
-  // Menu de Contato/Vendedores - apenas para admin OU com permissão manageVendors
+  // 4 - Contato (somente admin ou permissão)
   if (currentUser?.isAdmin || currentUser?.permissions?.manageVendors) {
     baseMenuItems.push({
       id: "contato",
@@ -177,59 +76,29 @@ const getMenuItems = (currentUser) => {
       icon: FaUsers,
       type: "submenu",
       subItems: [
-        {
-          to: "/add-vendor",
-          label: "Adicionar Vendedor",
-          icon: FaUserPlus,
-        },
-        {
-          to: "/list-vendor",
-          label: "Lista de Vendedores",
-          icon: FaUsers,
-        },
-        {
-          to: "/update-banner",
-          label: "Banner de Contato",
-          icon: FaImage,
-        },
+        { to: "/add-vendor", label: "Adicionar Vendedor", icon: FaUserPlus },
+        { to: "/list-vendor", label: "Lista de Vendedores", icon: FaUsers },
+        { to: "/update-banner", label: "Banner de Contato", icon: FaImage },
       ],
     });
   }
 
-  // Menu de Política e Termos - apenas para admin OU com permissão managePrivacyTerms
-  if (currentUser?.isAdmin || currentUser?.permissions?.managePrivacyTerms) {
-    baseMenuItems.push({
-      id: "pages",
-      label: "Política e Termos",
-      icon: FaFileAlt,
-      type: "submenu",
-      subItems: [
-        {
-          to: "/pages",
-          label: "Editar Termos e Políticas",
-          icon: FaEdit,
-        },
-      ],
-    });
-  }
+  // 5 - Sobre
+  baseMenuItems.push({
+    id: "secoes",
+    label: "Página Sobre",
+    icon: FaColumns,
+    type: "submenu",
+    subItems: [
+      { to: "/manage-about", label: "Primeira Seção", icon: FaEdit },
+      { to: "/manage-sections", label: "Segunda Seção", icon: FaEdit },
+      { to: "/manage-section-two", label: "Terceira Seção", icon: FaEdit },
+      { to: "/manage-banner-section", label: "Quarta Seção", icon: FaEdit },
+      { to: "/certification-section", label: "Quinta Seção", icon: FaEdit },
+    ],
+  });
 
-  // 🔐 MENU DE USUÁRIOS - APENAS PARA ADMINISTRADORES
-  if (currentUser?.isAdmin) {
-    baseMenuItems.push({
-      id: "usuarios",
-      label: "Usuários",
-      icon: FaShieldAlt,
-      type: "submenu",
-      subItems: [
-        {
-          to: "/users",
-          label: "Gerenciar Usuários",
-          icon: FaUserCog,
-        },
-      ],
-    });
-  }
-
+  // 6 - Marketing (admin ou permissão)
   if (currentUser?.isAdmin || currentUser?.permissions?.manageMarketing) {
     baseMenuItems.push({
       id: "marketing",
@@ -248,6 +117,66 @@ const getMenuItems = (currentUser) => {
           icon: FaHeadSideVirus,
         },
       ],
+    });
+  }
+
+  // 7 - WhatsApp
+  baseMenuItems.push({
+    id: "whatsapp",
+    label: "WhatsApp",
+    icon: FaEnvelope,
+    to: "/whatsapp",
+    type: "direct",
+  });
+
+  // 8 - Rodapé
+  baseMenuItems.push({
+    id: "footer",
+    label: "Rodapé",
+    icon: FaEdit,
+    type: "submenu",
+    subItems: [{ to: "/edit-footer", label: "Editar Rodapé", icon: FaColumns }],
+  });
+
+  // 9 - Newsletter
+  baseMenuItems.push({
+    id: "newsletter",
+    label: "Newsletter",
+    icon: FaEnvelope,
+    to: "/newsletter",
+    type: "direct",
+  });
+
+  // 10 - FAQ
+  baseMenuItems.push({
+    id: "faq",
+    label: "FAQ",
+    icon: FaQuestionCircle,
+    type: "submenu",
+    subItems: [{ to: "/faq", label: "Editar FAQ", icon: FaEdit }],
+  });
+
+  // 11 - Políticas e Termos
+  if (currentUser?.isAdmin || currentUser?.permissions?.managePrivacyTerms) {
+    baseMenuItems.push({
+      id: "pages",
+      label: "Política e Termos",
+      icon: FaFileAlt,
+      type: "submenu",
+      subItems: [
+        { to: "/pages", label: "Editar Termos e Políticas", icon: FaEdit },
+      ],
+    });
+  }
+
+  // 12 - Usuários
+  if (currentUser?.isAdmin) {
+    baseMenuItems.push({
+      id: "usuarios",
+      label: "Usuários",
+      icon: FaShieldAlt,
+      type: "submenu",
+      subItems: [{ to: "/users", label: "Gerenciar Usuários", icon: FaUserCog }],
     });
   }
 

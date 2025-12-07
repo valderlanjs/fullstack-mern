@@ -161,7 +161,7 @@ const NewsletterManager = ({ token }) => {
       <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Email
@@ -186,7 +186,7 @@ const NewsletterManager = ({ token }) => {
                 </tr>
               ) : (
                 filteredSubscribers.map((subscriber) => (
-                  <tr key={subscriber.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={subscriber.id} className="hover:bg-green-400 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <FaEnvelope className="text-gray-400 mr-3" />

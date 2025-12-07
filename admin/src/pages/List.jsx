@@ -642,22 +642,7 @@ const List = ({ token }) => {
                       </div>
                     </div>
                     
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => openEditModal(item)}
-                        className="p-2.5 text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300 hover:scale-110"
-                        title="Editar produto"
-                      >
-                        <FaEdit className="text-lg" />
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(item)}
-                        className="p-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 hover:scale-110"
-                        title="Excluir produto"
-                      >
-                        <TbTrash className="text-lg" />
-                      </button>
-                    </div>
+              
                   </div>
 
                   {/* Informações */}
@@ -754,7 +739,7 @@ const List = ({ token }) => {
           /* Layout em Lista */
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
             {/* Cabeçalho da lista */}
-            <div className="grid grid-cols-12 gap-4 items-center py-5 px-6 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 text-gray-700 font-semibold text-sm">
+            <div className="grid grid-cols-12 gap-4 items-center py-5 px-6 bg-gradient-to-r from-gray-400 to-gray-100 border-b border-gray-200 text-gray-700 font-semibold text-sm">
               <div className="col-span-1">IMAGEM</div>
               <div className="col-span-2">PRODUTO</div>
               <div className="col-span-2">CATEGORIA</div>
@@ -857,7 +842,7 @@ const List = ({ token }) => {
             </div>
 
             {/* Footer da lista */}
-            <div className="py-4 px-6 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200">
+            <div className="py-4 px-6 bg-gradient-to-r from-gray-400 to-gray-100 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-600">
                   Mostrando <span className="font-semibold">{sortedList.length}</span> de{" "}
@@ -957,7 +942,7 @@ const List = ({ token }) => {
 
               {/* Preview do produto */}
               {deleteModal.product && (
-                <div className="mt-4 p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+                <div className="mt-4 p-4 bg-gradient-to-r from-gray-400 to-gray-100 rounded-xl border border-gray-200">
                   <div className="flex items-center gap-4">
                     <img
                       src={deleteModal.product.image?.[0] || "https://via.placeholder.com/150"}
@@ -1293,7 +1278,7 @@ const List = ({ token }) => {
                     </div>
 
                     {/* Informações do Produto */}
-                    <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-5">
+                    <div className="bg-gradient-to-br from-gray-400 to-gray-100 border border-gray-200 rounded-xl p-5">
                       <h5 className="font-semibold text-gray-800 mb-3 text-sm flex items-center gap-2">
                         <FaInfoCircle className="text-gray-600" />
                         Informações do Produto

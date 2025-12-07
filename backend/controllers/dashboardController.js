@@ -4,7 +4,7 @@ import Vendor from "../models/vendorModel.js";
 import User from "../models/userModel.js";
 import HeroBanner from "../models/heroModel.js";
 import Card from "../models/CardModel.js";
-import { Op } from "sequelize"; // ✅ IMPORTE ESTA LINHA
+import { Op } from "sequelize";
 
 export const getDashboardStats = async (req, res) => {
   try {
@@ -17,30 +17,29 @@ export const getDashboardStats = async (req, res) => {
       popularProducts,
       bannersCount,
       cardsCount,
-      productsByCategory,
-      vendorsWithWhatsApp
+      productsByCategory
     ] = await Promise.all([
       // Total de produtos
       Product.count(),
-      
+
       // Total de vendedores
       Vendor.count(),
-      
+
       // Total de usuários
       User.count(),
-      
+
       // Total de administradores
       User.count({ where: { isAdmin: true } }),
-      
+
       // Produtos populares
       Product.count({ where: { popular: true } }),
-      
+
       // Banners ativos
       HeroBanner.count(),
-      
+
       // Cards ativos
       Card.count(),
-      
+
       // Produtos por categoria
       Product.findAll({
         attributes: [
@@ -49,26 +48,12 @@ export const getDashboardStats = async (req, res) => {
         ],
         group: ['category'],
         raw: true
-      }),
-      
-      // Vendedores com WhatsApp - CORRIGIDO
-      Vendor.count({ 
-        where: { 
-          whatsapp: { 
-            [Op.ne]: null, // ✅ Agora o Op está definido
-            [Op.not]: '' 
-          } 
-        } 
       })
     ]);
 
-    // Calcular porcentagens
+    // Calcular porcentagem de produtos populares
     const popularPercentage = totalProducts > 0 
       ? Math.round((popularProducts / totalProducts) * 100) 
-      : 0;
-    
-    const vendorsWithWhatsAppPercentage = totalVendors > 0
-      ? Math.round((vendorsWithWhatsApp / totalVendors) * 100)
       : 0;
 
     // Últimas atividades (produtos recentes)
@@ -92,13 +77,13 @@ export const getDashboardStats = async (req, res) => {
         totalAdmins,
         popularProducts,
         bannersCount,
-        cardsCount,
-        vendorsWithWhatsApp
+        cardsCount
       },
       percentages: {
         popularPercentage,
-        vendorsWithWhatsAppPercentage,
-        adminPercentage: totalUsers > 0 ? Math.round((totalAdmins / totalUsers) * 100) : 0
+        adminPercentage: totalUsers > 0 
+          ? Math.round((totalAdmins / totalUsers) * 100) 
+          : 0
       },
       categoryStats,
       recentActivities: recentProducts.map(product => ({

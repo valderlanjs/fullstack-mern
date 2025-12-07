@@ -268,7 +268,7 @@ const LogoManager = ({ token }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Logo Atual - COMPACTADO */}
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-200 p-5 scale-in hover:shadow-md transition-shadow duration-300">
+        <div className="bg-gradient-to-br from-white to-gray-400 rounded-xl shadow-sm border border-gray-200 p-5 scale-in hover:shadow-md transition-shadow duration-300">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <FaImage className="text-blue-600" />
             Logo Atual
@@ -306,7 +306,7 @@ const LogoManager = ({ token }) => {
               </div>
             </div>
           ) : (
-            <div className="text-center py-6 bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg border-2 border-dashed border-gray-300 gentle-pulse">
+            <div className="text-center py-6 bg-gradient-to-br from-gray-400 to-blue-50 rounded-lg border-2 border-dashed border-gray-300 gentle-pulse">
               <FaImage className="text-gray-400 text-3xl mx-auto mb-2" />
               <p className="text-gray-500 text-sm">Nenhuma logo cadastrada</p>
               <p className="text-gray-400 text-xs mt-1">
@@ -317,7 +317,7 @@ const LogoManager = ({ token }) => {
         </div>
 
         {/* Upload da Nova Logo - COMPACTADO */}
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm border border-gray-200 p-5 scale-in hover:shadow-md transition-shadow duration-300">
+        <div className="bg-gradient-to-br from-white to-gray-400 rounded-xl shadow-sm border border-gray-200 p-5 scale-in hover:shadow-md transition-shadow duration-300">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <FaUpload className="text-green-500" />
             Atualizar Logo
