@@ -136,6 +136,13 @@ const getMenuItems = (currentUser) => {
       to: "/newsletter",
       type: "direct",
     },
+    {
+      id: "whatsapp",
+      label: "WhatsApp",
+      icon: FaEnvelope,
+      to: "/whatsapp",
+      type: "direct",
+    },
   ];
 
   // 🔐 MENUS COM PERMISSÕES ESPECÍFICAS

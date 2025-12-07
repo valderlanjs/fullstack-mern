@@ -35,6 +35,7 @@ import FaqAdmin from "./pages/FaqAdmin";
 import PagesAdmin from "./pages/PagesAdmin";
 import MarketingMessages from "./pages/MarketingMessages";
 import TrackingManager from "./pages/TrackingManager";
+import WhatsAppConfig from "./pages/WhatsappConfig.jsx";
 
 export const backend_url = import.meta.env.VITE_BACKEND_URL;
 
@@ -338,6 +339,16 @@ function App() {
                       />
                     }
                   />
+                  <Route
+                    path="/whatsapp"
+                    element={
+                      <WhatsAppConfig
+                        token={token}
+                        currentUser={currentUser}
+                      />
+                    }
+                  />
+                  
                   <Route
                     path="/edit-footer"
                     element={

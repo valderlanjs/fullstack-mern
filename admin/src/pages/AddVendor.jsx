@@ -1,6 +1,5 @@
-import axios from "axios";
+// AddVendor.jsx - Completo atualizado
 import api from "../api/axios.js"
-import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import { 
   FaUpload,
@@ -8,7 +7,6 @@ import {
   FaPlus,
   FaUserTie,
   FaEnvelope,
-  FaWhatsapp,
   FaUser,
   FaCheckCircle,
   FaTimesCircle
@@ -23,29 +21,9 @@ import { useState } from "react";
 const AddVendor = ({ token }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
   const [image, setImage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState("");
-
-  // Função para formatar o telefone automaticamente
-  const formatPhoneNumber = (value) => {
-    const numbers = value.replace(/\D/g, '');
-    const limitedNumbers = numbers.slice(0, 11);
-    
-    if (limitedNumbers.length <= 2) {
-      return limitedNumbers;
-    } else if (limitedNumbers.length <= 7) {
-      return `(${limitedNumbers.slice(0, 2)}) ${limitedNumbers.slice(2)}`;
-    } else {
-      return `(${limitedNumbers.slice(0, 2)}) ${limitedNumbers.slice(2, 3)}${limitedNumbers.slice(3, 7)}-${limitedNumbers.slice(7, 11)}`;
-    }
-  };
-
-  const handleWhatsappChange = (e) => {
-    const formatted = formatPhoneNumber(e.target.value);
-    setWhatsapp(formatted);
-  };
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -65,16 +43,10 @@ const AddVendor = ({ token }) => {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("email", email);
-      
-      if (whatsapp) {
-        const cleanWhatsapp = whatsapp.replace(/\D/g, '');
-        formData.append("whatsapp", cleanWhatsapp);
-      }
-      
       formData.append("image", image);
 
       const response = await api.post(
-        `${backend_url}/api/vendor/add`,
+        `/api/vendor/add`,
         formData,
         { headers: { token } }
       );
@@ -83,7 +55,6 @@ const AddVendor = ({ token }) => {
         toast.success("Vendedor adicionado com sucesso! 🎉");
         setName("");
         setEmail("");
-        setWhatsapp("");
         setImage(false);
         setImageError("");
         document.getElementById("image").value = "";
@@ -129,7 +100,6 @@ const AddVendor = ({ token }) => {
   const handleCancel = () => {
     setName("");
     setEmail("");
-    setWhatsapp("");
     setImage(false);
     setImageError("");
     document.getElementById("image").value = "";
@@ -316,35 +286,6 @@ const AddVendor = ({ token }) => {
                   required
                 />
               </div>
-
-              {/* WhatsApp */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <FaWhatsapp className="inline mr-2 text-gray-400" />
-                  WhatsApp (Opcional)
-                </label>
-                <input
-                  onChange={handleWhatsappChange}
-                  value={whatsapp}
-                  type="text"
-                  placeholder="Ex: (11) 99999-9999"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
-                  maxLength={15}
-                />
-                <div className="flex justify-between items-center mt-1">
-                  <p className="text-xs text-gray-500">
-                    Formato automático: (DDD) 9XXXX-XXXX
-                  </p>
-                  {whatsapp && (
-                    <span className="text-xs text-gray-400">
-                      {whatsapp.replace(/\D/g, '').length}/11 dígitos
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Espaço vazio para alinhamento */}
-              <div></div>
             </div>
           </div>
 
@@ -368,7 +309,7 @@ const AddVendor = ({ token }) => {
               )}
             </button>
 
-            {(name || email || whatsapp || image) && (
+            {(name || email || image) && (
               <button
                 type="button"
                 onClick={handleCancel}
@@ -383,7 +324,7 @@ const AddVendor = ({ token }) => {
       </div>
 
       {/* Estatísticas de Ajuda */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 fade-in">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 fade-in">
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 card-hover">
           <div className="text-2xl font-bold text-blue-600">3</div>
           <div className="text-sm text-blue-800">Campos Obrigatórios</div>
@@ -391,10 +332,6 @@ const AddVendor = ({ token }) => {
         <div className="bg-green-50 p-4 rounded-lg border border-green-200 card-hover">
           <div className="text-2xl font-bold text-green-600">1MB</div>
           <div className="text-sm text-green-800">Tamanho Máximo</div>
-        </div>
-        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 card-hover">
-          <div className="text-2xl font-bold text-purple-600">11</div>
-          <div className="text-sm text-purple-800">Dígitos WhatsApp</div>
         </div>
       </div>
     </div>

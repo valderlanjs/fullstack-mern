@@ -1,12 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { FaWhatsapp, FaEnvelope, FaUser } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { ShopContext } from "../context/ShopContext";
 
 const Vendor = ({ vendor }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showEmailTooltip, setShowEmailTooltip] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const emailRef = useRef(null);
+  
+  const { whatsappConfig } = useContext(ShopContext);
 
   const handleMouseMove = (e) => {
     if (emailRef.current) {
@@ -16,6 +19,17 @@ const Vendor = ({ vendor }) => {
         y: e.clientY - rect.top
       });
     }
+  };
+
+  // Função para gerar link do WhatsApp com APENAS a mensagem padrão
+  const getWhatsAppLink = () => {
+    if (!whatsappConfig || !whatsappConfig.is_active) return "#";
+    
+    const cleanNumber = whatsappConfig.phone_number.replace(/\D/g, '');
+    // APENAS a mensagem padrão, sem nome e email do vendedor
+    const encodedMessage = encodeURIComponent(whatsappConfig.default_message);
+    
+    return `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
   };
 
   return (
@@ -106,8 +120,8 @@ const Vendor = ({ vendor }) => {
               onMouseLeave={() => setShowEmailTooltip(false)}
               onMouseMove={handleMouseMove}
             >
-              <div className="flex items-center gap-1 p-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-300 min-h-[28px] sm:min-h-[32px] cursor-help">
-                <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-md bg-gray-200 flex items-center justify-center flex-shrink-0">
+              <div className="flex items-center gap-1 p-1 bg-blue-100 rounded-lg hover:bg-gray-100 transition-colors duration-300 min-h-[28px] sm:min-h-[32px] cursor-help">
+                <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
                   <FaEnvelope className="text-gray-600 text-[10px] sm:text-xs" />
                 </div>
                 <p className="text-[10px] sm:text-xs text-gray-600 break-all text-left flex-1 leading-tight line-clamp-1">
@@ -133,10 +147,10 @@ const Vendor = ({ vendor }) => {
             </div>
           )}
 
-          {/* Botão WhatsApp - TEXTO MAIS COMPACTO E ALINHADO */}
-          {vendor.whatsapp && (
+          {/* Botão WhatsApp - USANDO APENAS MENSAGEM PADRÃO */}
+          {whatsappConfig && whatsappConfig.is_active && (
             <motion.a
-              href={`https://wa.me/${vendor.whatsapp}`}
+              href={getWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full bg-gradient-to-r from-[#206E34] to-[#70BD44] text-white px-2 py-1.5 sm:py-2 rounded-lg flex items-center justify-center gap-2 font-semibold hover:shadow-lg transition-all duration-300 group/btn relative overflow-hidden"
@@ -153,6 +167,22 @@ const Vendor = ({ vendor }) => {
                 <span className="text-xs sm:text-sm truncate">WhatsApp</span>
               </div>
             </motion.a>
+          )}
+
+          {/* Mostrar mensagem se WhatsApp estiver desativado */}
+          {whatsappConfig && !whatsappConfig.is_active && (
+            <div className="w-full bg-gray-100 text-gray-400 px-2 py-1.5 sm:py-2 rounded-lg flex items-center justify-center gap-2 font-semibold text-xs sm:text-sm">
+              <FaWhatsapp className="text-gray-400" />
+              WhatsApp Indisponível
+            </div>
+          )}
+
+          {/* Mostrar estado de carregamento */}
+          {!whatsappConfig && (
+            <div className="w-full bg-gray-100 text-gray-400 px-2 py-1.5 sm:py-2 rounded-lg flex items-center justify-center gap-2 font-semibold text-xs sm:text-sm">
+              <div className="w-4 h-4 border-2 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+              Carregando...
+            </div>
           )}
         </div>
 

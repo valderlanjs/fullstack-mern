@@ -26,6 +26,8 @@ import faqRoutes from "./routes/faqRoute.js";
 import pageRoutes from "./routes/pageRoute.js";
 import messageRoute from "./routes/messageRoute.js";
 import trackingRoute from "./routes/trackingRoute.js";
+import whatsappRoute from "./routes/whatsappRoute.js";
+
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -96,6 +98,7 @@ const startServer = async () => {
     app.use("/api/pages", pageRoutes);
     app.use("/api/marketing-messages", messageRoute);
     app.use("/api/tracking", trackingRoute);
+    app.use("/api/whatsapp", whatsappRoute);
 
     app.get("/", (req, res) => {
       res.send("API funcionando com MySQL e Sequelize!");

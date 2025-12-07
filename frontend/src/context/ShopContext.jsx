@@ -1,3 +1,4 @@
+// ShopContext.js - Atualizado
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -13,6 +14,7 @@ const ShopContextProvider = (props) => {
 
   const [products, setProducts] = useState([]);
   const [vendors, setVendors] = useState([]);
+  const [whatsappConfig, setWhatsappConfig] = useState(null);
 
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -45,14 +47,27 @@ const ShopContextProvider = (props) => {
     }
   }
 
+  const getWhatsAppConfig = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/whatsapp/config`);
+      if (response.data.success) {
+        setWhatsappConfig(response.data.config);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar configuração do WhatsApp:", error);
+    }
+  }
+
   useEffect(() => {
     getProductsData();
     getVendorsData();
+    getWhatsAppConfig();
   },[])
 
   const contextValue = {
     products,
     vendors,
+    whatsappConfig,
     currency,
     delivery_charges,
     search,

@@ -18,7 +18,7 @@ const streamUpload = (fileBuffer) => {
 
 const addVendor = async (req, res) => {
   try {
-    const { name, email, whatsapp } = req.body;
+    const { name, email } = req.body;
     const image = req.files?.image?.[0];
 
     if (!image) {
@@ -42,7 +42,6 @@ const addVendor = async (req, res) => {
       name,
       email,
       image: imageUrl,
-      whatsapp,
     });
 
     res.status(201).json({
@@ -74,12 +73,11 @@ const listVendors = async (req, res) => {
 
 const updateVendor = async (req, res) => {
   try {
-    const { id, name, email, whatsapp } = req.body;
+    const { id, name, email } = req.body;
 
     const updatedData = {};
     if (name) updatedData.name = name;
     if (email) updatedData.email = email;
-    if (whatsapp) updatedData.whatsapp = whatsapp;
 
     if (req.files?.image?.[0]) {
       const image = req.files.image[0];
