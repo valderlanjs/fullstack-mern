@@ -6,12 +6,12 @@ import axios from "axios";
 import { ShopContext } from "../context/ShopContext";
 import {
   FaStar,
-  
   FaWhatsapp,
   FaArrowLeft,
   FaShieldAlt,
   FaCreditCard,
   FaMapMarkerAlt,
+  FaPhone,
 } from "react-icons/fa";
 
 import { FaTruckFast } from "react-icons/fa6";
@@ -228,8 +228,11 @@ const Product = () => {
 
             {/* Descrição */}
             <div className="mb-8">
-              <p className="text-lg text-gray-700 leading-relaxed">
-                {product.description || "Descrição do produto não disponível."}
+              <p className="text-lg text-gray-700 leading-relaxed whitespace-pre-line">
+                {product.description ||
+                  `Este ${product.name.toLowerCase()} é fabricado com os mais altos padrões de qualidade, utilizando matéria-prima selecionada. 
+            
+      Entre em contato para mais informações sobre medidas, especificações técnicas e condições especiais.`}
               </p>
             </div>
 
@@ -245,11 +248,14 @@ const Product = () => {
                   background: "linear-gradient(135deg, #206E34, #70BD44)",
                 }}
               >
-                <FaWhatsapp className="text-lg" />
+                <FaPhone className="text-lg" />
                 Faça um Orçamento
               </a>
               <a
-                href="/contact"
+                href="https://wa.me/558233204720?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20sobre%20minha%20entrega.%20%28Favor%20n%C3%A3o%20alterar%20essa%20mensagem%29.
+"
+                rel="noopener noreferrer"
+                target="_blank"
                 className="px-8 py-4 border border-gray-300 text-gray-700 rounded-xl hover:bg-green-700 hover:text-white hover:border-green-700 transition-colors duration-300 font-semibold flex items-center justify-center gap-3"
               >
                 <FaWhatsapp className="text-lg" />

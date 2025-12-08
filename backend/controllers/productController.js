@@ -2,12 +2,19 @@ import { v2 as cloudinary } from "cloudinary";
 import { z } from "zod";
 import Product from "../models/productModel.js";
 
-// Schema atualizado - removendo os enums fixos
+
 const ProductCreateSchema = z.object({
   name: z.string()
     .min(1, "Nome é obrigatório")
     .max(255, "Nome deve ter no máximo 255 caracteres")
     .trim(),
+  
+  description: z.string()
+    .max(2000, "Descrição deve ter no máximo 2000 caracteres")
+    .optional()
+    .nullable()
+    .default(null)
+    .transform(val => val === "" ? null : val),
   
   category: z.string()
     .min(1, "Categoria é obrigatória")
@@ -144,6 +151,7 @@ const addProduct = async (req, res) => {
       product: {
         id: product.id,
         name: product.name,
+        description: product.description,
         category: product.category,
         subCategory: product.subCategory,
         image: product.image,

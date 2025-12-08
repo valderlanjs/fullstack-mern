@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import api from "../api/axios.js"
+import api from "../api/axios.js";
 import { toast } from "react-toastify";
 import {
   FaUpload,
@@ -9,7 +9,6 @@ import {
   FaImage,
   FaStar,
   FaCircleExclamation,
-  
 } from "react-icons/fa6";
 
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
@@ -25,6 +24,7 @@ const Add = ({ token }) => {
   const [subCategory, setSubCategory] = useState("");
   const [popular, setPopular] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [description, setDescription] = useState("");
 
   // Estados para erros de imagem
   const [image1Error, setImage1Error] = useState("");
@@ -34,6 +34,7 @@ const Add = ({ token }) => {
 
   const clearForm = () => {
     setName("");
+    setDescription("");
     setCategory("");
     setSubCategory("");
     setPopular(false);
@@ -69,6 +70,7 @@ const Add = ({ token }) => {
     try {
       const formData = new FormData();
       formData.append("name", name);
+      formData.append("description", description);
       formData.append("category", category);
       formData.append("subCategory", subCategory);
       formData.append("popular", popular);
@@ -78,11 +80,9 @@ const Add = ({ token }) => {
       image3 && formData.append("image3", image3);
       image4 && formData.append("image4", image4);
 
-      const response = await api.post(
-        `/api/product/add`,
-        formData,
-        { headers: { token } }
-      );
+      const response = await api.post(`/api/product/add`, formData, {
+        headers: { token },
+      });
 
       if (response.data.success) {
         toast.success("Produto adicionado com sucesso! 🎉");
@@ -352,6 +352,24 @@ const Add = ({ token }) => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
                   required
                 />
+              </div>
+
+              {/* Descrição do Produto */}
+              <div className="lg:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Descrição do Produto (Opcional)
+                </label>
+                <textarea
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                  placeholder="Descreva o produto com detalhes, características técnicas, dimensões, etc. Deixe em branco para usar descrição padrão."
+                  rows="4"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200 resize-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Máximo 2000 caracteres. Se não preencher, será usada uma
+                  descrição padrão na página do produto.
+                </p>
               </div>
 
               {/* Categoria e Subcategoria */}
