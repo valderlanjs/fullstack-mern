@@ -93,7 +93,7 @@ const AboutSection = () => {
                     style={{ backgroundColor: "#206E34" }}
                   ></div>
                   <span className="text-sm font-medium text-gray-700">
-                    Desde 1999
+                    Desde 1998
                   </span>
                 </div>
               </div>

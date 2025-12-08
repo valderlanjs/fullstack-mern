@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import api from "../api/axios.js"
-import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import {
   FaUpload,
@@ -80,7 +79,7 @@ const Add = ({ token }) => {
       image4 && formData.append("image4", image4);
 
       const response = await api.post(
-        `${backend_url}/api/product/add`,
+        `/api/product/add`,
         formData,
         { headers: { token } }
       );
