@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import ScrollToTop from "./hooks/scrollTop"
+
 import Header from "./components/Header";
 import TrackingCodes from "./components/TrackingCode"; 
 
@@ -21,6 +23,7 @@ import PrivacyPolicyPage from "./components/PrivacyPolicyPage"
 export default function App() {
   return (
     <main className="overflow-hidden text-[#404040] bg-tertiary/5">
+      <ScrollToTop />
       <TrackingCodes />
 
       <ToastContainer />

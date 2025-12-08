@@ -12,7 +12,6 @@ import {
   FaCertificate
 } from "react-icons/fa";
 
-const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 const CertificationAdmin = () => {
   // Dados padrão
@@ -20,7 +19,6 @@ const CertificationAdmin = () => {
     fscTitle: "FSC",
     fscDescription1: "Certificação Forest Stewardship Council. Atribuída por certificadores independentes que estabelecem princípios e critérios para assegurar a origem da madeira.",
     fscDescription2: "Permitindo ao consumidor consciente a opção de um produto que não degrada o meio ambiente e contribui para o desenvolvimento social e econômico das comunidades florestais.",
-    fscDescription3: "A prática predatória é eliminada, a biodiversidade é preservada, assim como os recursos hídricos e do solo. Além do benefício ambiental, o selo garante que os direitos dos trabalhadores sejam respeitados e que as comunidades locais se beneficiem da exploração florestal.",
     fscImage: "",
     fscImageAlt: "Certificação FSC",
     dofTitle: "DOF",
@@ -50,7 +48,7 @@ const CertificationAdmin = () => {
 
   const fetchCertificationData = async () => {
     try {
-      const response = await api.get(`${backend_url}/api/certification-section`);
+      const response = await api.get(`/api/certification-section`);
       if (response.data.success) {
         const data = response.data.certificationSection;
         setCertificationData({
@@ -182,7 +180,7 @@ const CertificationAdmin = () => {
       }
 
       const response = await api.put(
-        `${backend_url}/api/certification-section`,
+        `/api/certification-section`,
         formData,
         {
           headers: {
@@ -333,21 +331,6 @@ const CertificationAdmin = () => {
                   rows="3"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                   placeholder="Segunda descrição sobre FSC..."
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Descrição 3 *
-                </label>
-                <textarea
-                  name="fscDescription3"
-                  value={data.fscDescription3 || ""}
-                  onChange={handleInputChange}
-                  rows="3"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                  placeholder="Terceira descrição sobre FSC..."
                   required
                 />
               </div>

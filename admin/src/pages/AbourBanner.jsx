@@ -177,7 +177,7 @@ const AboutBannerAdmin = () => {
       }
 
       const response = await api.put(
-        `${backend_url}/api/about-banner`,
+        `/api/about-banner`,
         formData,
         {
           headers: {
@@ -452,20 +452,6 @@ const AboutBannerAdmin = () => {
                 <p className="text-sm text-gray-500 mt-1">
                   A última palavra será destacada automaticamente com gradiente
                 </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Descrição
-                </label>
-                <textarea
-                  name="contentDescription"
-                  value={data.contentDescription || ""}
-                  onChange={handleInputChange}
-                  rows="4"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                  placeholder="Texto adicional explicativo sobre sustentabilidade..."
-                />
               </div>
 
               <div>

@@ -215,17 +215,19 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3">
               {[
-                { href: footerData?.aboutLink || "/about", label: "Sobre Nós" },
+                { href: "/about", 
+                  label: "Sobre Nós" 
+                },
                 {
-                  href: footerData?.productsLink || "/products",
+                  href: "/collection",
                   label: "Nossos Produtos",
                 },
                 {
-                  href: footerData?.contactLink || "/contact",
+                  href: "/contact",
                   label: "Contato",
                 },
                 {
-                  href: footerData?.faqLink || "/faqs",
+                  href:  "/faqs",
                   label: "Perguntas Frequentes",
                 },
               ].map((link, index) => (
@@ -255,12 +257,11 @@ const Footer = () => {
                 </div>
                 <div>
                   <p className="text-gray-300 text-sm font-medium">Telefone</p>
-                  <a
-                    href={`tel:${footerData?.phone || "+558200000000"}`}
+                  <p
                     className="text-white hover:text-[#70BD44] transition-colors duration-300 text-sm"
                   >
                     {footerData?.phone || "+55 (82) 0000-0000"}
-                  </a>
+                  </p>
                 </div>
               </div>
 
@@ -270,16 +271,12 @@ const Footer = () => {
                 </div>
                 <div>
                   <p className="text-gray-300 text-sm font-medium">WhatsApp</p>
-                  <a
-                    href={`https://wa.me/${
-                      footerData?.whatsapp || "+558200000000"
-                    }`}
-                    target="_blank"
+                  <p
                     rel="noopener noreferrer"
                     className="text-white hover:text-[#70BD44] transition-colors duration-300 text-sm"
                   >
                     {footerData?.whatsapp || "+55 (82) 0000-0000"}
-                  </a>
+                  </p>
                 </div>
               </div>
 
@@ -289,14 +286,11 @@ const Footer = () => {
                 </div>
                 <div>
                   <p className="text-gray-300 text-sm font-medium">E-mail</p>
-                  <a
-                    href={`mailto:${
-                      footerData?.email || "contato@madenobre.com"
-                    }`}
+                  <p
                     className="text-white hover:text-[#70BD44] transition-colors duration-300 text-sm break-all"
                   >
                     {footerData?.email || "contato@madenobre.com"}
-                  </a>
+                  </p>
                 </div>
               </div>
 
@@ -343,9 +337,8 @@ const Footer = () => {
                   },
                   {
                     icon: BsWhatsapp,
-                    href: `https://wa.me/${
-                      footerData?.whatsapp || "+558200000000"
-                    }`,
+                    href: `https://wa.me/558233204720
+                    `,
                     color: "text-green-500",
                     name: "WhatsApp",
                   },

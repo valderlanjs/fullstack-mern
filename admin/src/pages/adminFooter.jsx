@@ -1,8 +1,5 @@
-// components/admin/AdminFooter.jsx
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import api from "../api/axios.js"
-import { backend_url } from "../App";
 import { toast } from "react-toastify";
 import { 
   FaSpinner,
@@ -65,7 +62,7 @@ const AdminFooter = ({ token }) => {
     const fetchFooterData = async () => {
         try {
             setIsFetching(true);
-            const response = await api.get(`${backend_url}/api/footer`);
+            const response = await api.get(`/api/footer`);
             if (response.data.success && response.data.footer) {
                 setFooterData(response.data.footer);
                 setLogoPreview(response.data.footer.logoUrl || "");
@@ -182,7 +179,7 @@ const AdminFooter = ({ token }) => {
             }
 
             const response = await api.post(
-                `${backend_url}/api/footer`,
+                `/api/footer`,
                 formData,
                 { 
                     headers: { 
@@ -225,7 +222,7 @@ const AdminFooter = ({ token }) => {
         if (window.confirm("Tem certeza que deseja resetar o footer para os valores padrão? Esta ação não pode ser desfeita.")) {
             try {
                 const response = await api.delete(
-                    `${backend_url}/api/footer`,
+                    `/api/footer`,
                     { headers: { token } }
                 );
                 
@@ -573,7 +570,7 @@ const AdminFooter = ({ token }) => {
                                         value={footerData.whatsapp || ""}
                                         onChange={handleInputChange}
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
-                                        placeholder="+558200000000"
+                                        placeholder="+55829999999"
                                     />
                                 </div>
                                 <div>

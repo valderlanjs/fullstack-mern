@@ -28,11 +28,6 @@ export const CertificationSection = sequelize.define("CertificationSection", {
     allowNull: false,
     defaultValue: "Permitindo ao consumidor consciente a opção de um produto que não degrada o meio ambiente e contribui para o desenvolvimento social e econômico das comunidades florestais."
   },
-  fscDescription3: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    defaultValue: "A prática predatória é eliminada, a biodiversidade é preservada, assim como os recursos hídricos e do solo. Além do benefício ambiental, o selo garante que os direitos dos trabalhadores sejam respeitados e que as comunidades locais se beneficiem da exploração florestal."
-  },
   fscImageAlt: {
     type: DataTypes.STRING,
     defaultValue: "Certificação FSC"

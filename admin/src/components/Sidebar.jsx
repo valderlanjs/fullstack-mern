@@ -90,11 +90,11 @@ const getMenuItems = (currentUser) => {
     icon: FaColumns,
     type: "submenu",
     subItems: [
-      { to: "/manage-about", label: "Primeira Seção", icon: FaEdit },
-      { to: "/manage-sections", label: "Segunda Seção", icon: FaEdit },
-      { to: "/manage-section-two", label: "Terceira Seção", icon: FaEdit },
-      { to: "/manage-banner-section", label: "Quarta Seção", icon: FaEdit },
-      { to: "/certification-section", label: "Quinta Seção", icon: FaEdit },
+      { to: "/manage-about", label: "Introdução", icon: FaEdit },
+      { to: "/manage-sections", label: "Missão e Visão", icon: FaEdit },
+      { to: "/manage-section-two", label: "Nossos Serviços", icon: FaEdit },
+      { to: "/manage-banner-section", label: "Sustentabilidade", icon: FaEdit },
+      { to: "/certification-section", label: "Certificações", icon: FaEdit },
     ],
   });
 
